@@ -1,4 +1,5 @@
-// 3D "spin the work" carousel — click-and-drag rotation with momentum.
+// 3D "spin the work" carousel — revolves continuously at a steady pace;
+// click-and-drag speeds it up or reverses it, then it settles back to drifting.
 // Each card is built from thin vertical strips, each rotated a fraction of a
 // degree more than its neighbor, so the panel itself curves into a shallow
 // cylinder (like a bent screen) instead of staying a flat rectangle that's
@@ -26,8 +27,10 @@
   var IMAGE_ASPECT = 2500 / 2125;
   var CARD_W = 440;
   var CARD_H = CARD_W / IMAGE_ASPECT;
-  var STRIP_COUNT = 9;       // slices per card — higher = smoother curve
-  var BEND_ANGLE_TOTAL = 30; // how far the card's own surface bends, edge to edge
+  var STRIP_COUNT = 9;      // slices per card — higher = smoother curve
+  var BEND_ANGLE_TOTAL = 6; // how far the card's own surface bends, edge to edge —
+                             // kept subtle so real screenshots (straight nav bars,
+                             // buttons) don't visibly compress/crop near the edges
 
   var stripW = CARD_W / STRIP_COUNT;
   var bendStep = BEND_ANGLE_TOTAL / (STRIP_COUNT - 1);
@@ -83,14 +86,15 @@
     stage.appendChild(card);
   }
 
+  var IDLE_SPEED = 0.12;   // deg/frame — steady "Earth around the Sun" baseline drift
   var angle = 0;
-  var speed = 0;           // deg/frame — only nonzero right after a drag release (momentum)
+  var speed = IDLE_SPEED;  // deg/frame — eases toward IDLE_SPEED when not dragging
   var dragging = false;
   var dragStartX = 0;
   var dragStartAngle = 0;
   var lastDragX = 0;
   var DRAG_SENSITIVITY = 0.35; // degrees rotated per pixel dragged
-  var FRICTION = 0.94;         // how fast released momentum settles back to a stop
+  var SETTLE = 0.05;           // how fast speed eases back toward IDLE_SPEED after a drag
 
   container.style.cursor = 'grab';
   container.style.touchAction = 'none';
@@ -104,8 +108,11 @@
 
   function tick() {
     if (!dragging) {
-      speed *= FRICTION;
-      if (Math.abs(speed) < 0.002) speed = 0;
+      // Always keep revolving: ease speed back toward the steady idle baseline
+      // rather than down to a stop, so a drag/flick nudges the pace or direction
+      // for a bit and then it settles back into its continuous drift — it never
+      // just sits still.
+      speed += (IDLE_SPEED - speed) * SETTLE;
       angle += speed;
     }
     stage.style.transform = 'rotateY(' + angle + 'deg)';
@@ -147,8 +154,8 @@
     if (!dragging) return;
     dragging = false;
     container.style.cursor = 'grab';
-    // `speed` already holds the release velocity — tick() decays it via FRICTION,
-    // so a hard flick keeps spinning briefly and a slow drag just stops.
+    // `speed` already holds the release velocity — tick() eases it back toward
+    // IDLE_SPEED, so a hard flick keeps spinning faster for a bit before settling.
   }
   container.addEventListener('pointerup', endDrag);
   container.addEventListener('pointercancel', endDrag);
