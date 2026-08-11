@@ -132,6 +132,93 @@ a:hover { color: #C97A1E; }
   margin-top: 2px;
 }
 
+/* "How we work" cards — small animated graphics standing in for real
+   photography/product shots, one per card. */
+
+/* Card 1: a simple mascot that bobs gently in place */
+.hw-mascot-wrap {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.hw-mascot-wrap::after {
+  content: "";
+  position: absolute;
+  bottom: 28%;
+  width: 84px; height: 14px;
+  border-radius: 50%;
+  background: rgba(10,10,10,0.12);
+  filter: blur(3px);
+  animation: hw-shadow 3.2s ease-in-out infinite;
+}
+.hw-mascot { position: relative; animation: hw-bob 3.2s ease-in-out infinite; }
+@keyframes hw-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes hw-shadow {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(0.82); opacity: 0.3; }
+}
+
+/* Card 2: a vertical ticker of example requests, scrolling on a loop */
+.hw-ticker {
+  width: 100%; height: 100%;
+  padding: 20px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+}
+.hw-ticker-track {
+  display: flex; flex-direction: column; gap: 12px;
+  animation: hw-scroll 16s linear infinite;
+}
+.hw-request-card {
+  display: flex; align-items: center; gap: 10px;
+  background: #0A0A0A;
+  border-radius: 12px;
+  padding: 12px 14px;
+  width: 210px;
+  box-shadow: 0 12px 24px -10px rgba(0,0,0,0.35);
+}
+.hw-request-dot { width: 8px; height: 8px; border-radius: 50%; background: #C97A1E; flex: 0 0 auto; }
+.hw-request-text { font-size: 12.5px; color: #FAFAF8; line-height: 1.35; }
+@keyframes hw-scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* Card 3: dot grid where a few dots pulse orange on a staggered loop */
+.hw-dot-grid .hw-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #0A0A0A;
+  animation: hw-pulse 3s ease-in-out infinite;
+}
+@keyframes hw-pulse {
+  0%, 76%, 100% { background: #0A0A0A; transform: scale(1); }
+  88% { background: #C97A1E; transform: scale(1.35); }
+}
+
+/* Card 4: a loose cluster of tool chips, each drifting on its own cycle */
+.hw-tool-cluster { position: relative; width: 100%; height: 100%; }
+.hw-tool-chip {
+  position: absolute;
+  width: 40px; height: 40px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff;
+  box-shadow: 0 10px 20px -8px rgba(0,0,0,0.25);
+  font-family: 'Switzer', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  animation: hw-float 4.5s ease-in-out infinite;
+}
+@keyframes hw-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(-4deg); }
+}
+
 @media (max-width: 900px) {
   .wrap { padding: 0 24px; }
   .carousel-section { display: none; }
