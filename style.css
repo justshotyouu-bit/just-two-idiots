@@ -40,16 +40,22 @@ a:hover { color: #C97A1E; }
 }
 .img-placeholder::after { content: attr(data-placeholder); }
 
-/* "Selected work" fanned deck */
+/* "Selected work" — an evenly-spaced receding row (each card the same tilt,
+   rising a fixed step higher than the last), fanned like a card catalog.
+   Hover pops that one card forward and level, the rest hold their place. */
 .work-card {
+  --rise: 0px;
   display: block;
   flex: 0 0 auto;
   width: 270px;
   position: relative;
-  transform: perspective(1600px) rotateY(-42deg);
+  transform: perspective(1600px) rotateY(-26deg) translateY(var(--rise));
   transition: transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s ease;
 }
-.work-card:hover { transform: perspective(1600px) rotateY(0deg) translateY(-56px) scale(1.07); z-index: 20; }
+.work-card:hover {
+  transform: perspective(1600px) rotateY(0deg) translateY(calc(var(--rise) - 64px)) scale(1.1);
+  z-index: 20;
+}
 
 /* 3D work-preview carousel — a ring of glass panels, spun by dragging */
 .carousel-section {
