@@ -189,15 +189,15 @@ a:hover { color: #C97A1E; }
   100% { transform: translateY(-50%); }
 }
 
-/* Card 3: dot grid where a few dots pulse orange on a staggered loop */
+/* Card 3: dot grid where a few dots pulse gold on a staggered loop */
 .hw-dot-grid .hw-dot {
   width: 9px; height: 9px; border-radius: 50%;
-  background: #0A0A0A;
+  background: #3A1B0C;
   animation: hw-pulse 3s ease-in-out infinite;
 }
 @keyframes hw-pulse {
-  0%, 76%, 100% { background: #0A0A0A; transform: scale(1); }
-  88% { background: #C97A1E; transform: scale(1.35); }
+  0%, 76%, 100% { background: #3A1B0C; transform: scale(1); }
+  88% { background: #FFDCA0; transform: scale(1.35); }
 }
 
 /* Card 4: a loose cluster of tool chips, each drifting on its own cycle */
