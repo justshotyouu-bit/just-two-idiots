@@ -161,3 +161,29 @@
   container.addEventListener('pointercancel', endDrag);
   container.addEventListener('pointerleave', endDrag);
 })();
+
+// Services grid — magnetic tilt: each card tilts in 3D toward the cursor,
+// like tilting a photo in your hand, and eases back flat on mouse-leave.
+(function () {
+  var cards = document.querySelectorAll('.svc-card');
+  if (!cards.length) return;
+
+  var MAX_TILT = 9; // degrees at the card's edge
+
+  cards.forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      var px = (e.clientX - rect.left) / rect.width;
+      var py = (e.clientY - rect.top) / rect.height;
+      var rotateY = (px - 0.5) * MAX_TILT * 2;
+      var rotateX = (0.5 - py) * MAX_TILT * 2;
+      card.style.transition = 'transform 0.1s ease-out, box-shadow 0.6s ease';
+      card.style.transform = 'perspective(900px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg) translateY(-6px) scale(1.02)';
+    });
+
+    card.addEventListener('mouseleave', function () {
+      card.style.transition = 'transform 0.6s cubic-bezier(.16,1,.3,1), box-shadow 0.6s ease';
+      card.style.transform = '';
+    });
+  });
+})();
