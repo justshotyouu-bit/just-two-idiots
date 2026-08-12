@@ -312,6 +312,23 @@ a:hover { color: #C97A1E; }
 }
 .btn-academy { background: #C97A1E; color: #0A0A0A; }
 .btn-academy:hover { background: #FFFFFF; color: #0A0A0A; }
+
+/* "How we work" — the 4 cards drift right-to-left in a continuous loop.
+   Track holds the 4 cards plus an aria-hidden duplicate set back-to-back;
+   animating to -50% lands exactly on the duplicate, so the loop is seamless. */
+.hww-track {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  width: max-content;
+  animation: hww-scroll 28s linear infinite;
+}
+.hww-track:hover { animation-play-state: paused; }
+.hww-card { flex: 0 0 270px; width: 270px; text-align: left; }
+@keyframes hww-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .academy-photo, .academy-glow, .academy-sparkle, .academy-scan { animation: none; }
+  .academy-photo, .academy-glow, .academy-sparkle, .academy-scan, .hww-track { animation: none; }
 }
