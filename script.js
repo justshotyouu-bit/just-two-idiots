@@ -187,3 +187,18 @@
     });
   });
 })();
+
+// "Who we are" — fades the section up (and sweeps its highlighted phrases
+// in) the first time it scrolls into view.
+(function () {
+  var nodes = document.querySelectorAll('[data-reveal-home]');
+  if (!nodes.length) return;
+  var show = function (el) { el.classList.add('is-visible'); };
+  if (!('IntersectionObserver' in window)) { nodes.forEach(show); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) { show(entry.target); io.unobserve(entry.target); }
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
+  nodes.forEach(function (n) { io.observe(n); });
+})();
