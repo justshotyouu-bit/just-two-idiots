@@ -3,147 +3,397 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fig — Case study — Just Two Idiots</title>
+<title>Fig Living — Case study — Just Two Idiots</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css?v=1786532604">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#FBF7EC; -webkit-font-smoothing:antialiased; }
+  a { color:#8A4326; text-decoration:none; }
+  a:hover { color:#1A1613; }
+  @keyframes fig-marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  @keyframes fig-glow { 0%,100% { opacity:0.55; transform:scale(1); } 50% { opacity:1; transform:scale(1.06); } }
+  @keyframes fig-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
+  .fig-hov-dark:hover { background:#1A1613 !important; color:#FBF7EC !important; }
+  .fig-hov-warm:hover { background:#E0A430 !important; color:#1A1613 !important; }
+</style>
 </head>
 <body>
-<div class="wrap">
 
-  <header style="display:flex; align-items:center; justify-content:space-between; padding:36px 0 28px">
-    <a href="../index.html" style="font-family:'Switzer',sans-serif; font-weight:700; font-size:22px; letter-spacing:-0.01em; color:#0A0A0A">Just Two Idiots</a>
-    <nav style="display:flex; align-items:center; gap:40px">
-      <a href="../index.html#work" style="font-size:15px; color:#3A3A38">← Back to work</a>
-      <a href="../index.html#contact" class="btn-invert" style="display:flex; align-items:center; gap:10px; padding:11px 22px; border-radius:100px; font-size:14px; font-weight:500">Get in touch</a>
-    </nav>
-  </header>
+<div style="background:#FBF7EC; color:#1A1613; font-family:'Inter Tight',system-ui,sans-serif;">
 
-  <section style="padding:40px 0 0">
-    <div style="display:flex; align-items:center; gap:14px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#8A8A85; margin-bottom:24px">
-      <span>Case study 01 / 06</span>
-      <span style="width:4px; height:4px; border-radius:50%; background:#D8D6D0"></span>
-      <span>Lighting &amp; Living</span>
-    </div>
-    <h1 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:clamp(40px,7vw,84px); line-height:1.0; letter-spacing:-0.02em; margin:0 0 24px">Fig</h1>
-    <p style="font-size:19px; color:#5A5A56; max-width:640px; line-height:1.55; margin:0 0 48px">A Shopify storefront for a home-lighting and living brand, built to feel as bold and playful as the products it sells.</p>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:24px; border-top:1px solid #E7E5E0; border-bottom:1px solid #E7E5E0; padding:24px 0; margin-bottom:56px">
-      <div>
-        <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:#8A8A85; margin-bottom:8px">Services</div>
-        <div style="font-size:15px; color:#0A0A0A">Websites, Brand identity, Content</div>
-      </div>
-      <div>
-        <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:#8A8A85; margin-bottom:8px">Scope</div>
-        <div style="font-size:15px; color:#0A0A0A">Full storefront build</div>
-      </div>
-      <div>
-        <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:#8A8A85; margin-bottom:8px">Category</div>
-        <div style="font-size:15px; color:#0A0A0A">Lighting &amp; Living — eCommerce</div>
+  <div style="position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:rgba(251,247,236,0.84); border-bottom:1px solid rgba(26,22,19,0.08);">
+    <div style="max-width:1280px; margin:0 auto; padding:16px 40px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
+      <a href="../index.html" style="font-family:'Jost',sans-serif; font-weight:500; font-size:16px; letter-spacing:-0.01em; white-space:nowrap; color:#1A1613;">just two idiots.</a>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <a href="getmyrugs.html" class="fig-hov-dark" style="border:1px solid rgba(26,22,19,0.22); border-radius:999px; padding:9px 18px; font-size:13px; color:#1A1613; white-space:nowrap; transition:background 0.25s, color 0.25s;">Previous work</a>
+        <a href="https://figliving.com" class="fig-hov-warm" style="background:#1A1613; color:#FBF7EC; border-radius:999px; padding:10px 18px; font-size:13px; white-space:nowrap; transition:background 0.25s, color 0.25s;">Visit site</a>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section style="margin:0 -56px 80px">
-    <div style="overflow:hidden; box-shadow:0 40px 80px -40px rgba(0,0,0,0.35)">
-      <img src="../assets/work/fig.jpg" alt="Fig storefront homepage screenshot" style="width:100%; display:block">
-    </div>
-  </section>
-
-  <section style="display:grid; grid-template-columns:200px 1fr; gap:40px; padding-bottom:80px">
-    <div style="font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#8A8A85">Overview</div>
-    <p style="font-size:19px; line-height:1.65; color:#3A3A38; margin:0; max-width:680px">Fig sells statement lighting and living pieces — pleated floor lamps, sculptural table lights, patterned cushions — the kind of products that don't want to hide behind a generic template. The storefront leans into that: bold color-blocked campaign banners, a "shop by type" system that gets people to the right product fast, and a rotating announcement bar built for constant promos and drops.</p>
-  </section>
-
-  <section style="padding:0 0 96px; border-top:1px solid #E7E5E0; padding-top:64px">
-    <p style="font-family:'Switzer',sans-serif; font-weight:500; font-size:clamp(24px,3.4vw,38px); line-height:1.35; letter-spacing:-0.01em; color:#0A0A0A; max-width:900px; margin:0">The brand already had personality. The job was giving the store the confidence to match it.</p>
-  </section>
-
-  <section style="padding-bottom:96px">
-    <div style="display:grid; grid-template-columns:1.3fr 1fr; gap:20px">
-      <div style="border-radius:20px; overflow:hidden; aspect-ratio:4/3">
-        <div style="width:100%; height:100%; background-image:url('../assets/work/fig.jpg'); background-size:190%; background-position:58% 40%"></div>
+  <section style="max-width:1280px; margin:0 auto; padding:96px 40px 72px;">
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1);">
+      <div style="display:flex; align-items:center; gap:14px; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#8A4326;">
+        <span style="width:34px; height:1px; background:#8A4326; display:inline-block;"></span>
+        <span>Selected work &mdash; 2026</span>
       </div>
-      <div style="border-radius:20px; overflow:hidden; aspect-ratio:4/3">
-        <div style="width:100%; height:100%; background-image:url('../assets/work/fig.jpg'); background-size:260%; background-position:50% 88%"></div>
+      <h1 style="font-family:'Jost',sans-serif; font-weight:400; font-size:clamp(56px,9.5vw,148px); line-height:0.9; letter-spacing:0.02em; margin:26px 0 0;">FIG LIVING</h1>
+      <div style="font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(13px,1.4vw,17px); letter-spacing:0.42em; text-transform:uppercase; color:#9A8F7E; margin-top:16px;">Modern lighting &amp; objects</div>
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease 0.12s, transform 0.8s cubic-bezier(0.2,0.7,0.2,1) 0.12s; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:56px; margin-top:64px; align-items:start;">
+      <p style="font-size:clamp(19px,2vw,26px); line-height:1.45; margin:0; max-width:34ch; text-wrap:pretty; font-weight:300;">Paper-pleated lamps photograph beautifully and sell badly online, because a screen can&rsquo;t show warmth. Everything we built for FIG answers one thing: <em style="font-style:normal; color:#8A4326;">what does this light do to a room at night?</em></p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:28px 24px;">
+        <div><div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#9A8F7E; margin-bottom:8px;">Client</div><div style="font-size:15px; line-height:1.6;">FIG Living<br />India</div></div>
+        <div><div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#9A8F7E; margin-bottom:8px;">Category</div><div style="font-size:15px; line-height:1.6;">Portable, table<br />&amp; pendant lighting</div></div>
+        <div><div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#9A8F7E; margin-bottom:8px;">Scope</div><div style="font-size:15px; line-height:1.6;">Brand identity<br />Shopping app<br />E-commerce<br />Campaign &amp; social</div></div>
+        <div><div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#9A8F7E; margin-bottom:8px;">Live</div><div style="font-size:15px; line-height:1.6;"><a href="https://figliving.com">figliving.com</a><br />Shopping &amp; gifting</div></div>
       </div>
     </div>
   </section>
 
-  <section style="padding-bottom:96px; border-top:1px solid #E7E5E0; padding-top:64px">
-    <div style="font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#8A8A85; margin-bottom:32px">What we focused on</div>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:32px 28px">
-      <div>
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px">
-          <span style="font-family:'Switzer',sans-serif; font-weight:600; font-size:14px; color:#C97A1E">01</span>
-          <div style="height:1px; flex:1; background:#E7E5E0"></div>
+  <div style="background:#1A1613; color:#FBF7EC; overflow:hidden; padding:22px 0;">
+    <div style="display:flex; width:max-content; animation:fig-marquee 40s linear infinite; font-family:'Jost',sans-serif; font-weight:400; font-size:15px; letter-spacing:0.26em; text-transform:uppercase; white-space:nowrap;">
+      <span style="padding-right:44px;">Made from paper. Made for everyday.</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+      <span style="padding-right:44px;">Globally awarded table lamps</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+      <span style="padding-right:44px;">Patented. Portable. Practical.</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+      <span style="padding-right:44px;">Loved again &amp; again</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+      <span style="padding-right:44px;">Made from paper. Made for everyday.</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+      <span style="padding-right:44px;">Globally awarded table lamps</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+      <span style="padding-right:44px;">Patented. Portable. Practical.</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+      <span style="padding-right:44px;">Loved again &amp; again</span><span style="padding-right:44px; color:#E0A430;">&#9679;</span>
+    </div>
+  </div>
+
+  <section style="max-width:1280px; margin:0 auto; padding:104px 40px;">
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:flex; align-items:baseline; gap:18px; margin-bottom:52px;">
+      <span style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#8A4326;">01</span>
+      <span style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#9A8F7E;">Brand identity</span>
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:20px;">
+      <div style="background:#FFFFFF; border-radius:20px; padding:56px; display:flex; flex-direction:column; justify-content:space-between; gap:48px; min-height:340px; position:relative; overflow:hidden;">
+        <div style="position:absolute; right:-60px; top:-60px; width:260px; height:260px; border-radius:50%; background:radial-gradient(circle, rgba(224,164,48,0.42) 0%, rgba(224,164,48,0) 68%); animation:fig-glow 6s ease-in-out infinite;"></div>
+        <img src="../assets/casestudy/figliving/fig-logo.avif" alt="FIG Living logo" style="width:230px; max-width:60%; display:block; position:relative;" />
+        <div style="font-size:14px; line-height:1.6; color:#9A8F7E; max-width:52ch; position:relative;">Two dots over the &ldquo;i&rdquo; read as a pair of bulbs, and the rotated LIVING keeps the mark square enough for an app icon. Lowercase, wide-set, no ornament &mdash; the products carry the drama.</div>
+      </div>
+      <div style="display:grid; grid-template-rows:1fr 1fr; gap:20px;">
+        <div style="background:#1A1613; border-radius:20px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; color:#FBF7EC; position:relative; overflow:hidden;">
+          <div style="position:absolute; left:50%; top:-40px; width:200px; height:200px; margin-left:-100px; border-radius:50%; background:radial-gradient(circle, rgba(255,214,138,0.5) 0%, rgba(255,214,138,0) 70%); animation:fig-glow 5s ease-in-out infinite;"></div>
+          <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; opacity:0.6; position:relative;">On dark</div>
+          <div style="position:relative;"><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:34px; letter-spacing:0.06em;">fig</div><div style="font-size:13px; opacity:0.65; margin-top:4px;">Reversed lockup for night imagery</div></div>
         </div>
-        <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:17px; margin-bottom:8px">Storefront design</div>
-        <div style="font-size:14px; color:#5A5A56; line-height:1.6">Full Shopify theme, from homepage to shop-by-type navigation.</div>
-      </div>
-      <div>
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px">
-          <span style="font-family:'Switzer',sans-serif; font-weight:600; font-size:14px; color:#C97A1E">02</span>
-          <div style="height:1px; flex:1; background:#E7E5E0"></div>
+        <div style="background:#E0A430; border-radius:20px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; color:#1A1613;">
+          <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; opacity:0.7;">Voice</div>
+          <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:clamp(20px,2.2vw,28px); line-height:1.15; letter-spacing:0.01em;">Made from paper.<br />Made for everyday.</div>
         </div>
-        <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:17px; margin-bottom:8px">Campaign system</div>
-        <div style="font-size:14px; color:#5A5A56; line-height:1.6">Color-blocked banner templates the team can swap for new drops without touching code.</div>
       </div>
-      <div>
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px">
-          <span style="font-family:'Switzer',sans-serif; font-weight:600; font-size:14px; color:#C97A1E">03</span>
-          <div style="height:1px; flex:1; background:#E7E5E0"></div>
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); margin-top:20px; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px;">
+      <div style="background:#1A1613; border-radius:16px; padding:22px; height:190px; display:flex; flex-direction:column; justify-content:flex-end; color:#FBF7EC;"><div style="font-size:14px; font-weight:500;">Ink</div><div style="font-size:12px; opacity:0.6; margin-top:2px;">#1A1613</div></div>
+      <div style="background:#FBF7EC; border:1px solid rgba(26,22,19,0.14); border-radius:16px; padding:22px; height:190px; display:flex; flex-direction:column; justify-content:flex-end;"><div style="font-size:14px; font-weight:500;">Paper</div><div style="font-size:12px; color:#9A8F7E; margin-top:2px;">#FBF7EC</div></div>
+      <div style="background:#E0A430; border-radius:16px; padding:22px; height:190px; display:flex; flex-direction:column; justify-content:flex-end;"><div style="font-size:14px; font-weight:500;">Lamplight</div><div style="font-size:12px; opacity:0.7; margin-top:2px;">#E0A430</div></div>
+      <div style="background:#F6DFA4; border-radius:16px; padding:22px; height:190px; display:flex; flex-direction:column; justify-content:flex-end;"><div style="font-size:14px; font-weight:500;">Warm Glow</div><div style="font-size:12px; opacity:0.7; margin-top:2px;">#F6DFA4</div></div>
+      <div style="background:#8A4326; border-radius:16px; padding:22px; height:190px; display:flex; flex-direction:column; justify-content:flex-end; color:#FBF7EC;"><div style="font-size:14px; font-weight:500;">Terra</div><div style="font-size:12px; opacity:0.75; margin-top:2px;">#8A4326</div></div>
+      <div style="background:#A9BFA8; border-radius:16px; padding:22px; height:190px; display:flex; flex-direction:column; justify-content:flex-end;"><div style="font-size:14px; font-weight:500;">Stem</div><div style="font-size:12px; opacity:0.7; margin-top:2px;">#A9BFA8</div></div>
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); margin-top:20px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px;">
+      <div style="background:#FFFFFF; border-radius:20px; padding:40px 44px;">
+        <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#9A8F7E; margin-bottom:22px;">Display &mdash; Jost</div>
+        <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:clamp(38px,5vw,64px); line-height:0.95; letter-spacing:0.06em; white-space:nowrap;">Aa Rg</div>
+        <div style="font-family:'Jost',sans-serif; font-size:14px; color:#9A8F7E; margin-top:24px; max-width:42ch; line-height:1.6;">Wide-tracked caps for category titles, campaign lines and packaging &mdash; the geometry of the lamp shades in type.</div>
+      </div>
+      <div style="background:#FFFFFF; border-radius:20px; padding:40px 44px;">
+        <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#9A8F7E; margin-bottom:22px;">Text &mdash; Inter Tight</div>
+        <div style="font-weight:500; font-size:clamp(38px,5vw,64px); line-height:0.95; letter-spacing:-0.03em; white-space:nowrap;">Aa Rg</div>
+        <div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:24px; max-width:42ch;">Product highlights, EMI terms, review copy and every line of interface text across app and web.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#1A1613; color:#FBF7EC; padding:104px 0;">
+    <div style="max-width:1280px; margin:0 auto; padding:0 40px;">
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1);">
+        <div style="display:flex; align-items:baseline; gap:18px; margin-bottom:34px;">
+          <span style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#E0A430;">02</span>
+          <span style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.65;">The app</span>
         </div>
-        <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:17px; margin-bottom:8px">Fast path to purchase</div>
-        <div style="font-size:14px; color:#5A5A56; line-height:1.6">Sticky CTAs and type-first navigation that cut the distance between banner and cart.</div>
+        <h2 style="font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(34px,5vw,66px); line-height:1.04; letter-spacing:0.01em; margin:0; max-width:20ch;">Shop the light, not the spec sheet.</h2>
+        <p style="font-size:clamp(16px,1.5vw,20px); line-height:1.55; font-weight:300; margin:24px 0 0; max-width:56ch; opacity:0.8;">Every lamp is photographed lit and unlit, and the app leads with the lit frame. Warmth, brightness and where it belongs come first; wattage and cable length live further down, where they belong.</p>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:grid; grid-template-columns:repeat(auto-fit,minmax(520px,1fr)); gap:64px; align-items:center; margin-top:72px;">
+        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+          <div style="width:246px; flex:none; background:#0E0C0A; border-radius:42px; padding:10px; box-shadow:0 40px 90px rgba(0,0,0,0.55); animation:fig-float 7s ease-in-out infinite;">
+            <div style="background:#FBF7EC; border-radius:34px; overflow:hidden; height:504px; display:flex; flex-direction:column; color:#1A1613;">
+              <div style="display:flex; justify-content:space-between; padding:14px 20px 4px; font-size:11px; font-weight:500;"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+              <div style="padding:6px 18px 12px;">
+                <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:20px; letter-spacing:0.06em;">fig</div>
+                <div style="margin-top:12px; background:rgba(26,22,19,0.06); border-radius:999px; padding:11px 16px; font-size:12px; color:#9A8F7E;">Search pendant, portable, warm&hellip;</div>
+                <div style="display:flex; gap:8px; margin-top:12px; overflow:hidden;">
+                  <div style="background:#1A1613; color:#FBF7EC; border-radius:999px; padding:7px 13px; font-size:11px; white-space:nowrap;">All</div>
+                  <div style="border:1px solid rgba(26,22,19,0.2); border-radius:999px; padding:7px 13px; font-size:11px; white-space:nowrap;">Table</div>
+                  <div style="border:1px solid rgba(26,22,19,0.2); border-radius:999px; padding:7px 13px; font-size:11px; white-space:nowrap;">Portable</div>
+                </div>
+              </div>
+              <div style="flex:1; padding:0 18px; display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start;">
+                <div><div style="height:98px; border-radius:10px; background:radial-gradient(circle at 50% 38%, #FFE6AE 0%, #E0A430 46%, #8A4326 100%);"></div><div style="font-size:11px; font-weight:500; margin-top:7px;">Tote Table Lamp</div><div style="font-size:10px; color:#9A8F7E;">Bestseller</div></div>
+                <div><div style="height:98px; border-radius:10px; background:radial-gradient(circle at 50% 34%, #FFF3D4 0%, #F6DFA4 44%, #9A8F7E 100%);"></div><div style="font-size:11px; font-weight:500; margin-top:7px;">Ballet Table Lamp</div><div style="font-size:10px; color:#9A8F7E;">Pleated shade</div></div>
+                <div><div style="height:98px; border-radius:10px; background:linear-gradient(150deg,#C9C9C9,#8E8E8E 52%,#4A4A4A);"></div><div style="font-size:11px; font-weight:500; margin-top:7px;">Chrome Vases</div><div style="font-size:10px; color:#9A8F7E;">Set of 2</div></div>
+                <div><div style="height:98px; border-radius:10px; background:linear-gradient(160deg,#F3D34A,#A9BFA8);"></div><div style="font-size:11px; font-weight:500; margin-top:7px;">Petal Table Lamp</div><div style="font-size:10px; color:#9A8F7E;">Globally awarded</div></div>
+              </div>
+              <div style="display:flex; justify-content:space-around; padding:13px 8px 18px; border-top:1px solid rgba(26,22,19,0.1);">
+                <div style="font-size:10px; font-weight:500;">Shop</div><div style="font-size:10px; color:#9A8F7E;">Collections</div><div style="font-size:10px; color:#9A8F7E;">Gifting</div><div style="font-size:10px; color:#9A8F7E;">Bag</div>
+              </div>
+            </div>
+          </div>
+          <div style="width:246px; flex:none; background:#0E0C0A; border-radius:42px; padding:10px; box-shadow:0 40px 90px rgba(0,0,0,0.55);">
+            <div style="background:#1A1613; border-radius:34px; overflow:hidden; height:504px; display:flex; flex-direction:column; color:#FBF7EC;">
+              <div style="height:250px; background:radial-gradient(circle at 50% 42%, #FFE6AE 0%, #E0A430 40%, #4A2A1A 100%); position:relative;">
+                <div style="position:absolute; left:16px; top:16px; background:rgba(251,247,236,0.9); color:#1A1613; border-radius:999px; padding:6px 12px; font-size:11px; white-space:nowrap;">&#8592; Back</div>
+                <div style="position:absolute; left:16px; bottom:16px; background:#1A1613; color:#FBF7EC; border-radius:999px; padding:6px 12px; font-size:11px; white-space:nowrap;">Warm 2700K</div>
+              </div>
+              <div style="padding:18px 18px 0; flex:1;">
+                <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:19px; letter-spacing:0.05em;">TOTE TABLE LAMP</div>
+                <div style="font-size:12px; opacity:0.65; margin-top:5px;">Origami paper shade &middot; metal base</div>
+                <div style="font-weight:500; font-size:22px; margin-top:14px;">&#8377;3,769</div>
+                <div style="font-size:11px; opacity:0.6; margin-top:3px;">or &#8377;471/month &middot; 0% EMI</div>
+                <div style="display:flex; gap:8px; margin-top:16px;">
+                  <div style="width:28px; height:28px; border-radius:8px; background:#F6DFA4; outline:2px solid #FBF7EC; outline-offset:2px;"></div>
+                  <div style="width:28px; height:28px; border-radius:8px; background:#A9BFA8;"></div>
+                  <div style="width:28px; height:28px; border-radius:8px; background:#8A4326;"></div>
+                </div>
+                <div style="margin-top:18px; display:flex; flex-wrap:wrap; gap:8px; font-size:10px; opacity:0.7;">
+                  <span style="border:1px solid rgba(251,247,236,0.28); border-radius:6px; padding:6px 9px; white-space:nowrap;">Rechargeable</span>
+                  <span style="border:1px solid rgba(251,247,236,0.28); border-radius:6px; padding:6px 9px; white-space:nowrap;">Dimmable</span>
+                </div>
+              </div>
+              <div style="padding:14px 18px 20px; display:flex; gap:10px;">
+                <div style="flex:1; background:#E0A430; color:#1A1613; border-radius:999px; padding:13px; text-align:center; font-size:12px; font-weight:500;">Add to bag</div>
+                <div style="width:46px; border:1px solid rgba(251,247,236,0.3); border-radius:999px; display:grid; place-items:center; font-size:14px;">&#9825;</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="padding:30px 0; border-top:1px solid rgba(251,247,236,0.2); display:grid; grid-template-columns:44px minmax(0,1fr); gap:20px;">
+            <div style="font-family:'Jost',sans-serif; font-weight:500; font-size:14px; color:#E0A430;">01</div>
+            <div>
+              <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:22px; letter-spacing:0.02em;">Lit-first browsing</div>
+              <div style="font-size:15px; line-height:1.6; opacity:0.7; margin-top:8px; max-width:46ch;">Cards show the lamp switched on. Colour temperature sits on the image as a pill, so the mood is legible before the tap.</div>
+            </div>
+          </div>
+          <div style="padding:30px 0; border-top:1px solid rgba(251,247,236,0.2); display:grid; grid-template-columns:44px minmax(0,1fr); gap:20px;">
+            <div style="font-family:'Jost',sans-serif; font-weight:500; font-size:14px; color:#E0A430;">02</div>
+            <div>
+              <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:22px; letter-spacing:0.02em;">Price you can act on</div>
+              <div style="font-size:15px; line-height:1.6; opacity:0.7; margin-top:8px; max-width:46ch;">MRP, discount and the monthly EMI figure sit together, because the second number is what closes a &#8377;4,000 basket.</div>
+            </div>
+          </div>
+          <div style="padding:30px 0; border-top:1px solid rgba(251,247,236,0.2); border-bottom:1px solid rgba(251,247,236,0.2); display:grid; grid-template-columns:44px minmax(0,1fr); gap:20px;">
+            <div style="font-family:'Jost',sans-serif; font-weight:500; font-size:14px; color:#E0A430;">03</div>
+            <div>
+              <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:22px; letter-spacing:0.02em;">Gifting as a tab</div>
+              <div style="font-size:15px; line-height:1.6; opacity:0.7; margin-top:8px; max-width:46ch;">A lamp is bought as a present more often than as a fitting, so gifting is a destination in the tab bar rather than a seasonal banner.</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section style="padding-bottom:96px">
-    <div style="display:flex; flex-wrap:wrap; gap:10px">
-      <span style="font-size:13px; color:#3A3A38; padding:8px 16px; border:1px solid #E7E5E0; border-radius:100px">Websites</span>
-      <span style="font-size:13px; color:#3A3A38; padding:8px 16px; border:1px solid #E7E5E0; border-radius:100px">Brand identity</span>
-      <span style="font-size:13px; color:#3A3A38; padding:8px 16px; border:1px solid #E7E5E0; border-radius:100px">eCommerce</span>
-      <span style="font-size:13px; color:#3A3A38; padding:8px 16px; border:1px solid #E7E5E0; border-radius:100px">Content</span>
+  <section style="background:#FFFFFF; padding:104px 0;">
+    <div style="max-width:1280px; margin:0 auto; padding:0 40px;">
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1);">
+        <div style="display:flex; align-items:baseline; gap:18px; margin-bottom:34px;">
+          <span style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#8A4326;">03</span>
+          <span style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#9A8F7E;">The storefront</span>
+        </div>
+        <h2 style="font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(32px,4.6vw,60px); line-height:1.06; letter-spacing:0.01em; margin:0; max-width:24ch;">Three doors in: portable, trending, table.</h2>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); margin-top:56px;">
+        <div style="border-radius:18px; overflow:hidden; border:1px solid rgba(26,22,19,0.1); box-shadow:0 30px 70px rgba(26,22,19,0.1);">
+          <div style="display:flex; align-items:center; gap:8px; padding:13px 16px; background:#FBF7EC; border-bottom:1px solid rgba(26,22,19,0.08);">
+            <div style="width:9px; height:9px; border-radius:50%; background:#E0A430;"></div>
+            <div style="width:9px; height:9px; border-radius:50%; background:#F6DFA4;"></div>
+            <div style="width:9px; height:9px; border-radius:50%; background:#A9BFA8;"></div>
+            <div style="margin-left:12px; font-size:12px; color:#9A8F7E;">figliving.com</div>
+          </div>
+          <img src="../assets/casestudy/figliving/fig-home-categories.jpg" alt="FIG Living homepage category split" style="width:100%; display:block;" />
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:24px;">
+          <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:17px; letter-spacing:0.02em;">A full-bleed triptych</div><div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:6px;">No hero carousel. Three lit photographs, three routes, and the whole catalogue reachable above the fold.</div></div>
+          <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:17px; letter-spacing:0.02em;">Eyebrow does the selling</div><div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:6px;">Modern Lighting, Fig Designed, Globally Awarded &mdash; the credential sits above the category, in small caps.</div></div>
+          <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:17px; letter-spacing:0.02em;">Warm on warm</div><div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:6px;">Every frame is shot in lamplight, so the palette is set by the product rather than laid over it.</div></div>
+        </div>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); margin-top:72px;">
+        <div style="border-radius:18px; overflow:hidden; border:1px solid rgba(26,22,19,0.1); box-shadow:0 30px 70px rgba(26,22,19,0.1);">
+          <img src="../assets/casestudy/figliving/fig-product-tote.jpg" alt="FIG Living Tote Table Lamp product page" style="width:100%; display:block;" />
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:24px;">
+          <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:17px; letter-spacing:0.02em;">Bestseller, rated, priced</div><div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:6px;">Badge, star rating and the 12% saving stack in one block, so the case is made before the fold.</div></div>
+          <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:17px; letter-spacing:0.02em;">FIG Pay Later</div><div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:6px;">&#8377;471/month at 0% interest, shown next to the full price rather than hidden in checkout.</div></div>
+          <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:17px; letter-spacing:0.02em;">Video in the rail</div><div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:6px;">Unboxing and in-use clips sit inside the gallery, doing the job a paper shade can&rsquo;t do in a still.</div></div>
+        </div>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); margin-top:72px; display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:24px; align-items:center;">
+        <div style="border-radius:18px; overflow:hidden; border:1px solid rgba(26,22,19,0.1); box-shadow:0 30px 70px rgba(26,22,19,0.1);">
+          <img src="../assets/casestudy/figliving/fig-product-vases.jpg" alt="FIG Living Chrome Dented Vases product page" style="width:100%; display:block;" />
+        </div>
+        <div>
+          <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#9A8F7E;">Beyond lighting</div>
+          <div style="font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(24px,2.6vw,36px); line-height:1.15; letter-spacing:0.01em; margin-top:14px;">The same template carries objects.</div>
+          <div style="font-size:15px; line-height:1.65; color:#9A8F7E; margin-top:16px; max-width:44ch;">Chrome vases, decor and gifting run on the identical page architecture &mdash; freshly brewed strip, highlights accordion, thumbnail rail. One system, no bespoke pages, so the catalogue can grow without design debt.</div>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; font-size:12px;">
+            <span style="border:1px solid rgba(26,22,19,0.2); border-radius:999px; padding:8px 14px; white-space:nowrap;">Arrived &amp; Loved</span>
+            <span style="border:1px solid rgba(26,22,19,0.2); border-radius:999px; padding:8px 14px; white-space:nowrap;">Freshly Brewed</span>
+            <span style="border:1px solid rgba(26,22,19,0.2); border-radius:999px; padding:8px 14px; white-space:nowrap;">Highlights</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="contact" style="position:relative; overflow:hidden; border-radius:28px; padding:72px 56px; text-align:center; margin-bottom:56px">
-    <div style="position:absolute; width:340px; height:340px; border-radius:50%; background:#FFFFFF; filter:blur(70px); opacity:0.55; top:-120px; left:-60px; z-index:0"></div>
-    <div style="position:absolute; width:280px; height:280px; border-radius:50%; background:#0A0A0A; filter:blur(80px); opacity:0.12; bottom:-100px; right:-40px; z-index:0"></div>
-    <div style="position:relative; z-index:1; background:rgba(255,255,255,0.45); backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.7); border-radius:28px; box-shadow:0 20px 60px -20px rgba(0,0,0,0.15); padding:64px 40px">
-      <div style="width:56px; height:56px; border-radius:50%; background:#FFFFFF; border:1px solid #0A0A0A; display:flex; align-items:center; justify-content:center; margin:0 auto 28px">
-        <div style="width:8px; height:8px; border-radius:50%; background:#0A0A0A"></div>
+  <section style="max-width:1280px; margin:0 auto; padding:104px 40px;">
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1);">
+      <div style="display:flex; align-items:baseline; gap:18px; margin-bottom:34px;">
+        <span style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#8A4326;">04</span>
+        <span style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#9A8F7E;">How we market it</span>
       </div>
-      <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:clamp(30px,4vw,46px); line-height:1.2; letter-spacing:-0.01em; margin:0 0 32px; color:#0A0A0A">Want something like this for your brand?</h2>
-      <p style="font-size:17px; color:#4A4A46; margin:0 0 36px; max-width:520px; margin-left:auto; margin-right:auto">Start with a call and we'll map out exactly what you need.</p>
-      <a href="mailto:hello@justtwoidiots.in" class="btn-invert" style="display:inline-flex; align-items:center; gap:10px; padding:15px 30px; border-radius:100px; font-size:15px; font-weight:600">Book a call</a>
+      <h2 style="font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(32px,4.6vw,60px); line-height:1.06; letter-spacing:0.01em; margin:0; max-width:22ch;">Borrowed taste, then proof.</h2>
+      <p style="font-size:clamp(16px,1.5vw,19px); line-height:1.55; font-weight:300; color:#9A8F7E; margin:20px 0 0; max-width:56ch;">A founder quote opens the section, a wall of verified customer reviews closes it. The lamp is shown twice &mdash; once styled, once in somebody&rsquo;s actual bedroom.</p>
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); margin-top:48px; border-radius:18px; overflow:hidden; border:1px solid rgba(26,22,19,0.1); box-shadow:0 30px 70px rgba(26,22,19,0.1);">
+      <img src="../assets/casestudy/figliving/fig-campaign-masaba.jpg" alt="FIG Living creator campaign and review wall" style="width:100%; display:block;" />
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; margin-top:24px;">
+      <div style="background:#FFFFFF; border-radius:20px; padding:34px 30px;">
+        <div style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#8A4326;">01</div>
+        <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:19px; letter-spacing:0.02em; margin-top:16px;">Creator endorsement</div>
+        <div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:8px;">One portrait, one sentence, one product shot. Cut once, reused across the homepage, the PDP and paid social.</div>
+      </div>
+      <div style="background:#FFFFFF; border-radius:20px; padding:34px 30px;">
+        <div style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#8A4326;">02</div>
+        <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:19px; letter-spacing:0.02em; margin-top:16px;">Real rooms, unretouched</div>
+        <div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:8px;">Customer photos run beside studio frames. Warm, grainy, badly lit &mdash; and far more persuasive than the studio set.</div>
+      </div>
+      <div style="background:#FFFFFF; border-radius:20px; padding:34px 30px;">
+        <div style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#8A4326;">03</div>
+        <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:19px; letter-spacing:0.02em; margin-top:16px;">Editorial numbering</div>
+        <div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:8px;">01&ndash;04 over a colour-blocked grid turns a bestseller list into a spread. Same layout, new products each month.</div>
+      </div>
+      <div style="background:#FFFFFF; border-radius:20px; padding:34px 30px;">
+        <div style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#8A4326;">04</div>
+        <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:19px; letter-spacing:0.02em; margin-top:16px;">Gifting season</div>
+        <div style="font-size:14px; line-height:1.6; color:#9A8F7E; margin-top:8px;">Festive push built from the same three colours &mdash; boxes, store window and an app takeover shipped as one kit.</div>
+      </div>
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); margin-top:24px; border-radius:18px; overflow:hidden; border:1px solid rgba(26,22,19,0.1); box-shadow:0 30px 70px rgba(26,22,19,0.1);">
+      <img src="../assets/casestudy/figliving/fig-editorial-loved.jpg" alt="FIG Living Loved Again and Again editorial section" style="width:100%; display:block;" />
     </div>
   </section>
 
-  <section style="padding-bottom:56px; display:flex; align-items:center; justify-content:space-between; border-top:1px solid #E7E5E0; padding-top:32px; flex-wrap:wrap; gap:16px">
-    <a href="../index.html#work" style="font-size:14px; color:#8A8A85">← All work</a>
-    <a href="getmyrugs.html" class="cs-next" style="display:flex; align-items:center; gap:10px; font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#0A0A0A">
-      Next — GetMyRugs <span class="cs-next-arrow">→</span>
-    </a>
+  <section style="background:#1A1613; color:#FBF7EC; padding:104px 0;">
+    <div style="max-width:1280px; margin:0 auto; padding:0 40px;">
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:flex; align-items:baseline; gap:18px; margin-bottom:44px;">
+        <span style="font-family:'Jost',sans-serif; font-weight:500; font-size:13px; color:#E0A430;">05</span>
+        <span style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.65;">Social &amp; packaging</span>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px;">
+        <div style="aspect-ratio:4/5; border-radius:16px; padding:26px; display:flex; flex-direction:column; justify-content:space-between; background:radial-gradient(circle at 50% 30%, #FFE6AE 0%, #E0A430 42%, #4A2A1A 100%); color:#1A1613;">
+          <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; opacity:0.75;">Story</div>
+          <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:30px; line-height:1.06; letter-spacing:0.02em;">Patented.<br />Portable.<br />Practical.</div>
+        </div>
+        <div style="aspect-ratio:4/5; border-radius:16px; padding:26px; background:#FBF7EC; color:#1A1613; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="display:flex; gap:6px;">
+            <div style="width:20px; height:20px; border-radius:5px; background:#E0A430;"></div>
+            <div style="width:20px; height:20px; border-radius:5px; background:#A9BFA8;"></div>
+            <div style="width:20px; height:20px; border-radius:5px; background:#8A4326;"></div>
+          </div>
+          <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:22px; line-height:1.14; letter-spacing:0.02em;">Three ways to layer warm light</div>
+        </div>
+        <div style="aspect-ratio:4/5; border-radius:16px; padding:26px; background:#8A4326; color:#FBF7EC; display:flex; flex-direction:column; justify-content:flex-end;">
+          <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; opacity:0.7; margin-bottom:10px;">Carousel 1/6</div>
+          <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:24px; line-height:1.1; letter-spacing:0.02em;">Made from paper. Made for everyday.</div>
+        </div>
+        <div style="aspect-ratio:4/5; border-radius:16px; padding:26px; background:#A9BFA8; color:#1A1613; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; opacity:0.7;">Review post</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:24px; line-height:1.12; letter-spacing:0.02em;">&ldquo;Adds so much character to the space.&rdquo;</div>
+            <div style="font-size:12px; opacity:0.65; margin-top:10px;">Verified buyer &middot; &#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:20px;">
+        <div style="background:#FBF7EC; color:#1A1613; border-radius:16px; padding:34px; aspect-ratio:16/10; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-family:'Jost',sans-serif; font-weight:400; font-size:22px; letter-spacing:0.06em;">fig</div>
+          <div style="font-size:11px; line-height:1.7; color:#9A8F7E;">Gift box &middot; table lamp<br />figliving.com</div>
+        </div>
+        <div style="background:#E0A430; color:#1A1613; border-radius:16px; padding:34px; aspect-ratio:16/10; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.7;">Care card</div>
+          <div style="font-size:14px; line-height:1.5;">Wipe the shade with a dry cloth. Never soak the paper.</div>
+        </div>
+        <div style="background:#FBF7EC; color:#1A1613; border-radius:16px; padding:34px; aspect-ratio:16/10; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#9A8F7E;">Unboxing insert</div>
+          <div style="font-family:'Jost',sans-serif; font-weight:300; font-size:26px; line-height:1.1; letter-spacing:0.02em;">Switch it on before you unpack anything else.</div>
+        </div>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; margin-top:64px;">
+        <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:clamp(30px,3.4vw,46px); letter-spacing:0.01em;">3</div><div style="font-size:14px; opacity:0.65; margin-top:4px;">surfaces &mdash; app, web, print</div></div>
+        <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:clamp(30px,3.4vw,46px); letter-spacing:0.01em;">6</div><div style="font-size:14px; opacity:0.65; margin-top:4px;">colour palette, locked</div></div>
+        <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:clamp(30px,3.4vw,46px); letter-spacing:0.01em;">2</div><div style="font-size:14px; opacity:0.65; margin-top:4px;">typefaces, screen to box</div></div>
+        <div><div style="font-family:'Jost',sans-serif; font-weight:400; font-size:clamp(30px,3.4vw,46px); letter-spacing:0.01em;">1</div><div style="font-size:14px; opacity:0.65; margin-top:4px;">page template, whole catalogue</div></div>
+      </div>
+    </div>
   </section>
 
-  <footer style="background:#FFFFFF; border-top:1px solid #E7E5E0; border-radius:0 0 28px 28px; margin:0 -56px; padding:56px 56px 32px">
-    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:14px; color:#0A0A0A">
-      <div style="display:flex; gap:20px; align-items:center">
-        <span style="font-family:'Switzer',sans-serif; font-weight:700">Just Two Idiots</span>
-        <span>Terms of service</span>
-        <span>Privacy policy</span>
+  <footer style="max-width:1280px; margin:0 auto; padding:104px 40px 72px;">
+    <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1); display:flex; justify-content:space-between; align-items:flex-end; gap:40px; flex-wrap:wrap; padding-bottom:44px; border-bottom:1px solid rgba(26,22,19,0.14);">
+      <div style="font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(30px,4.4vw,58px); line-height:1.04; letter-spacing:0.01em; max-width:20ch;">Want this for your brand?</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="https://figliving.com" class="fig-hov-dark" style="border:1px solid rgba(26,22,19,0.28); border-radius:999px; padding:15px 26px; font-size:14px; color:#1A1613; transition:background 0.25s, color 0.25s;">See it live</a>
+        <a href="mailto:hello@justtwoidiots.in" class="fig-hov-dark" style="background:#E0A430; color:#1A1613; border-radius:999px; padding:16px 28px; font-size:14px; transition:background 0.25s, color 0.25s;">Start a project</a>
       </div>
-      <div style="display:flex; gap:20px">
-        <a href="#" style="color:#0A0A0A">Instagram</a>
-        <a href="#" style="color:#0A0A0A">LinkedIn</a>
-        <a href="#" style="color:#0A0A0A">Behance</a>
-      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; padding-top:26px; font-size:13px; color:#9A8F7E;">
+      <div>just two idiots. &mdash; brand, product and campaign design</div>
+      <div>FIG Living &middot; figliving.com</div>
+    </div>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:40px; padding-top:26px; border-top:1px solid rgba(26,22,19,0.14); font-size:13px;">
+      <a href="../index.html#work" style="color:#9A8F7E;">&larr; All work</a>
+      <a href="getmyrugs.html" style="display:flex; align-items:center; gap:8px; font-family:'Jost',sans-serif; font-weight:500; color:#1A1613;">Next &mdash; GetMyRugs &rarr;</a>
     </div>
   </footer>
 
 </div>
+
+<script>
+(function(){
+  var nodes = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+  var show = function(el){ el.style.opacity = '1'; el.style.transform = 'none'; };
+  if (!('IntersectionObserver' in window)) { nodes.forEach(show); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+  nodes.forEach(function(n){
+    var r = n.getBoundingClientRect();
+    if (r.top < window.innerHeight) show(n); else io.observe(n);
+  });
+  setTimeout(function(){ document.querySelectorAll('[data-reveal]').forEach(show); }, 4000);
+})();
+</script>
 </body>
 </html>
