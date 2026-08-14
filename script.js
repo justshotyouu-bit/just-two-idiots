@@ -15,12 +15,12 @@
   // this exact 2500x2125 aspect ratio so background-size can show each image
   // whole, edge to edge, with nothing cut off.
   var PROJECTS = [
-    { image: 'assets/work/fig.jpg', name: 'Fig', category: 'Lighting & Living — eCommerce' },
-    { image: 'assets/work/getmyrugs.jpg', name: 'GetMyRugs', category: 'Handmade Rugs — eCommerce' },
-    { image: 'assets/work/rugs499.jpg', name: 'Rugs499', category: 'Handmade Rugs — eCommerce' },
-    { image: 'assets/work/urbanrugs.jpg', name: 'Urban Rugs', category: 'Islamic Prayer Wear — eCommerce' },
-    { image: 'assets/work/parmandesigns.jpg', name: 'Parman Designs', category: 'Furniture & Decor — Brand site' },
-    { image: 'assets/work/justshotyou.jpg', name: 'justshotyou', category: 'Photography & Film — Portfolio' }
+    { image: 'assets/work/fig.webp', name: 'Fig', category: 'Lighting & Living — eCommerce' },
+    { image: 'assets/work/getmyrugs.webp', name: 'GetMyRugs', category: 'Handmade Rugs — eCommerce' },
+    { image: 'assets/work/rugs499.webp', name: 'Rugs499', category: 'Handmade Rugs — eCommerce' },
+    { image: 'assets/work/urbanrugs.webp', name: 'Urban Rugs', category: 'Islamic Prayer Wear — eCommerce' },
+    { image: 'assets/work/parmandesigns.webp', name: 'Parman Designs', category: 'Furniture & Decor — Brand site' },
+    { image: 'assets/work/justshotyou.webp', name: 'justshotyou', category: 'Photography & Film — Portfolio' }
   ];
 
   var CARD_COUNT = PROJECTS.length;

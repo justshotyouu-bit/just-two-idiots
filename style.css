@@ -438,10 +438,16 @@ footer a,
    light sweep. All motion is slow/ambient — meant to feel alive, not busy. */
 .academy-photo {
   position: absolute; inset: 0;
-  background-image: url('assets/academy/ai-learning.jpg');
+  background-image: url('assets/academy/ai-learning.webp');
   background-size: cover;
   background-position: center 38%;
   animation: academy-kenburns 26s ease-in-out infinite alternate;
+}
+/* The only background on the page whose painted box changes size with the
+   viewport, so it is the only one worth a second file: a phone would
+   otherwise pull the 1900px desktop image to fill 390px. */
+@media (max-width: 900px) {
+  .academy-photo { background-image: url('assets/academy/ai-learning-900.webp'); }
 }
 @keyframes academy-kenburns {
   0%   { transform: scale(1) translate(0, 0); }
