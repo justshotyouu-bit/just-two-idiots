@@ -42,14 +42,15 @@ a:hover { color: #C97A1E; }
 
 /* "Selected work" — an evenly-spaced receding row (each card the same tilt,
    rising a fixed step higher than the last), fanned like a card catalog.
+   Real gaps between cards (not overlap) keep every title legible at rest.
    Hover pops that one card forward and level, the rest hold their place. */
 .work-card {
   --rise: 0px;
   display: block;
   flex: 0 0 auto;
-  width: 270px;
+  width: 240px;
   position: relative;
-  transform: perspective(1600px) rotateY(-26deg) translateY(var(--rise));
+  transform: perspective(1600px) rotateY(-20deg) translateY(var(--rise));
   transition: transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s ease;
 }
 .work-card:hover {
