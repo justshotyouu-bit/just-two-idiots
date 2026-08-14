@@ -83,13 +83,34 @@ a:hover { color: #C97A1E; }
 /* Each card is a fan of thin strips (see script.js) so the panel itself
    bows into a curve, rather than staying a flat rectangle that's just rotated.
    Width/height/margin are set inline by script.js, sized to match each
-   project image's real aspect ratio exactly. */
+   project image's real aspect ratio exactly.
+   The `filter` here is a fully transparent no-op drop-shadow, kept on
+   purpose: without *some* filter present, this browser's compositor
+   flattens the nested `preserve-3d` strip children instead of rendering
+   them, and the cards simply don't draw. A real drop-shadow doesn't trace
+   the curved silhouette anyway — it renders as a flat rectangle behind the
+   card, which is what made these look boxed in. So the visible shadow
+   comes from a separate, non-rotating ambient shadow instead
+   (.carousel-ground-shadow, below), and this filter stays invisible. */
 .carousel-card {
   position: absolute;
   transform-style: preserve-3d;
-  filter:
-    drop-shadow(0 42px 60px rgba(0,0,0,0.30))
-    drop-shadow(0 12px 22px rgba(0,0,0,0.16));
+  filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+}
+/* A static "ground" shadow — doesn't rotate with the ring, just a soft
+   blurred puddle under whichever card is facing front, so the whole thing
+   reads as floating rather than boxed. */
+.carousel-ground-shadow {
+  position: absolute;
+  left: 50%;
+  top: 468px;
+  width: 460px;
+  height: 100px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(20,16,10,0.28) 0%, rgba(20,16,10,0.14) 42%, rgba(20,16,10,0) 72%);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 0;
 }
 .carousel-strip {
   position: absolute;

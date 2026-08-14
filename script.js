@@ -23,11 +23,15 @@
 
   var CARD_COUNT = PROJECTS.length;
   var RING_ANGLE = 360 / CARD_COUNT; // degrees between card centers
-  var RING_RADIUS = 650;             // ring radius — controls gap between cards
+  var RING_RADIUS = 820;             // ring radius — controls gap between cards;
+                                      // wide enough that neighboring cards (only
+                                      // 60deg apart) don't visually collide with
+                                      // the front card's edge
   var IMAGE_ASPECT = 2500 / 2125;
   var CARD_W = 440;
   var CARD_H = CARD_W / IMAGE_ASPECT;
-  var STRIP_COUNT = 9;      // slices per card — higher = smoother curve
+  var STRIP_COUNT = 15;    // slices per card — higher = smoother curve, cleaner
+                             // rounded corners on the first/last strip
   var BEND_ANGLE_TOTAL = 6; // how far the card's own surface bends, edge to edge —
                              // kept subtle so real screenshots (straight nav bars,
                              // buttons) don't visibly compress/crop near the edges
