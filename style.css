@@ -2,11 +2,21 @@
 
 * { box-sizing: border-box; }
 
+/* One source of truth for the page gutter. The full-bleed sections (Academy,
+   the footer, the carousel) pull themselves out by exactly this much, so the
+   gutter can shrink per breakpoint without any of them hanging past the
+   viewport edge — that mismatch (-56px pull against a 24px gutter) is what
+   used to bleed 32px each side and force the page sideways. */
+:root { --gutter: 56px; }
+
 body {
   margin: 0;
   background: #FAFAF8;
   color: #0A0A0A;
   font-family: 'Inter', sans-serif;
+  /* Backstop only — every overflow below is fixed at its source. `clip`
+     rather than `hidden` so it never creates a scroll container. */
+  overflow-x: clip;
 }
 
 a { color: #0A0A0A; text-decoration: none; }
@@ -17,12 +27,88 @@ a:hover { color: #C97A1E; }
 .wrap {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 56px;
+  padding: 0 var(--gutter);
+}
+
+/* Sections that run edge to edge, cancelling the wrap's gutter exactly. */
+.full-bleed {
+  margin-left: calc(-1 * var(--gutter));
+  margin-right: calc(-1 * var(--gutter));
 }
 
 /* Buttons that invert (dark -> white) on hover */
 .btn-invert { background: #0A0A0A; color: #FAFAF8; }
 .btn-invert:hover { background: #FFFFFF; color: #0A0A0A; }
+
+/* ---- Header / navigation -------------------------------------------------
+   Desktop: logo left, inline nav right. Below 900px the five nav items are
+   450px of unbreakable flex row, so they collapse behind a toggle instead of
+   shoving the header past the viewport edge. */
+.site-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 36px 0 28px;
+}
+.site-logo {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+/* Nav links sat at 19px tall — under the 24px minimum tap target. The
+   vertical padding buys the height without moving anything visually. */
+.nav-link {
+  font-size: 15px;
+  color: #3A3A38;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 6px 0;
+}
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 22px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex-direction: column;
+  padding: 0;
+  border: 1px solid #DAD8D2;
+  border-radius: 12px;
+  background: #FFFFFF;
+  cursor: pointer;
+}
+.nav-toggle-bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: #0A0A0A;
+  transition: transform .3s cubic-bezier(.16,1,.3,1), opacity .2s ease;
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) { transform: translateY(-3.5px) rotate(-45deg); }
 
 /* Image placeholder — swap these out for real photos/screenshots */
 .img-placeholder {
@@ -43,12 +129,38 @@ a:hover { color: #C97A1E; }
 /* "Selected work" — an evenly-spaced receding row (each card the same tilt,
    rising a fixed step higher than the last), fanned like a card catalog.
    Real gaps between cards (not overlap) keep every title legible at rest.
-   Hover pops that one card forward and level, the rest hold their place. */
+   Hover pops that one card forward and level, the rest hold their place.
+
+   The row is a scroll rail rather than a plain flex row. Five 240px cards
+   plus gaps need 1320px, which only ever fit at exactly 1440px wide — at
+   1280 they used to push the whole document 72px wide and hand every laptop
+   a horizontal scrollbar. Now the cards scale down to fill the space they
+   actually have, and anything still past the edge scrolls inside the rail
+   instead of dragging the page with it. */
+.work-rail {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  /* Top padding is headroom for the fan: cards sit up to 48px high at rest
+     and pop another 64px (plus scale) on hover, all of which must stay
+     inside the padding box or the rail's own overflow would clip it. */
+  padding: 150px 20px 48px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 20px;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.work-rail::-webkit-scrollbar { display: none; }
+
 .work-card {
   --rise: 0px;
   display: block;
   flex: 0 0 auto;
-  width: 240px;
+  width: clamp(200px, calc((100vw - 280px) / 5), 240px);
+  scroll-snap-align: center;
   position: relative;
   transform: perspective(1600px) rotateY(-20deg) translateY(var(--rise));
   transition: transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s ease;
@@ -58,18 +170,30 @@ a:hover { color: #C97A1E; }
   z-index: 20;
 }
 
+/* Swap the hint copy: hovering doesn't exist on touch. */
+.work-hint-touch { display: none; }
+
 /* 3D work-preview carousel — a ring of glass panels, spun by dragging */
 .carousel-section {
   position: relative;
   height: 560px;
-  margin: 0 0 120px;
+  /* Runs to the wrap's outer edge; script.js then scales the whole ring
+     (card, radius and perspective together, so the projection stays
+     similar) to whatever width that actually is. */
+  margin: 0 calc(-1 * var(--gutter)) 120px;
   perspective: 2400px;
   perspective-origin: 50% 42%;
-  max-width: 1436px;
-  width: 100%;
+  width: auto;
   display: block;
   overflow: hidden;
   background: transparent;
+  /* The side cards used to be guillotined flat by this box's hard edge.
+     They fade out now, so the ring reads as continuing past the frame. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 11%, #000 89%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 11%, #000 89%, transparent 100%);
+  /* Horizontal drags spin the ring; vertical ones must still scroll the
+     page. `none` would have trapped the scroll on touch devices. */
+  touch-action: pan-y;
 }
 .carousel-stage {
   position: absolute;
@@ -230,10 +354,80 @@ a:hover { color: #C97A1E; }
   transform: rotate(45deg) scale(1.15);
 }
 
-@media (max-width: 900px) {
-  .wrap { padding: 0 24px; }
-  .carousel-section { display: none; }
+/* ---- Responsive layer ---------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  :root { --gutter: 40px; }
 }
+
+@media (max-width: 900px) {
+  :root { --gutter: 24px; }
+
+  /* Five nav items are 450px of unbreakable flex row — they collapse behind
+     the toggle rather than pushing the header off-screen. */
+  .nav-toggle { display: flex; }
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 10px;
+    background: #FFFFFF;
+    border: 1px solid #E7E5E0;
+    border-radius: 18px;
+    box-shadow: 0 26px 50px -22px rgba(0,0,0,0.28);
+    /* Kept in the box model but inert while closed — `display:none` would
+       drop the open/close transition and confuse the toggle's aria state. */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity .25s ease, transform .25s cubic-bezier(.16,1,.3,1), visibility .25s;
+  }
+  .site-nav.is-open { opacity: 1; visibility: visible; transform: none; }
+  .nav-link { padding: 13px 14px; border-radius: 12px; font-size: 16px; }
+  .nav-link:hover { background: #F4F2ED; }
+  .nav-cta { justify-content: center; margin-top: 6px; padding: 14px 22px; font-size: 15px; }
+
+  /* The ring is a pointer-driven component and the Selected work rail below
+     covers the same ground on touch, so it stays out here. Its caption goes
+     with it — it used to sit alone telling people to drag nothing. */
+  .carousel-section,
+  .carousel-caption { display: none; }
+
+  /* Flat swipeable cards: the receding fan reads as a pile of half-hidden
+     cards on a narrow screen, and its hover pop is unreachable on touch. */
+  .work-rail {
+    margin: 0 calc(-1 * var(--gutter));
+    padding: 8px 24px 32px;
+    gap: 14px;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 24px;
+  }
+  .work-card,
+  .work-card:hover {
+    width: min(74vw, 300px);
+    transform: none;
+  }
+  .work-hint-pointer { display: none; }
+  .work-hint-touch { display: inline; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav { transition: none; }
+  .work-rail { scroll-behavior: auto; }
+}
+
+/* Inline text links carry a 24px minimum target as well — the footer and
+   contact links measured 17-19px tall, which is under WCAG 2.5.8.
+   Scoped deliberately: a blanket `#work a` would also catch .work-card,
+   and making that a flex container collapses its inner image div to zero
+   width. The "View all" link meets 24px through its own padding. */
+footer a,
+#contact a { display: inline-flex; align-items: center; min-height: 24px; }
 
 /* Case-study pages (work/*.html) — "Next project" arrow nudge on hover */
 .cs-next-arrow { display: inline-block; transition: transform 0.3s cubic-bezier(.16,1,.3,1); }

@@ -1,0 +1,123 @@
+/* Case-study pages — responsive layer.
+   ---------------------------------------------------------------------------
+   These pages are written entirely in inline styles and shipped with no media
+   queries at all, so every multi-column grid stayed multi-column down to
+   320px. Measured overflow before this file: +240px on fig, +165px on
+   prakshi, +144px on tenderheart, +92px on getmyrugs, +63px on parman.
+
+   Because the layout lives in `style` attributes, the only way to reach it
+   without restructuring five 30-40KB files is to match those attributes.
+
+   IMPORTANT — why the selectors match fragments and not whole declarations:
+   the reveal script on each page does `el.style.opacity = '1'`, which makes
+   the CSSOM re-serialise that element's ENTIRE style attribute into its
+   canonical form. `grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)`
+   becomes `grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr)` the
+   moment the element scrolls into view. An exact-string selector matches
+   before the reveal and silently stops matching after it. Every fragment
+   below is therefore chosen to be identical in both spellings — no space
+   ever falls inside one. Keep that property when editing.
+
+   Everything here is additive and scoped to narrow viewports, so the desktop
+   rendering (already correct at >=768px) is untouched. */
+
+/* Backstop. `clip` rather than `hidden` because these pages have a
+   position:sticky header, which an overflow:hidden ancestor would break. */
+body { overflow-x: clip; }
+
+/* Tap targets: these links measured 16-23px tall, under the 24px minimum.
+   Padding buys the height without moving anything visually. Applies at all
+   widths — a pointer target is undersized on a desktop too. */
+a[href^="http"],
+a[href^="../"],
+a[href^="./"],
+a[href$=".html"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+@media (max-width: 860px) {
+  /* Wide fixed-count grids step down rather than jumping straight to one
+     column — a 6-up swatch row reads fine as 3-up, badly as a 6-deep list.
+     `repeat(N` is whitespace-proof: the space lands after the comma. */
+  [style*="repeat(6"] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  [style*="repeat(5"],
+  [style*="repeat(4"],
+  [style*="repeat(3"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  /* Symmetric splits: `1fr) minmax(0` sits inside both
+     `minmax(0,1fr) minmax(0,1fr)` and `minmax(0, 1fr) minmax(0, 1fr)`,
+     and covers the three-column variant too. */
+  [style*="1fr) minmax(0"] { grid-template-columns: minmax(0, 1fr) !important; }
+
+  /* Asymmetric editorial splits (copy beside a meta block). These decimal
+     fractions appear nowhere else in the markup than grid-template-columns,
+     so the bare fragment is unambiguous. */
+  [style*="1.5fr"],
+  [style*="1.4fr"],
+  [style*="1.3fr"],
+  [style*="1.25fr"],
+  [style*="1.2fr"],
+  [style*="1.15fr"],
+  [style*="1.1fr"] { grid-template-columns: minmax(0, 1fr) !important; }
+
+  /* auto-fit already collapses to one track, but its floor is a hard
+     minimum — a 520px floor overflows any phone. */
+  [style*="minmax(520px"] { grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr)) !important; }
+  [style*="minmax(360px"] { grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)) !important; }
+
+  /* Page-width containers carry 40px of desktop gutter each side. */
+  :is([style*="max-width:1280px"], [style*="max-width: 1280px"]) {
+    padding-left: 22px !important;
+    padding-right: 22px !important;
+  }
+
+  /* Inner cards and panels. 56px of padding each side leaves a 320px screen
+     172px of content, which is narrower than the things inside it. */
+  /* The trailing semicolons matter: `padding:56px` on its own would also
+     match `padding:56px 48px`, and the shorthands must not collide. */
+  :is([style*="padding:56px;"], [style*="padding: 56px;"]) { padding: 30px 22px !important; }
+  :is([style*="padding:32px;"], [style*="padding: 32px;"]) { padding: 24px 20px !important; }
+  :is([style*="padding:56px 48px"], [style*="padding: 56px 48px"]) { padding: 34px 24px !important; }
+  :is([style*="padding:40px 44px"], [style*="padding: 40px 44px"]) { padding: 28px 22px !important; }
+  :is([style*="padding:44px 44px 0"], [style*="padding: 44px 44px 0"]) { padding: 28px 22px 0 !important; }
+  :is([style*="padding:34px 30px"], [style*="padding: 34px 30px"]) { padding: 24px 20px !important; }
+
+  /* Big vertical rhythm scales back with the horizontal. */
+  :is([style*="padding:104px 40px"], [style*="padding: 104px 40px"]) { padding-top: 56px !important; padding-bottom: 52px !important; }
+  :is([style*="padding:96px 40px"], [style*="padding: 96px 40px"]) { padding-top: 52px !important; padding-bottom: 44px !important; }
+  :is([style*="padding:80px 40px"], [style*="padding: 80px 40px"]) { padding-top: 48px !important; padding-bottom: 44px !important; }
+
+  /* Long unbroken strings — the domain links in the meta blocks are 21
+     characters of unbreakable text and were the last thing sticking out. */
+  a[href^="http"] { overflow-wrap: anywhere; }
+
+  /* Wide-tracked display type set to never wrap. At 0.4em tracking a short
+     phrase is 180px, wider than the column it sits in on a small phone. */
+  :is([style*="letter-spacing:0.4em"], [style*="letter-spacing: 0.4em"]),
+  :is([style*="letter-spacing:0.42em"], [style*="letter-spacing: 0.42em"]) {
+    white-space: normal !important;
+    letter-spacing: 0.22em !important;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Below this, two columns of body copy stop being readable. Swatch and
+     logo rows keep a 2-up; text grids go single file. */
+  [style*="repeat(6"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  [style*="repeat(3"] { grid-template-columns: minmax(0, 1fr) !important; }
+  [style*="1fr 1fr"] { grid-template-columns: minmax(0, 1fr) !important; }
+
+  :is([style*="max-width:1280px"], [style*="max-width: 1280px"]) {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  /* The sticky header runs a logo plus two nowrap pills; at 320px that is
+     wider than the screen, so the pills wrap under the logo. */
+  :is([style*="max-width:1280px"], [style*="max-width: 1280px"]):is([style*="space-between"]) {
+    flex-wrap: wrap !important;
+    row-gap: 10px !important;
+  }
+}

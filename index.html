@@ -7,20 +7,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1786681106">
+<link rel="stylesheet" href="style.css?v=1786731500">
 </head>
 <body>
 <div class="wrap">
 
-  <header style="display:flex; align-items:center; justify-content:space-between; padding:36px 0 28px">
-    <div style="font-family:'Switzer',sans-serif; font-weight:700; font-size:22px; letter-spacing:-0.01em">Just Two Idiots</div>
-    <nav style="display:flex; align-items:center; gap:40px">
-      <a href="#work" style="font-size:15px; color:#3A3A38">Work</a>
-      <a href="#services" style="font-size:15px; color:#3A3A38">Services</a>
-      <a href="#academy" style="font-size:15px; color:#3A3A38">Academy</a>
-      <a href="#about" style="font-size:15px; color:#3A3A38">About</a>
-      <a href="#contact" class="btn-invert" style="display:flex; align-items:center; gap:10px; padding:11px 22px; border-radius:100px; font-size:14px; font-weight:500">Get in touch</a>
+  <header class="site-header">
+    <div class="site-logo">Just Two Idiots</div>
+    <nav class="site-nav" id="site-nav">
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#academy" class="nav-link">Academy</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#contact" class="btn-invert nav-cta">Get in touch</a>
     </nav>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
   </header>
 
   <section style="padding:64px 0 40px; text-align:center">
@@ -30,7 +34,7 @@
     <a href="#contact" class="btn-invert" style="display:inline-flex; align-items:center; gap:10px; padding:14px 28px; border-radius:100px; font-size:15px; font-weight:500">Start a project</a>
   </section>
 
-  <section style="padding:0 0 40px; text-align:center">
+  <section class="carousel-caption" style="padding:0 0 40px; text-align:center">
     <div style="font-size:13px; color:#8A8A85; margin-bottom:32px">Drag left or right to explore the work</div>
   </section>
   <section id="carousel-container" class="carousel-section">
@@ -39,7 +43,7 @@
     </div>
   </section>
 
-  <section id="services" style="padding-bottom:120px; border-top:1px solid #E7E5E0; padding-top:80px">
+  <section id="services" style="padding-bottom:clamp(72px,10vw,120px); border-top:1px solid #E7E5E0; padding-top:clamp(56px,8vw,80px)">
     <div style="text-align:center; margin-bottom:56px">
       <div style="display:inline-block; border:1px solid #D8D6D0; border-radius:100px; padding:6px 16px; font-size:13px; color:#5A5A56; margin-bottom:24px">Services</div>
       <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:clamp(28px,4vw,44px); line-height:1.15; letter-spacing:-0.01em; margin:0 0 20px">One team. Every service you need.</h2>
@@ -158,19 +162,19 @@
       </div>
     </div>
 
-    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; background:#F1EFEA; border-radius:24px; padding:32px 40px">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; background:#F1EFEA; border-radius:24px; padding:clamp(24px,4vw,32px) clamp(22px,4vw,40px)">
       <div style="font-family:'Switzer',sans-serif; font-weight:500; font-size:18px; color:#0A0A0A">All of it, one plan — everything to help your business grow, no gaps.</div>
       <a href="#contact" class="btn-invert" style="display:inline-flex; align-items:center; gap:10px; padding:14px 28px; border-radius:100px; font-size:15px; font-weight:500; white-space:nowrap">Book a call</a>
     </div>
   </section>
 
-  <section id="work" style="padding-bottom:180px">
-    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px">
-      <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:32px; letter-spacing:-0.01em; margin:0">Selected work</h2>
-      <a href="#work" style="font-size:15px; color:#8A8A85">View all →</a>
+  <section id="work" style="padding-bottom:clamp(72px,12vw,180px)">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:16px">
+      <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:clamp(26px,4vw,32px); letter-spacing:-0.01em; margin:0">Selected work</h2>
+      <a href="#work" style="font-size:15px; color:#8A8A85; padding:6px 0; white-space:nowrap">View all →</a>
     </div>
-    <div style="font-size:13px; color:#8A8A85; margin-bottom:8px">Hover a project to bring it forward</div>
-    <div style="display:flex; align-items:flex-end; gap:20px; padding:150px 20px 0 20px">
+    <div style="font-size:13px; color:#8A8A85; margin-bottom:8px"><span class="work-hint-pointer">Hover a project to bring it forward</span><span class="work-hint-touch">Swipe to browse the projects</span></div>
+    <div class="work-rail">
       <a href="work/fig.html" class="work-card" style="z-index:1; --rise:0px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
           <div style="width:100%; height:100%; background-image:url('assets/covers/fig.jpg?v=1786682013'); background-size:cover; background-position:center"></div>
@@ -224,12 +228,12 @@
     </div>
   </section>
 
-  <section id="about" data-reveal-home style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:48px 80px; padding-bottom:120px; border-top:1px solid #E7E5E0; padding-top:80px">
+  <section id="about" data-reveal-home style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap:clamp(20px,4vw,48px) 80px; padding-bottom:clamp(72px,10vw,120px); border-top:1px solid #E7E5E0; padding-top:clamp(56px,8vw,80px)">
     <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:32px; letter-spacing:-0.01em; margin:0">Who we are</h2>
     <p style="font-size:18px; line-height:1.6; color:#3A3A38; margin:0; max-width:480px">Just Two Idiots didn't start in a boardroom — it started in a classroom, where Krishan and Manish became friends in class one and have stayed that close for <span class="about-hl">22 years</span> since. Krishan is a creative director and professional photographer who runs Just Shot You across Delhi and Gurgaon; Manish is an IIIT-trained engineer who'd rather ship something real than talk about it. We handle every project end to end, together, so brands move fast without cutting corners and meet this AI moment with <span class="about-hl">real taste</span> — growing alongside every client, always showing up with a faster, sharper version of the work. We're not building this for us — we're building it <span class="about-hl">for you</span>.</p>
   </section>
 
-  <section id="team" style="padding-bottom:120px; border-top:1px solid #E7E5E0; padding-top:80px; text-align:center">
+  <section id="team" style="padding-bottom:clamp(72px,10vw,120px); border-top:1px solid #E7E5E0; padding-top:clamp(56px,8vw,80px); text-align:center">
     <div style="display:inline-block; border:1px solid #D8D6D0; border-radius:100px; padding:6px 16px; font-size:13px; color:#5A5A56; margin-bottom:24px">The team</div>
     <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:clamp(28px,4vw,44px); letter-spacing:-0.01em; margin:0 0 20px">The people behind the work</h2>
     <p style="font-size:17px; color:#5A5A56; max-width:560px; margin:0 auto 56px; line-height:1.6">A small, senior team working directly with you — no account managers, no middlemen, just the people building your project.</p>
@@ -251,7 +255,7 @@
     </div>
   </section>
 
-  <section id="how-we-work" style="padding-bottom:120px; overflow:hidden">
+  <section id="how-we-work" style="padding-bottom:clamp(72px,10vw,120px); overflow:hidden">
     <div class="hww-track">
       <div class="hww-card">
         <div style="border-radius:20px; overflow:hidden; aspect-ratio:4/5; margin-bottom:20px; background:radial-gradient(140% 140% at 18% 12%, rgba(255,255,255,0.22), transparent 50%), linear-gradient(145deg, #3A1B0C 0%, #9C3A1A 55%, #D97730 100%)">
@@ -411,7 +415,7 @@
     </div>
   </section>
 
-  <section id="benefits" style="padding-bottom:120px; text-align:center">
+  <section id="benefits" style="padding-bottom:clamp(72px,10vw,120px); text-align:center">
     <div style="display:inline-block; border:1px solid #D8D6D0; border-radius:100px; padding:6px 16px; font-size:13px; color:#5A5A56; margin-bottom:24px">Benefits</div>
     <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:clamp(28px,4vw,44px); line-height:1.15; letter-spacing:-0.01em; margin:0 0 20px">Everything you need. Nothing you don't.</h2>
     <p style="font-size:17px; color:#5A5A56; max-width:560px; margin:0 auto 72px; line-height:1.6">Senior design and dev talent, fast turnarounds, and a model built around your growth. No agency overhead, no surprises.</p>
@@ -434,7 +438,7 @@
     </div>
   </section>
 
-  <section id="academy" style="position:relative; overflow:hidden; border-radius:28px; margin:0 -56px 120px; padding:96px 56px">
+  <section id="academy" class="full-bleed" style="position:relative; overflow:hidden; border-radius:28px; margin-bottom:clamp(72px,10vw,120px); padding:clamp(56px,9vw,96px) clamp(24px,5vw,56px)">
     <div class="academy-photo"></div>
     <div style="position:absolute; inset:0; background:rgba(12,9,7,0.72)"></div>
     <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,8,6,0) 0%, rgba(10,8,6,0.55) 55%, rgba(10,8,6,0.92) 100%)"></div>
@@ -503,10 +507,10 @@
     </div>
   </section>
 
-  <section id="contact" style="position:relative; overflow:hidden; border-radius:28px; padding:72px 56px; text-align:center; margin-bottom:0">
+  <section id="contact" style="position:relative; overflow:hidden; border-radius:28px; padding:clamp(40px,7vw,72px) clamp(0px,4vw,56px); text-align:center; margin-bottom:0">
     <div style="position:absolute; width:340px; height:340px; border-radius:50%; background:#FFFFFF; filter:blur(70px); opacity:0.55; top:-120px; left:-60px; z-index:0"></div>
     <div style="position:absolute; width:280px; height:280px; border-radius:50%; background:#0A0A0A; filter:blur(80px); opacity:0.12; bottom:-100px; right:-40px; z-index:0"></div>
-    <div style="position:relative; z-index:1; background:rgba(255,255,255,0.45); backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.7); border-radius:28px; box-shadow:0 20px 60px -20px rgba(0,0,0,0.15); padding:64px 40px">
+    <div style="position:relative; z-index:1; background:rgba(255,255,255,0.45); backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,0.7); border-radius:28px; box-shadow:0 20px 60px -20px rgba(0,0,0,0.15); padding:clamp(32px,6vw,64px) clamp(20px,5vw,40px)">
       <div style="width:56px; height:56px; border-radius:50%; background:#FFFFFF; border:1px solid #0A0A0A; display:flex; align-items:center; justify-content:center; margin:0 auto 28px">
         <div style="width:8px; height:8px; border-radius:50%; background:#0A0A0A"></div>
       </div>
@@ -517,7 +521,7 @@
     </div>
   </section>
 
-  <footer style="background:#FFFFFF; border-top:1px solid #E7E5E0; border-radius:0 0 28px 28px; margin:0 -56px; padding:56px 56px 32px">
+  <footer class="full-bleed" style="background:#FFFFFF; border-top:1px solid #E7E5E0; border-radius:0 0 28px 28px; padding:clamp(40px,7vw,56px) clamp(24px,5vw,56px) 32px">
     <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:14px; color:#0A0A0A">
       <div style="display:flex; gap:20px; align-items:center">
         <span style="font-family:'Switzer',sans-serif; font-weight:700">Just Two Idiots</span>
@@ -533,6 +537,6 @@
   </footer>
 
 </div>
-<script src="script.js?v=1786681106"></script>
+<script src="script.js?v=1786731500"></script>
 </body>
 </html>

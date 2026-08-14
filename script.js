@@ -25,10 +25,18 @@
 
   var CARD_COUNT = PROJECTS.length;
   var RING_ANGLE = 360 / CARD_COUNT; // degrees between card centers
-  var RING_RADIUS = 650;             // ring radius — controls gap between cards
   var IMAGE_ASPECT = 2500 / 2125;
-  var CARD_W = 440;
-  var CARD_H = CARD_W / IMAGE_ASPECT;
+
+  // Reference geometry, designed against a ~1556px-wide stage. Card size,
+  // ring radius and perspective are all scaled by one shared factor below —
+  // scaling them together keeps the projection similar, so the ring just
+  // gets smaller rather than distorting. Previously these were fixed at
+  // 440/650/2400, which needs 1556px of room; the section is at most 1440,
+  // so the two side cards were being sliced off flat by its hard edge.
+  var BASE_CARD_W = 440;
+  var BASE_RADIUS = 650;
+  var BASE_PERSPECTIVE = 2400;
+  var BASE_HALF_EXTENT = 778; // half-width the ring occupies at scale 1
 
   var cards = []; // {el, baseAngle} — used to cull cards on the far side of the ring each frame
 
@@ -36,14 +44,8 @@
     var project = PROJECTS[c];
     var card = document.createElement('div');
     card.className = 'carousel-card';
-    card.style.width = CARD_W + 'px';
-    card.style.height = CARD_H + 'px';
-    card.style.marginTop = (-CARD_H / 2) + 'px';
-    card.style.marginLeft = (-CARD_W / 2) + 'px';
     card.style.backgroundImage = 'url(' + project.image + ')';
-    card.style.backgroundSize = CARD_W + 'px ' + CARD_H + 'px';
     var baseAngle = c * RING_ANGLE;
-    card.style.transform = 'rotateY(' + baseAngle + 'deg) translateZ(' + RING_RADIUS + 'px)';
     cards.push({ el: card, baseAngle: baseAngle });
 
     var overlay = document.createElement('div');
@@ -59,6 +61,45 @@
     stage.appendChild(card);
   }
 
+  // Size the ring to the space the section actually has. Called on load and
+  // on resize, so the carousel stays whole from a 900px tablet up to 1440+.
+  function layout() {
+    var stageW = container.clientWidth;
+    if (!stageW) return;
+    // Let the outermost cards run ~12% past the frame, where the section's
+    // edge mask fades them out — that reads as the ring continuing offscreen
+    // instead of stopping at a cut line.
+    var scale = (stageW * 0.56) / BASE_HALF_EXTENT;
+    scale = Math.max(0.4, Math.min(1, scale));
+
+    var cardW = BASE_CARD_W * scale;
+    var cardH = cardW / IMAGE_ASPECT;
+    var radius = BASE_RADIUS * scale;
+
+    container.style.perspective = (BASE_PERSPECTIVE * scale) + 'px';
+    // Front card sits closest to the camera, so it is magnified the most;
+    // the section has to be tall enough for it at that size.
+    var frontMag = BASE_PERSPECTIVE / (BASE_PERSPECTIVE - BASE_RADIUS);
+    container.style.height = Math.round(cardH * frontMag + 70) + 'px';
+
+    for (var i = 0; i < cards.length; i++) {
+      var el = cards[i].el;
+      el.style.width = cardW + 'px';
+      el.style.height = cardH + 'px';
+      el.style.marginTop = (-cardH / 2) + 'px';
+      el.style.marginLeft = (-cardW / 2) + 'px';
+      el.style.backgroundSize = cardW + 'px ' + cardH + 'px';
+      el.style.transform = 'rotateY(' + cards[i].baseAngle + 'deg) translateZ(' + radius + 'px)';
+    }
+  }
+  layout();
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(layout, 120);
+  });
+
   var IDLE_SPEED = 0.12;   // deg/frame — steady "Earth around the Sun" baseline drift
   var angle = 0;
   var speed = IDLE_SPEED;  // deg/frame — eases toward IDLE_SPEED when not dragging
@@ -69,8 +110,12 @@
   var DRAG_SENSITIVITY = 0.35; // degrees rotated per pixel dragged
   var SETTLE = 0.05;           // how fast speed eases back toward IDLE_SPEED after a drag
 
+  // touch-action lives in CSS as `pan-y`: horizontal drags spin the ring,
+  // vertical ones still scroll the page. (It used to be set to `none` here,
+  // which would trap vertical scrolling over the whole section on touch.)
+  // When the browser claims a vertical pan it fires pointercancel, which
+  // endDrag already handles.
   container.style.cursor = 'grab';
-  container.style.touchAction = 'none';
 
   function normalizeAngle(a) {
     a = a % 360;
@@ -134,11 +179,56 @@
   container.addEventListener('pointerleave', endDrag);
 })();
 
+// Mobile navigation — the five nav items don't fit a phone header, so below
+// 900px they live in a panel behind the toggle. Closes on Escape, on an
+// outside click, on picking a link, and on growing back to desktop width.
+(function () {
+  var toggle = document.getElementById('nav-toggle');
+  var nav = document.getElementById('site-nav');
+  if (!toggle || !nav) return;
+
+  function setOpen(open) {
+    nav.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+
+  toggle.addEventListener('click', function (e) {
+    e.stopPropagation();
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  nav.addEventListener('click', function (e) {
+    if (e.target.closest('a')) setOpen(false);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!nav.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  // Leaving mobile with the panel open would otherwise strand `is-open` on
+  // the desktop nav, where the class means nothing but the state lies.
+  var desktop = window.matchMedia('(min-width: 901px)');
+  var onChange = function (e) { if (e.matches) setOpen(false); };
+  if (desktop.addEventListener) desktop.addEventListener('change', onChange);
+  else if (desktop.addListener) desktop.addListener(onChange);
+})();
+
 // Services grid — magnetic tilt: each card tilts in 3D toward the cursor,
 // like tilting a photo in your hand, and eases back flat on mouse-leave.
 (function () {
   var cards = document.querySelectorAll('.svc-card');
   if (!cards.length) return;
+  // Touch devices fire a single mousemove on tap and never a mouseleave, so
+  // the tapped card would stay stuck mid-tilt. Pointer-only.
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
   var MAX_TILT = 9; // degrees at the card's edge
 
