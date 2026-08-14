@@ -25,6 +25,71 @@
    position:sticky header, which an overflow:hidden ancestor would break. */
 body { overflow-x: clip; }
 
+/* The width/height attributes on these images exist to reserve space while
+   they load. But those attributes are also presentational hints, so an image
+   styled `width:100%` with no height would be pinned to the literal attribute
+   height and stretched — fig-product-tote rendered 1278x925 instead of
+   1278x738. Pairing them with height:auto is what makes the attributes
+   reserve the right box instead of forcing the wrong one. Images that set
+   their own height inline (object-fit:cover crops) are unaffected: inline
+   styles outrank this rule. */
+img[width][height] { height: auto; }
+
+/* ---- Image height ceiling -------------------------------------------------
+   No single photograph should be taller than the screen it is viewed on.
+   The portrait sources here (1502x2000) run full width, so on a 1440 desktop
+   parman-artwall-wide rendered 1280x1704 — 1.9 screens of scrolling for one
+   picture, which reads as a mistake rather than as emphasis.
+
+   Fit, don't crop. Cropping a 3:4 portrait down to a letterbox cuts the
+   subject's head off — verified, it did exactly that to the standing figure
+   in parman-artwall-wide. Instead the image keeps its own aspect and shrinks
+   to fit the height budget: `width:auto` lets the intrinsic ratio drive,
+   `max-width:100%` still lets landscape shots fill the column as before, and
+   only the tall ones pull in and centre.
+
+   Scoped to images set to fill their container, so fixed-width art (logos,
+   device crops) is untouched. The :not(max-width) guard matters: the logos
+   declare their own inline max-width, and inline beats a stylesheet — so
+   `width:auto` would resolve against THAT cap instead of the container and
+   push a 420px lockup out of a 310px cell. Every image carrying an inline
+   max-width here is small art that is never too tall anyway.
+
+   svh where supported: on phones vh measures the area behind the browser
+   chrome, which is taller than the visible screen. */
+img[width][height][style*="width:100%"]:not([style*="height:"]):not([style*="max-width"]) {
+  width: auto !important;
+  max-width: 100%;
+  height: auto;
+  max-height: 84vh;
+  margin-inline: auto;
+}
+@supports (height: 1svh) {
+  img[width][height][style*="width:100%"]:not([style*="height:"]):not([style*="max-width"]) { max-height: 84svh; }
+}
+
+/* Images already composed as a fixed crop inside a grid cell keep their
+   cover behaviour; they only need the ceiling. */
+img[style*="object-fit:cover"] {
+  max-height: 84vh;
+  object-position: center 38%;
+}
+
+/* Device mockups are the one case where clipping IS the design: they rise
+   out of a coloured card and are cut off at its bottom edge (hence the
+   top-only border-radius and the figure's overflow:hidden). Those stay full
+   width and anchor to the top, showing less of the scroll rather than
+   shrinking away from the card they sit in. */
+img[style*="border-radius:22px 22px 0 0"] {
+  width: 100% !important;
+  max-height: 58vh;
+  object-fit: cover;
+  object-position: top center;
+}
+@supports (height: 1svh) {
+  img[style*="border-radius:22px 22px 0 0"] { max-height: 58svh; }
+}
+
 /* Tap targets: these links measured 16-23px tall, under the 24px minimum.
    Padding buys the height without moving anything visually. Applies at all
    widths — a pointer target is undersized on a desktop too. */
