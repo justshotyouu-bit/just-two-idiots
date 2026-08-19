@@ -291,24 +291,13 @@
   nodes.forEach(function (n) { io.observe(n); });
 })();
 
-// Pitch band — fires the wordmark's letter entrance the first time the
-// section is seen, and types the rotating word in the sub-line on a loop.
+// Pitch band — types the rotating word in the sub-line on a loop.
+// (This used to also flag the section `is-visible` to stagger a wordmark's
+// letters in; the wordmark was replaced by the phone, so that class had no
+// CSS left to match and has been dropped.)
 (function () {
   var section = document.getElementById('pitch');
   if (!section) return;
-
-  // Trigger the staggered letter entrance once, on first sight.
-  var reveal = function () { section.classList.add('is-visible'); };
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { reveal(); io.disconnect(); }
-      });
-    }, { threshold: 0.2 });
-    io.observe(section);
-  } else {
-    reveal();
-  }
 
   var slot = section.querySelector('.jti-type-word');
   if (!slot) return;
