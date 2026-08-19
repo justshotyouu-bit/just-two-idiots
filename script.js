@@ -178,46 +178,47 @@
   container.addEventListener('pointerleave', endDrag);
 })();
 
-// Mobile navigation — the five nav items don't fit a phone header, so below
-// 900px they live in a panel behind the toggle. Closes on Escape, on an
-// outside click, on picking a link, and on growing back to desktop width.
+// Floating header — firms up its glass once the reader leaves the top, and
+// marks whichever section they are actually in. Only two links to track, so
+// this is a plain position check rather than an observer per section.
 (function () {
-  var toggle = document.getElementById('nav-toggle');
-  var nav = document.getElementById('site-nav');
-  if (!toggle || !nav) return;
+  var header = document.getElementById('site-header');
+  if (!header) return;
 
-  function setOpen(open) {
-    nav.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  var links = Array.prototype.slice.call(header.querySelectorAll('.nav-link[data-spy]'));
+  var targets = links.map(function (link) {
+    return { link: link, el: document.getElementById(link.getAttribute('data-spy')) };
+  }).filter(function (t) { return t.el; });
+
+  var ticking = false;
+  var current = null;
+
+  function update() {
+    ticking = false;
+    header.classList.toggle('is-scrolled', window.pageYOffset > 12);
+
+    // "In" a section means its top has passed just under the bar and its
+    // bottom hasn't yet — the last one matching wins, so overlapping
+    // sections resolve to the lower (more recently entered) one.
+    var line = window.pageYOffset + 120;
+    var active = null;
+    for (var i = 0; i < targets.length; i++) {
+      var r = targets[i].el.getBoundingClientRect();
+      var top = r.top + window.pageYOffset;
+      if (line >= top && line < top + r.height) active = targets[i].link;
+    }
+    if (active !== current) {
+      links.forEach(function (l) { l.classList.toggle('is-current', l === active); });
+      current = active;
+    }
   }
 
-  toggle.addEventListener('click', function (e) {
-    e.stopPropagation();
-    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
-  });
-
-  nav.addEventListener('click', function (e) {
-    if (e.target.closest('a')) setOpen(false);
-  });
-
-  document.addEventListener('click', function (e) {
-    if (!nav.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
-      setOpen(false);
-      toggle.focus();
-    }
-  });
-
-  // Leaving mobile with the panel open would otherwise strand `is-open` on
-  // the desktop nav, where the class means nothing but the state lies.
-  var desktop = window.matchMedia('(min-width: 901px)');
-  var onChange = function (e) { if (e.matches) setOpen(false); };
-  if (desktop.addEventListener) desktop.addEventListener('change', onChange);
-  else if (desktop.addListener) desktop.addListener(onChange);
+  function onScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
 })();
 
 // Services deck — the stacking itself is pure CSS (position:sticky at
