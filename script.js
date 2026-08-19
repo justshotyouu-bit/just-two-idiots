@@ -220,33 +220,59 @@
   else if (desktop.addListener) desktop.addListener(onChange);
 })();
 
-// Services grid — magnetic tilt: each card tilts in 3D toward the cursor,
-// like tilting a photo in your hand, and eases back flat on mouse-leave.
+// Services deck — the stacking itself is pure CSS (position:sticky at
+// stepped top offsets, see style.css). This only adds depth to it: once a
+// card starts being covered by the next one it eases back and dims, so the
+// pile reads as receding layers rather than flat overlaps.
 (function () {
-  var cards = document.querySelectorAll('.svc-card');
-  if (!cards.length) return;
-  // Touch devices fire a single mousemove on tap and never a mouseleave, so
-  // the tapped card would stay stuck mid-tilt. Pointer-only.
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.svc-panel'));
+  if (panels.length < 2) return;
+  // Below 900px the deck falls back to a plain stacked list, and reduced
+  // motion turns it off entirely — leave the cards untouched in both cases.
+  var stacked = window.matchMedia('(min-width: 901px)');
+  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
 
-  var MAX_TILT = 9; // degrees at the card's edge
+  var MAX_SCALE_DROP = 0.06; // how far a fully covered card recedes
+  var MAX_DIM = 0.26;        // how dark a fully covered card goes
+  var ticking = false;
 
-  cards.forEach(function (card) {
-    card.addEventListener('mousemove', function (e) {
-      var rect = card.getBoundingClientRect();
-      var px = (e.clientX - rect.left) / rect.width;
-      var py = (e.clientY - rect.top) / rect.height;
-      var rotateY = (px - 0.5) * MAX_TILT * 2;
-      var rotateX = (0.5 - py) * MAX_TILT * 2;
-      card.style.transition = 'transform 0.1s ease-out, box-shadow 0.6s ease';
-      card.style.transform = 'perspective(900px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg) translateY(-6px) scale(1.02)';
+  function clear() {
+    panels.forEach(function (p) {
+      p.style.transform = '';
+      var v = p.querySelector('.svc-panel-veil');
+      if (v) v.style.opacity = '0';
     });
+  }
 
-    card.addEventListener('mouseleave', function () {
-      card.style.transition = 'transform 0.6s cubic-bezier(.16,1,.3,1), box-shadow 0.6s ease';
-      card.style.transform = '';
-    });
-  });
+  function update() {
+    ticking = false;
+    if (!stacked.matches || !motionOK.matches) return;
+    for (var i = 0; i < panels.length; i++) {
+      var panel = panels[i];
+      var veil = panel.querySelector('.svc-panel-veil');
+      var covered = 0;
+      if (i < panels.length - 1) {
+        var top = panel.getBoundingClientRect().top;
+        var nextTop = panels[i + 1].getBoundingClientRect().top;
+        var h = panel.offsetHeight || 1;
+        // How far the next card has travelled up across this one, 0..1.
+        covered = (h - (nextTop - top)) / h;
+        covered = covered < 0 ? 0 : covered > 1 ? 1 : covered;
+      }
+      panel.style.transform = 'scale(' + (1 - covered * MAX_SCALE_DROP).toFixed(4) + ')';
+      if (veil) veil.style.opacity = (covered * MAX_DIM).toFixed(3);
+    }
+  }
+
+  function onScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { clear(); onScroll(); });
+  if (stacked.addEventListener) stacked.addEventListener('change', function () { clear(); onScroll(); });
+  else if (stacked.addListener) stacked.addListener(function () { clear(); onScroll(); });
+  update();
 })();
 
 // "Who we are" — fades the section up (and sweeps its highlighted phrases

@@ -337,21 +337,114 @@ a:hover { color: #C97A1E; }
   50% { transform: translateY(-9px) rotate(-4deg); }
 }
 
-/* Services grid — magnetic tilt on hover (see script.js for the
-   mouse-tracking rotation; this handles the resting state + arrow flourish) */
-.svc-card {
-  border-radius: 16px;
-  transform: perspective(900px);
-  transition: transform 0.6s cubic-bezier(.16,1,.3,1), box-shadow 0.6s ease;
+/* Services — a deck of full-width cards that stack as you scroll.
+   Each panel pins at a slightly lower top offset than the one before it, so
+   as the page scrolls the next card slides up over the last and leaves a thin
+   coloured sliver of it at the top — the eight end up as a layered pile.
+   The stacking is pure CSS; script.js only adds the depth (scale + dim) on
+   cards that have been covered, so this still works with JS off. */
+.svc-section {
+  padding-bottom: clamp(72px, 10vw, 120px);
+  border-top: 1px solid #E7E5E0;
+  padding-top: clamp(56px, 8vw, 80px);
+  /* Deliberately no overflow clipping here — it would break position:sticky. */
 }
-.svc-card:hover {
-  box-shadow: 0 34px 60px -24px rgba(0,0,0,0.3);
+.svc-stack {
+  --stack-top: 84px;   /* where the first card pins */
+  --sliver: 14px;      /* strip of each stacked card left visible */
+  position: relative;
 }
-.svc-arrow {
-  transition: transform 0.4s cubic-bezier(.16,1,.3,1);
+.svc-panel {
+  position: sticky;
+  top: calc(var(--stack-top) + var(--i) * var(--sliver));
+  margin-bottom: 22px;
+  border-radius: 28px;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+  transform-origin: 50% 0;
+  box-shadow: 0 -1px 0 rgba(255,255,255,0.14) inset, 0 26px 50px -30px rgba(20,14,8,0.5);
 }
-.svc-card:hover .svc-arrow {
-  transform: rotate(45deg) scale(1.15);
+.svc-panel:last-child { margin-bottom: 0; }
+/* Dark wash that fades in as the next card covers this one (set by script.js) */
+.svc-panel-veil {
+  position: absolute;
+  inset: 0;
+  background: var(--veil);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.svc-panel-inner {
+  position: relative;
+  z-index: 1;
+  min-height: 392px;
+  padding: clamp(28px, 3.4vw, 40px) clamp(26px, 3.8vw, 48px) clamp(30px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(28px, 3.4vw, 40px);
+}
+.svc-panel-head { display: flex; align-items: center; gap: 18px; }
+.svc-panel-mark { display: flex; flex: 0 0 auto; }
+.svc-panel-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(26px, 3.2vw, 40px);
+  letter-spacing: -0.015em;
+  line-height: 1;
+  margin: 0;
+}
+.svc-panel-num {
+  margin-left: auto;
+  font-family: 'Switzer', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  opacity: 0.5;
+}
+.svc-panel-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(26px, 3.6vw, 48px);
+  flex-wrap: wrap;
+}
+.svc-panel-copy { max-width: 62ch; }
+.svc-panel-desc {
+  font-size: 16px;
+  line-height: 1.65;
+  margin: 0 0 20px;
+  opacity: 0.85;
+}
+.svc-panel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: inherit;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 3px;
+  min-height: 24px;
+}
+.svc-panel-link:hover { color: inherit; opacity: 0.7; }
+.svc-panel-arrow { transition: transform 0.3s cubic-bezier(.16,1,.3,1); }
+.svc-panel-link:hover .svc-panel-arrow { transform: translate(3px, -3px); }
+.svc-panel-tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+}
+.svc-panel-tags span {
+  font-size: 13px;
+  padding: 8px 16px;
+  border: 1px solid currentColor;
+  border-radius: 100px;
+  white-space: nowrap;
+  opacity: 0.78;
 }
 
 /* ---- Responsive layer ---------------------------------------------------- */
@@ -414,11 +507,27 @@ a:hover { color: #C97A1E; }
   }
   .work-hint-pointer { display: none; }
   .work-hint-touch { display: inline; }
+
+  /* A pinned deck needs more viewport height than a phone has — eight cards
+     would sit clipped under each other. Below this it reads as a plain
+     stacked list instead. */
+  .svc-panel {
+    position: relative;
+    top: auto;
+    transform: none !important;
+  }
+  .svc-panel-veil { display: none; }
+  .svc-panel-inner { min-height: 0; }
+  .svc-panel-body { align-items: flex-start; }
+  .svc-panel-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .site-nav { transition: none; }
   .work-rail { scroll-behavior: auto; }
+  /* Scroll-driven stacking is motion by definition — fall back to the list. */
+  .svc-panel { position: relative; top: auto; transform: none !important; }
+  .svc-panel-veil { display: none; }
 }
 
 /* ---- Who we are / the team ------------------------------------------------
