@@ -269,6 +269,11 @@ a:hover { color: #C97A1E; }
   background: linear-gradient(115deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 76%, rgba(255,255,255,0.1) 100%);
   mix-blend-mode: screen;
 }
+/* Caption metrics are all in em off the card's own font-size, which script.js
+   sets from the ring's scale — so the label shrinks with the card instead of
+   keeping its full-size 16/12px on a phone, where that wrapped the category
+   onto a second line and crowded the name. At scale 1 these resolve to exactly
+   the 18/20px padding and 16/12px type they replace. */
 .carousel-card-caption {
   position: absolute;
   left: 0;
@@ -276,19 +281,19 @@ a:hover { color: #C97A1E; }
   bottom: 0;
   border-radius: 0 0 30px 30px;
   pointer-events: none;
-  padding: 18px 20px;
+  padding: 1.125em 1.25em;
   background: linear-gradient(transparent, rgba(0,0,0,0.65));
 }
 .carousel-card-caption-name {
   font-family: 'Switzer', sans-serif;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1em;
   color: #fff;
 }
 .carousel-card-caption-category {
-  font-size: 12px;
+  font-size: 0.75em;
   color: rgba(255,255,255,0.75);
-  margin-top: 2px;
+  margin-top: 0.125em;
 }
 
 /* ---- "How we work" — four animated cards on a right-to-left rail ---------
@@ -862,11 +867,17 @@ a:hover { color: #C97A1E; }
 @media (max-width: 900px) {
   :root { --gutter: 24px; }
 
-  /* The ring is a pointer-driven component and the Selected work rail below
-     covers the same ground on touch, so it stays out here. Its caption goes
-     with it — it used to sit alone telling people to drag nothing. */
-  .carousel-section,
-  .carousel-caption { display: none; }
+  /* The ring runs on phones too. It is not pointer-only: `touch-action: pan-y`
+     already lets a horizontal swipe spin it while a vertical one still scrolls
+     the page, and script.js grows the front card's share of the width so it
+     stays legible down here. Pull the edge fade almost to the frame — at that
+     size the 11% inset was biting into the front card's own corners rather
+     than only the neighbours running off either side. */
+  .carousel-section {
+    margin-bottom: 72px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+  }
 
   /* Flat swipeable cards: the receding fan reads as a pile of half-hidden
      cards on a narrow screen, and its hover pop is unreachable on touch. */

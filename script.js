@@ -35,7 +35,24 @@
   var BASE_CARD_W = 440;
   var BASE_RADIUS = 650;
   var BASE_PERSPECTIVE = 2400;
-  var BASE_HALF_EXTENT = 778; // half-width the ring occupies at scale 1
+  // The front card sits closest to the camera, so perspective magnifies it by
+  // this much. Both the scale below and the section's height derive from it.
+  var FRONT_MAG = BASE_PERSPECTIVE / (BASE_PERSPECTIVE - BASE_RADIUS);
+  var BREAKPOINT = 900; // where the stylesheet's narrow rules take over too
+
+  // How much of the stage the magnified front card should cover, turned into
+  // the single factor everything scales by. From the breakpoint up it is 43%,
+  // which is exactly what the old fit-the-whole-ring rule worked out to and
+  // leaves both neighbours in frame either side. A phone has no room for that
+  // ring — fitting it end to end would leave a postage-stamp front card — so
+  // the share grows as the screen narrows and the neighbours run off into the
+  // section's edge mask instead. The two rules meet at the breakpoint, so a
+  // resize crosses over with no jump.
+  function ringScale(stageW) {
+    var frontShare = 0.434;
+    if (stageW < BREAKPOINT) frontShare += 0.366 * Math.min(1, (BREAKPOINT - stageW) / 520);
+    return Math.min(1, (stageW * frontShare) / (BASE_CARD_W * FRONT_MAG));
+  }
 
   var cards = []; // {el, baseAngle} — used to cull cards on the far side of the ring each frame
 
@@ -61,28 +78,36 @@
   }
 
   // Size the ring to the space the section actually has. Called on load and
-  // on resize, so the carousel stays whole from a 900px tablet up to 1440+.
+  // on resize, so the carousel stays whole from a 320px phone up to 1440+.
   function layout() {
     var stageW = container.clientWidth;
     if (!stageW) return;
-    // Let the outermost cards run ~12% past the frame, where the section's
-    // edge mask fades them out — that reads as the ring continuing offscreen
-    // instead of stopping at a cut line.
-    var scale = (stageW * 0.56) / BASE_HALF_EXTENT;
-    scale = Math.max(0.4, Math.min(1, scale));
+
+    // Card, radius and perspective all scale by one shared factor, which keeps
+    // the projection similar so the ring just gets smaller rather than
+    // distorting.
+    var scale = ringScale(stageW);
 
     var cardW = BASE_CARD_W * scale;
     var cardH = cardW / IMAGE_ASPECT;
     var radius = BASE_RADIUS * scale;
 
     container.style.perspective = (BASE_PERSPECTIVE * scale) + 'px';
-    // Front card sits closest to the camera, so it is magnified the most;
-    // the section has to be tall enough for it at that size.
-    var frontMag = BASE_PERSPECTIVE / (BASE_PERSPECTIVE - BASE_RADIUS);
-    container.style.height = Math.round(cardH * frontMag + 70) + 'px';
+    // The section has to be tall enough for the front card at magnified size.
+    container.style.height = Math.round(cardH * FRONT_MAG + 70) + 'px';
+
+    // The caption is sized in em, so this one declaration scales the whole
+    // label. Measured against the card at the breakpoint and clamped to 1, so
+    // from there up it holds its designed 16px — the ring is unchanged on
+    // desktop — and only ever shrinks below that, which is what keeps the
+    // category off a second line on a phone. Floored well above the card's own
+    // ratio: a 320px screen takes the card to under half its desktop size, and
+    // half-size type is smaller than it needs to be to stay readable.
+    var typeScale = Math.max(0.72, Math.min(1, scale / ringScale(BREAKPOINT)));
 
     for (var i = 0; i < cards.length; i++) {
       var el = cards[i].el;
+      el.style.fontSize = (16 * typeScale) + 'px';
       el.style.width = cardW + 'px';
       el.style.height = cardH + 'px';
       el.style.marginTop = (-cardH / 2) + 'px';
