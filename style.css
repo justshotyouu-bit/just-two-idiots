@@ -858,6 +858,217 @@ a:hover { color: #C97A1E; }
   }
 }
 
+/* ---- Closing CTA — brand card + glass link panel -------------------------
+   Two cards on a warm band: a solid brand card carrying the wordmark, and a
+   glass panel holding the site's links. The glass is real rather than a flat
+   white — the three blurred blobs sit behind it in the same stacking context
+   so there is actually something for it to refract. Without them the panel
+   would just read as a grey rectangle. */
+.cta {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  margin-bottom: clamp(24px, 4vw, 48px);
+  padding: clamp(40px, 6vw, 76px) clamp(18px, 3.4vw, 48px) clamp(26px, 3.4vw, 40px);
+  background: linear-gradient(180deg, #F7F5F0 0%, #F0EDE6 100%);
+  border: 1px solid #E7E5E0;
+}
+.cta-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(74px);
+  pointer-events: none;
+  z-index: 0;
+}
+.cta-blob-a { width: 400px; height: 400px; background: rgba(242,145,58,0.30); top: 30%; left: 16%; }
+.cta-blob-b { width: 360px; height: 360px; background: rgba(201,122,30,0.18); top: 40%; right: 2%; }
+.cta-blob-c { width: 380px; height: 380px; background: rgba(255,255,255,0.95); top: 12%; left: 46%; }
+
+.cta-head {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto clamp(30px, 4.4vw, 52px);
+}
+.cta-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  color: #0A0A0A;
+}
+.cta-sub { font-size: 17px; line-height: 1.55; color: #4A4A46; margin: 0; }
+
+.cta-cards {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 2.14fr);
+  gap: 16px;
+}
+
+/* Left — solid brand card. Logo top, tagline bottom, as in the reference. */
+.cta-brand {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  min-height: 268px;
+  border-radius: 24px;
+  padding: clamp(22px, 2.2vw, 30px);
+  background: linear-gradient(152deg, #F2913A 0%, #DE7C1D 48%, #BB670F 100%);
+  box-shadow:
+    0 22px 48px -22px rgba(150, 84, 8, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+}
+/* A single soft highlight so the flat fill reads as a lit surface. */
+.cta-brand::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  top: -120px;
+  right: -90px;
+  background: radial-gradient(circle, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0) 70%);
+  pointer-events: none;
+}
+.cta-brand-logo {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(202px, 78%);
+  height: auto;
+}
+.cta-brand-tag {
+  position: relative;
+  z-index: 1;
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(17px, 1.45vw, 21px);
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+  margin: 0;
+}
+/* Second line drops back, the way the reference greys its own sub-line. */
+.cta-brand-tag span { display: block; color: rgba(255, 255, 255, 0.66); }
+
+/* Right — the glass panel. */
+.cta-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(26px, 3vw, 40px);
+  border-radius: 24px;
+  padding: clamp(24px, 2.6vw, 36px);
+  background: rgba(255, 255, 255, 0.54);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  backdrop-filter: blur(30px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 24px 60px -28px rgba(24, 18, 10, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+.cta-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.cta-col-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #8A8A85;
+  margin: 0 0 12px;
+}
+.cta-col a {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #0A0A0A;
+  padding: 6px 0;
+}
+.cta-col a:hover { color: #C97A1E; }
+
+.cta-panel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: clamp(18px, 2vw, 24px);
+  border-top: 1px solid rgba(10, 10, 10, 0.09);
+}
+.cta-legal { font-size: 13px; color: #8A8A85; }
+.cta-book {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #0A0A0A;
+  color: #FAFAF8;
+  transition: background .25s ease, color .25s ease;
+}
+.cta-book:hover { background: #FFFFFF; color: #0A0A0A; }
+
+/* The oversized number is decoration — the real control is the pill sitting
+   over it, which is why the text is aria-hidden and the button carries the
+   number. */
+.cta-ghost {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(22px, 3vw, 40px);
+  text-align: center;
+}
+.cta-ghost-text {
+  display: block;
+  font-family: 'Switzer', sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 8vw, 120px);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  color: rgba(10, 10, 10, 0.085);
+  user-select: none;
+}
+.cta-copy-btn {
+  position: absolute;
+  right: 2%;
+  bottom: -6%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 100px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: #FAFAF8;
+  background: rgba(10, 10, 10, 0.92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 26px -12px rgba(24, 18, 10, 0.55);
+  cursor: pointer;
+  transform: rotate(-4deg);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.cta-copy-btn:hover { transform: rotate(-4deg) translateY(-2px); box-shadow: 0 16px 30px -12px rgba(24,18,10,0.6); }
+.cta-copy-icon {
+  width: 12px;
+  height: 12px;
+  border: 1.6px solid currentColor;
+  border-radius: 3px;
+  box-shadow: 3px -3px 0 -1.6px rgba(10,10,10,0.92), 3px -3px 0 0 currentColor;
+}
+
 /* ---- Responsive layer ---------------------------------------------------- */
 
 @media (max-width: 1100px) {
@@ -866,6 +1077,17 @@ a:hover { color: #C97A1E; }
 
 @media (max-width: 900px) {
   :root { --gutter: 24px; }
+
+  /* Side by side needs width the phone hasn't got — the brand card sits above
+     the panel and gives up its min-height so it wraps its own content. */
+  .cta-cards { grid-template-columns: minmax(0, 1fr); }
+  .cta-brand { min-height: 0; gap: 26px; }
+  .cta-brand-logo { width: min(202px, 56%); }
+  /* Stacked, the band is far taller and the blobs — positioned in % — bunch up
+     directly behind the panel and stain it peach. Same field, turned down. */
+  .cta-blob { filter: blur(96px); }
+  .cta-blob-a { opacity: 0.5; }
+  .cta-blob-b { opacity: 0.45; }
 
   /* The ring runs on phones too. It is not pointer-only: `touch-action: pan-y`
      already lets a horizontal swipe spin it while a vertical one still scrolls
@@ -908,6 +1130,16 @@ a:hover { color: #C97A1E; }
   .svc-panel-inner { min-height: 0; }
   .svc-panel-body { align-items: flex-start; }
   .svc-panel-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+}
+
+@media (max-width: 620px) {
+  /* Three columns leave ~70px each here, which wraps every second label. */
+  .cta-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+  /* Rotated and overlapping stops working once the pill is nearly as wide as
+     the number it sits on — it goes back into the flow instead. */
+  .cta-copy-btn { position: static; transform: none; margin-top: 14px; }
+  .cta-copy-btn:hover { transform: translateY(-2px); }
+  .cta-panel-foot { flex-direction: column; align-items: flex-start; gap: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -999,13 +1231,15 @@ a:hover { color: #C97A1E; }
   .about-team { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 }
 
-/* Inline text links carry a 24px minimum target as well — the footer and
-   contact links measured 17-19px tall, which is under WCAG 2.5.8.
-   Scoped deliberately: a blanket `#work a` would also catch .work-card,
-   and making that a flex container collapses its inner image div to zero
-   width. The "View all" link meets 24px through its own padding. */
-footer a,
-#contact a { display: inline-flex; align-items: center; min-height: 24px; }
+/* Inline text links carry a 24px minimum target as well (WCAG 2.5.8). This
+   used to force `display:inline-flex` on every link in the footer and the
+   contact block, which is how those 17-19px links reached 24px. The footer is
+   gone and the closing CTA's links clear 24px on their own padding, so that
+   declaration now only did damage: an id selector, it outranked `.cta-col a`
+   and laid the link columns out on one line. Kept as a floor rather than
+   dropped, so restyling the type can't quietly reintroduce a small target. */
+.cta-col a,
+.cta-panel-foot a { min-height: 24px; }
 
 /* Case-study pages (work/*.html) — "Next project" arrow nudge on hover */
 .cs-next-arrow { display: inline-block; transition: transform 0.3s cubic-bezier(.16,1,.3,1); }

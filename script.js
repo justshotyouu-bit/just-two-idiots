@@ -531,3 +531,34 @@
   window.addEventListener('resize', onScroll);
   update();
 })();
+// Closing CTA — the pill over the oversized number copies it to the clipboard.
+// The label reports the result in place; there is no toast system on this page
+// and a silent success is indistinguishable from a dead button.
+(function () {
+  var btn = document.getElementById('cta-copy');
+  if (!btn) return;
+  var label = btn.querySelector('.cta-copy-label');
+  var original = label ? label.textContent : '';
+  var timer;
+
+  function report(text) {
+    if (!label) return;
+    label.textContent = text;
+    clearTimeout(timer);
+    timer = setTimeout(function () { label.textContent = original; }, 1800);
+  }
+
+  btn.addEventListener('click', function () {
+    var value = btn.getAttribute('data-copy') || '';
+    // writeText needs a secure context; on http:// it rejects rather than
+    // throwing, so both paths have to land somewhere the reader can see.
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(value).then(
+        function () { report('Copied'); },
+        function () { report(value); }
+      );
+    } else {
+      report(value);
+    }
+  });
+})();
