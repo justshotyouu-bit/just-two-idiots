@@ -759,6 +759,59 @@ a:hover { color: #C97A1E; }
 .jti-cta-arrow { transition: transform .3s cubic-bezier(.16,1,.3,1); }
 .jti-cta:hover .jti-cta-arrow { transform: translate(3px, -3px); }
 
+
+/* ---- Showreel — the card opens into full screen -------------------------
+   A tall runway with a pinned viewport inside it. As the reader scrolls, a
+   card-shaped window in the middle widens to fill the screen while the video
+   inside eases back from a slight zoom, and the page colour darkens to meet
+   the reel's black. Driven by script.js; the clip-path/scale below are just
+   the starting values, so nothing looks broken before it runs.
+
+   The breakout is the standard centred-container escape: .wrap caps at
+   1440px, and this needs the full viewport. body already has overflow-x:clip,
+   so the scrollbar's width can't turn 100vw into a sideways scroll. */
+.reel-section {
+  position: relative;
+  height: 260vh;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+.reel-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #FAFAF8;
+}
+.reel-stage {
+  position: absolute;
+  inset: 0;
+  /* Starting frame: a card-sized window, replaced each  frame by script.js. */
+  clip-path: inset(30% 34% round 26px);
+}
+.reel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.16);
+  transform-origin: center;
+}
+
+/* No scrub without motion: just the reel, sized to fit, in normal flow. */
+@media (prefers-reduced-motion: reduce) {
+  .reel-section { height: auto; }
+  .reel-sticky { position: static; height: auto; background: #06070A; }
+  .reel-stage { position: relative; inset: auto; clip-path: none; }
+  .reel-video {
+    aspect-ratio: 1;
+    max-height: 80vh;
+    margin: 0 auto;
+    transform: none;
+    object-fit: contain;
+  }
+}
+
 /* ---- Responsive layer ---------------------------------------------------- */
 
 @media (max-width: 1100px) {

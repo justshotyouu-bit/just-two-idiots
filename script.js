@@ -410,3 +410,109 @@
   }
   requestAnimationFrame(frame);
 })();
+
+// Showreel — the "Embedded in your workflow" card opening into full screen.
+// A card-sized window in the middle of a pinned viewport widens to fill it
+// as the reader scrolls, while the video inside eases back from a slight
+// zoom (that offset between frame and content is what reads as parallax)
+// and the surrounding colour crosses from the page cream to the reel's black.
+(function () {
+  var section = document.getElementById('reel');
+  if (!section) return;
+  var sticky = section.querySelector('.reel-sticky');
+  var stage = section.querySelector('.reel-stage');
+  var video = section.querySelector('.reel-video');
+  if (!sticky || !stage || !video) return;
+
+  // 5MB of video has no business loading with the page — it only starts
+  // fetching once the reader is within a screen or two of it.
+  // Deliberately no video.load() here: two observers watch this same section
+  // and their callback order isn't guaranteed, so a load() could land after
+  // play() had already started and abort it (the video would freeze a second
+  // or so in). Raising preload is enough to begin fetching, and play() pulls
+  // down whatever it still needs on its own.
+  var started = false;
+  function ensureLoaded() {
+    if (started) return;
+    started = true;
+    video.preload = 'auto';
+  }
+
+  var shouldPlay = false;
+  function tryPlay() {
+    if (!shouldPlay) return;
+    var r = video.play();
+    if (r && r.catch) r.catch(function () {});   // autoplay refusal is fine
+  }
+  // If it wasn't buffered enough the first time, take the next chance.
+  video.addEventListener('canplay', tryPlay);
+  video.addEventListener('loadeddata', tryPlay);
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) ensureLoaded();
+    }, { rootMargin: '150% 0px' }).observe(section);
+
+    // Play only while it is actually on screen, so it isn't burning battery
+    // decoding frames nobody is looking at.
+    new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        ensureLoaded();
+        shouldPlay = true;
+        tryPlay();
+      } else {
+        shouldPlay = false;
+        if (!video.paused) video.pause();
+      }
+    }, { threshold: 0.05 }).observe(section);
+  } else {
+    ensureLoaded();
+    shouldPlay = true;
+    tryPlay();
+  }
+
+  if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+
+  var PAGE = [250, 250, 248];   // #FAFAF8, the page behind it
+  var REEL = [6, 7, 10];        // #06070A, to meet the reel's own black
+  var OPEN = 0.55;              // fraction of the runway spent opening
+  var ticking = false;
+
+  function update() {
+    ticking = false;
+    var travel = section.offsetHeight - window.innerHeight;
+    if (travel <= 0) return;
+
+    var p = -section.getBoundingClientRect().top / travel;
+    p = p < 0 ? 0 : p > 1 ? 1 : p;
+
+    var o = p / OPEN;
+    o = o < 0 ? 0 : o > 1 ? 1 : o;
+    var e = 1 - Math.pow(1 - o, 3);          // easeOutCubic — quick, then settles
+
+    var vw = window.innerWidth, vh = window.innerHeight;
+    // Opening frame is the same shape as a "How we work" card.
+    var cardW = Math.min(300, vw * 0.72);
+    var cardH = Math.min(cardW * 1.25, vh * 0.72);
+    var x = ((vw - cardW) / 2) * (1 - e);
+    var y = ((vh - cardH) / 2) * (1 - e);
+
+    stage.style.clipPath = 'inset(' + y.toFixed(1) + 'px ' + x.toFixed(1) + 'px round ' +
+      (26 * (1 - e)).toFixed(1) + 'px)';
+    // Content settles more slowly than the frame opens — the parallax.
+    video.style.transform = 'scale(' + (1 + 0.16 * (1 - e)).toFixed(4) + ')';
+
+    var c = Math.min(1, e * 1.5);
+    sticky.style.backgroundColor = 'rgb(' +
+      Math.round(PAGE[0] + (REEL[0] - PAGE[0]) * c) + ',' +
+      Math.round(PAGE[1] + (REEL[1] - PAGE[1]) * c) + ',' +
+      Math.round(PAGE[2] + (REEL[2] - PAGE[2]) * c) + ')';
+  }
+
+  function onScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
