@@ -289,3 +289,71 @@
   }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
   nodes.forEach(function (n) { io.observe(n); });
 })();
+
+// Pitch band — fires the wordmark's letter entrance the first time the
+// section is seen, and types the rotating word in the sub-line on a loop.
+(function () {
+  var section = document.getElementById('pitch');
+  if (!section) return;
+
+  // Trigger the staggered letter entrance once, on first sight.
+  var reveal = function () { section.classList.add('is-visible'); };
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { reveal(); io.disconnect(); }
+      });
+    }, { threshold: 0.2 });
+    io.observe(section);
+  } else {
+    reveal();
+  }
+
+  var slot = section.querySelector('.jti-type-word');
+  if (!slot) return;
+  // Reduced motion keeps the first word on screen rather than typing forever.
+  if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+
+  var WORDS = ['brand', 'website', 'app', 'packaging', 'campaign', 'identity'];
+  var TYPE_MS = 82, ERASE_MS = 42, HOLD_MS = 1500, GAP_MS = 320;
+  var wordIndex = 0, charCount = WORDS[0].length, erasing = true, timer = null;
+  var running = false;
+
+  function step() {
+    var word = WORDS[wordIndex];
+    slot.textContent = word.slice(0, charCount);
+
+    if (erasing) {
+      if (charCount === 0) {
+        erasing = false;
+        wordIndex = (wordIndex + 1) % WORDS.length;
+        timer = setTimeout(step, GAP_MS);
+      } else {
+        charCount--;
+        timer = setTimeout(step, ERASE_MS);
+      }
+    } else if (charCount === word.length) {
+      erasing = true;
+      timer = setTimeout(step, HOLD_MS);
+    } else {
+      charCount++;
+      timer = setTimeout(step, TYPE_MS);
+    }
+  }
+
+  // Only run while the band is actually on screen — no timer churn otherwise.
+  function setRunning(on) {
+    if (on === running) return;
+    running = on;
+    if (on) step();
+    else { clearTimeout(timer); timer = null; }
+  }
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      setRunning(entries[0].isIntersecting);
+    }, { threshold: 0.1 }).observe(section);
+  } else {
+    setRunning(true);
+  }
+})();
