@@ -561,3 +561,74 @@
     }
   });
 })();
+// Hero rotator — "Two idiots" stays put, the trade after it rolls over on a
+// timer. Phrases always enter from below and leave upward, so the motion reads
+// as one continuous roll rather than alternating direction.
+(function () {
+  var slot = document.getElementById('hero-rot-slot');
+  if (!slot) return;
+
+  var PHRASES = [
+    'mastering AI learning',
+    'crafting graphic worlds',
+    'running elite production',
+    'driving bold art direction',
+    'designing slick apps',
+    'engineering websites',
+    'building powerful brands',
+    'growing ambitious businesses',
+    'executing killer marketing',
+    'dropping fresh brand identities',
+    'creating scroll-stopping content',
+    'designing stunning packaging'
+  ];
+
+  var words = PHRASES.map(function (text) {
+    var el = document.createElement('span');
+    el.className = 'hero-rot-word';
+    el.textContent = text;
+    slot.appendChild(el);
+    return el;
+  });
+
+  var i = 0;
+  words[0].classList.add('is-current');
+
+  // The slot is width:0 until this runs. Widths come off the rendered spans,
+  // so they have to be re-taken once Switzer actually loads — measured against
+  // the fallback face they are wrong enough to clip the first phrase — and
+  // again on resize, since the font-size is a clamp() on viewport width.
+  function fit() { slot.style.width = words[i].offsetWidth + 'px'; }
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  else window.addEventListener('load', fit);
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(fit, 120);
+  });
+
+  // Rotating text is motion for its own sake — hold the first phrase instead.
+  if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+
+  var HOLD = 2600; // ms a phrase is readable before the next one starts
+
+  setInterval(function () {
+    var prev = words[i];
+    i = (i + 1) % words.length;
+    var next = words[i];
+
+    prev.classList.remove('is-current');
+    prev.classList.add('is-out');
+
+    // Snap the incoming phrase back below without animating it there, or it
+    // would slide down into place first and then rise again.
+    next.classList.add('no-anim');
+    next.classList.remove('is-out');
+    void next.offsetWidth;
+    next.classList.remove('no-anim');
+
+    next.classList.add('is-current');
+    slot.style.width = next.offsetWidth + 'px';
+  }, HOLD);
+})();
