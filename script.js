@@ -357,3 +357,56 @@
     setRunning(true);
   }
 })();
+
+// "How we work" rail — always travels right-to-left. A steady drift, plus
+// whatever the reader scrolls: scrolling either way pushes the rail further
+// left, so the cards behave as if gravity pulled them that way.
+// Falls back to the CSS keyframes (.hww-track.is-auto) if this never runs.
+(function () {
+  var track = document.querySelector('.hww-track');
+  if (!track) return;
+  if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+
+  var DRIFT = 26;        // px per second at rest
+  var SCROLL_PUSH = 0.5; // px of travel per px scrolled, either direction
+  var offset = 0;
+  var span = 0;          // width of one card set — where the loop repeats
+  var lastY = window.pageYOffset;
+  var lastT = 0;
+  var paused = false;
+
+  function measure() {
+    // Half the track is the duplicate set, so one set is where it wraps.
+    span = track.scrollWidth / 2;
+  }
+  measure();
+  if (!span) return;
+
+  // Take over from the CSS animation only now that we know we can drive it.
+  track.classList.remove('is-auto');
+
+  window.addEventListener('scroll', function () {
+    var y = window.pageYOffset;
+    offset += Math.abs(y - lastY) * SCROLL_PUSH;
+    lastY = y;
+  }, { passive: true });
+
+  track.addEventListener('mouseenter', function () { paused = true; });
+  track.addEventListener('mouseleave', function () { paused = false; });
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measure, 150);
+  });
+
+  function frame(t) {
+    var dt = lastT ? Math.min((t - lastT) / 1000, 0.05) : 0;
+    lastT = t;
+    if (!paused) offset += DRIFT * dt;
+    if (span) offset %= span;
+    track.style.transform = 'translateX(' + (-offset).toFixed(2) + 'px)';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();

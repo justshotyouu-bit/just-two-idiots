@@ -250,91 +250,156 @@ a:hover { color: #C97A1E; }
   margin-top: 2px;
 }
 
-/* "How we work" cards — small animated graphics standing in for real
-   photography/product shots, one per card. */
+/* ---- "How we work" — four animated cards on a right-to-left rail ---------
+   Card face is a flat sand panel with a looping graphic inside; the label and
+   copy sit underneath, like the reference. The rail's motion is driven by
+   script.js (a steady leftward drift that scrolling adds to), with the CSS
+   animation below as the no-JS fallback. */
+.hww-visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 20px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #EBE6DA;
+  display: grid;
+  place-items: center;
+}
+.hww-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 8px;
+  color: #0A0A0A;
+}
+.hww-label-ico { width: 17px; height: 17px; flex: 0 0 auto; color: #8A8A85; }
+.hww-desc { font-size: 14px; color: #5A5A56; line-height: 1.55; margin: 0; }
 
-/* Card 1: a simple mascot that bobs gently in place */
-.hw-mascot-wrap {
+/* Card 1 — the two of us, bobbing out of phase. */
+.hww-people { width: 88%; height: 88%; }
+/* Bobs the inner group only — the outer <g> keeps the figure's position. */
+.hww-person {
+  animation: hww-bob 3.4s ease-in-out infinite;
+  animation-delay: var(--d);
+}
+@keyframes hww-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+
+/* Card 2 — a deck of briefs; the front one drops away and the stack steps up. */
+.hww-visual--requests { background: #E7E2D6; }
+.hww-deck { position: relative; width: 74%; height: 78%; }
+.hww-req {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 16px 16px 14px;
+  border-radius: 16px;
+  background: #14110E;
+  color: #F6F2E9;
+  box-shadow: 0 18px 34px -20px rgba(20,17,14,0.85);
+  animation: hww-deal 13s cubic-bezier(.5,0,.3,1) infinite;
+  animation-delay: calc(var(--n) * -3.25s);
+}
+.hww-req-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  line-height: 1.25;
+  margin: 0;
+}
+.hww-req-body { font-size: 11px; line-height: 1.45; opacity: 0.62; margin: 0; }
+.hww-req-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+.hww-req-chips { display: flex; gap: 7px; }
+.hww-req-chips i {
+  width: 13px; height: 13px;
+  border-radius: 3px;
+  background: rgba(246,242,233,0.28);
+}
+.hww-req-bar { height: 3px; border-radius: 2px; background: #6FCF6B; }
+/* Four cards share one 13s clock, each a quarter out of phase. The one in
+   front is readable, then drops away downward; the rest wait stacked and
+   slightly higher, so their top edges peek out above it like a real pile. */
+@keyframes hww-deal {
+  0%,  20% { opacity: 1;    transform: translateY(0) scale(1);       z-index: 4; }
+  25%      { opacity: 0;    transform: translateY(16%) scale(0.97);  z-index: 4; }
+  26%      { opacity: 0.45; transform: translateY(-14%) scale(0.86); z-index: 1; }
+  50%      { opacity: 0.45; transform: translateY(-14%) scale(0.86); z-index: 1; }
+  70%      { opacity: 0.7;  transform: translateY(-9%) scale(0.91);  z-index: 2; }
+  90%      { opacity: 0.9;  transform: translateY(-4%) scale(0.96);  z-index: 3; }
+  100%     { opacity: 1;    transform: translateY(0) scale(1);       z-index: 4; }
+}
+
+/* Card 3 — a grid of dots; a few bloom into the brand mark, in sequence. */
+.hww-visual--speed { background: #EDE8DC; }
+.hww-grid {
+  width: 72%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15% 0;
+  place-items: center;
+}
+.hww-cell {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #C3BCAC;
+  display: grid;
+  place-items: center;
+}
+.hww-cell.is-mark { width: 20px; height: 20px; background: none; }
+.hww-mark {
   width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
+  fill: #E4703A;
+  animation: hww-bloom 5.5s ease-in-out infinite;
+  animation-delay: calc(var(--n) * 0.34s);
+}
+@keyframes hww-bloom {
+  0%, 62%, 100% { transform: scale(0.42) rotate(-18deg); opacity: 0.28; }
+  22%, 40%      { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.hww-cell.is-ring {
+  width: 18px; height: 18px;
+  background: none;
+  border: 1.6px solid #E4703A;
   position: relative;
 }
-.hw-mascot-wrap::after {
+.hww-cell.is-ring::after {
   content: "";
-  position: absolute;
-  bottom: 28%;
-  width: 84px; height: 14px;
+  width: 6px; height: 6px;
   border-radius: 50%;
-  background: rgba(10,10,10,0.12);
-  filter: blur(3px);
-  animation: hw-shadow 3.2s ease-in-out infinite;
+  background: #E4703A;
+  animation: hww-ping 5.5s ease-in-out infinite;
 }
-.hw-mascot { position: relative; animation: hw-bob 3.2s ease-in-out infinite; }
-@keyframes hw-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-@keyframes hw-shadow {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(0.82); opacity: 0.3; }
+@keyframes hww-ping {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(0.4); opacity: 0.45; }
 }
 
-/* Card 2: a vertical ticker of example requests, scrolling on a loop */
-.hw-ticker {
-  width: 100%; height: 100%;
-  padding: 20px;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
-}
-.hw-ticker-track {
-  display: flex; flex-direction: column; gap: 12px;
-  animation: hw-scroll 16s linear infinite;
-}
-.hw-request-card {
-  display: flex; align-items: center; gap: 10px;
-  background: #0A0A0A;
-  border-radius: 12px;
-  padding: 12px 14px;
-  width: 210px;
-  box-shadow: 0 12px 24px -10px rgba(0,0,0,0.35);
-}
-.hw-request-dot { width: 8px; height: 8px; border-radius: 50%; background: #C97A1E; flex: 0 0 auto; }
-.hw-request-text { font-size: 12.5px; color: #FAFAF8; line-height: 1.35; }
-@keyframes hw-scroll {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
-}
-
-/* Card 3: dot grid where a few dots pulse gold on a staggered loop */
-.hw-dot-grid .hw-dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: #3A1B0C;
-  animation: hw-pulse 3s ease-in-out infinite;
-}
-@keyframes hw-pulse {
-  0%, 76%, 100% { background: #3A1B0C; transform: scale(1); }
-  88% { background: #FFDCA0; transform: scale(1.35); }
-}
-
-/* Card 4: a loose cluster of tool chips, each drifting on its own cycle */
-.hw-tool-cluster { position: relative; width: 100%; height: 100%; }
-.hw-tool-chip {
+/* Card 4 — the tools, drifting on their own cycles. */
+.hww-visual--stack { background: #E9E4D8; }
+.hww-tiles { position: relative; width: 100%; height: 100%; }
+.hww-tile {
   position: absolute;
-  width: 40px; height: 40px;
-  border-radius: 11px;
-  display: flex; align-items: center; justify-content: center;
-  background: #fff;
-  box-shadow: 0 10px 20px -8px rgba(0,0,0,0.25);
-  font-family: 'Switzer', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  animation: hw-float 4.5s ease-in-out infinite;
+  display: grid;
+  place-items: center;
+  width: 21%;
+  aspect-ratio: 1;
+  border-radius: 26%;
+  background: #FFFFFF;
+  box-shadow: 0 10px 20px -9px rgba(26,20,12,0.34);
+  animation: hww-drift 5.4s ease-in-out infinite;
+  animation-delay: calc(var(--n) * -0.45s);
 }
-@keyframes hw-float {
+.hww-tile svg { width: 58%; height: 58%; display: block; }
+@keyframes hww-drift {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-9px) rotate(-4deg); }
+  50%      { transform: translateY(-8px) rotate(-3deg); }
 }
 
 /* Services — a deck of full-width cards that stack as you scroll.
@@ -944,18 +1009,23 @@ footer a,
 .btn-academy { background: #C97A1E; color: #0A0A0A; }
 .btn-academy:hover { background: #FFFFFF; color: #0A0A0A; }
 
-/* "How we work" — the 4 cards drift right-to-left in a continuous loop.
-   Track holds the 4 cards plus an aria-hidden duplicate set back-to-back;
-   animating to -50% lands exactly on the duplicate, so the loop is seamless. */
+/* "How we work" — the 4 cards travel right-to-left on a rail. The track holds
+   the 4 cards plus an aria-hidden duplicate set back-to-back, so -50% lands
+   exactly on the duplicate and the loop is seamless.
+
+   This CSS animation is the fallback. When script.js runs it removes
+   `is-auto` and drives the transform itself, so scrolling — in either
+   direction — pushes the rail further left on top of the steady drift. */
 .hww-track {
   display: flex;
   align-items: flex-start;
   gap: 20px;
   width: max-content;
-  animation: hww-scroll 28s linear infinite;
+  will-change: transform;
 }
-.hww-track:hover { animation-play-state: paused; }
-.hww-card { flex: 0 0 270px; width: 270px; text-align: left; }
+.hww-track.is-auto { animation: hww-scroll 28s linear infinite; }
+.hww-track.is-auto:hover { animation-play-state: paused; }
+.hww-card { flex: 0 0 clamp(230px, 24vw, 300px); text-align: left; }
 @keyframes hww-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
