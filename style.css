@@ -474,8 +474,49 @@ a:hover { color: #C97A1E; }
   color: var(--fg);
   overflow: hidden;
   transform-origin: 50% 0;
-  box-shadow: 0 -1px 0 rgba(255,255,255,0.14) inset, 0 26px 50px -30px rgba(20,14,8,0.5);
+  /* Frosted glass, not a flat fill: --bg is a translucent tint (per-card alpha,
+     tuned so every card's --fg still clears WCAG AA over any card it can land
+     on) and the blur is what turns it into glass. In a deck the card beneath is
+     literally the backdrop, so the pile refracts itself as it stacks.
+     NOTE: no sheen gradient across the face. A white wash over a dark card
+     drops its light text under 4.5:1 exactly where the title sits — the glass
+     highlight is carried on the 1px edges instead, which no text overlaps. */
+  -webkit-backdrop-filter: blur(20px) saturate(165%);
+  backdrop-filter: blur(20px) saturate(165%);
+  border: 1px solid rgba(255,255,255,0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    inset 0 -1px 0 rgba(255,255,255,0.16),
+    0 34px 64px -34px rgba(20,14,8,0.58),
+    0 10px 26px -16px rgba(20,14,8,0.34);
 }
+
+/* Colour field behind the deck — the glass needs something to refract before
+   the cards start overlapping each other, or the first one reads as flat
+   translucent paint. A sibling of the panels, never an ancestor: a filter or
+   overflow on an ancestor would kill position:sticky. */
+.svc-glow {
+  position: absolute;
+  inset: -3% -5%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 40px;
+}
+.svc-glow span {
+  position: absolute;
+  display: block;
+  width: 62%;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+.svc-glow span:nth-child(1) { background: rgba(228,112,58,0.34); top: 6%;  left: -10%; }
+.svc-glow span:nth-child(2) { background: rgba(58,53,96,0.26);   top: 42%; right: -12%; }
+.svc-glow span:nth-child(3) { background: rgba(242,194,79,0.30); top: 76%; left: 8%; }
+/* Sticky already makes each panel a stacking context; this only lifts the
+   whole set above the glow, and source order still decides the pile. */
+.svc-panel { z-index: 1; }
 .svc-panel:last-child { margin-bottom: 0; }
 /* Dark wash that fades in as the next card covers this one (set by script.js) */
 .svc-panel-veil {
@@ -1118,15 +1159,12 @@ a:hover { color: #C97A1E; }
   .work-hint-pointer { display: none; }
   .work-hint-touch { display: inline; }
 
-  /* A pinned deck needs more viewport height than a phone has — eight cards
-     would sit clipped under each other. Below this it reads as a plain
-     stacked list instead. */
-  .svc-panel {
-    position: relative;
-    top: auto;
-    transform: none !important;
-  }
-  .svc-panel-veil { display: none; }
+  /* The deck stacks here too. It was switched off on the assumption a phone
+     lacks the height for it — measured, that isn't so: the cards run 364-460px
+     at this width and the last of the eight pins at 135px, so even the tallest
+     bottoms out near 595px, inside a 640px viewport. Geometry is tightened
+     from desktop's 84/14 so the pile of slivers doesn't eat the screen. */
+  .svc-stack { --stack-top: 72px; --sliver: 9px; }
   .svc-panel-inner { min-height: 0; }
   .svc-panel-body { align-items: flex-start; }
   .svc-panel-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }

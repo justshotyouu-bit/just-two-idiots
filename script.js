@@ -253,12 +253,11 @@
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.svc-panel'));
   if (panels.length < 2) return;
-  // Below 900px the deck falls back to a plain stacked list, and reduced
-  // motion turns it off entirely — leave the cards untouched in both cases.
-  var stacked = window.matchMedia('(min-width: 901px)');
+  // The deck stacks at every width now, phones included; only reduced motion
+  // falls back to a plain list, since the effect is scroll-driven by nature.
   var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
 
-  var MAX_SCALE_DROP = 0.06; // how far a fully covered card recedes
+  var MAX_SCALE_DROP = 0.085; // how far a fully covered card recedes
   var MAX_DIM = 0.26;        // how dark a fully covered card goes
   var ticking = false;
 
@@ -272,7 +271,7 @@
 
   function update() {
     ticking = false;
-    if (!stacked.matches || !motionOK.matches) return;
+    if (!motionOK.matches) return;
     for (var i = 0; i < panels.length; i++) {
       var panel = panels[i];
       var veil = panel.querySelector('.svc-panel-veil');
@@ -296,8 +295,8 @@
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', function () { clear(); onScroll(); });
-  if (stacked.addEventListener) stacked.addEventListener('change', function () { clear(); onScroll(); });
-  else if (stacked.addListener) stacked.addListener(function () { clear(); onScroll(); });
+  if (motionOK.addEventListener) motionOK.addEventListener('change', function () { clear(); onScroll(); });
+  else if (motionOK.addListener) motionOK.addListener(function () { clear(); onScroll(); });
   update();
 })();
 
