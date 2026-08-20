@@ -40,23 +40,28 @@
 
     if (!motionOK.matches) { stage.classList.add('is-open'); return; }
 
-    // One-shot: the card opens the first time it is meaningfully on screen and
-    // then stays open. Scrubbing it against scroll position was tried and does
-    // not survive a compact hero — with the card near the fold it arrives
-    // already 94% open and the reveal is spent before the reader sees it.
-    function open() { stage.classList.add('is-open'); }
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          io.disconnect();
-          // A beat after it appears, so the motion is noticed rather than
-          // being over while the page is still settling.
-          setTimeout(open, 160);
-        });
-      }, { threshold: 0.25 });
-      io.observe(stage);
-    } else { open(); }
+    // One-shot: the card opens the first time it comes into view and stays
+    // open. Scrubbing it against scroll position was tried and does not
+    // survive a compact hero — with the card near the fold it arrives already
+    // 94% open and the reveal is spent before the reader sees it.
+    //
+    // Deliberately a plain position test rather than an IntersectionObserver.
+    // The closed card is a 46deg tilt at 0.35 opacity, so an observer that
+    // never delivers leaves it looking broken rather than merely un-animated;
+    // bindScroll runs this once synchronously at bind time, so it resolves on
+    // load whether or not any callback ever fires.
+    var opened = false;
+    function check() {
+      if (opened) return;
+      var r = stage.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight * 0.88) {
+        opened = true;
+        // A beat, so the motion is noticed rather than being over while the
+        // page is still settling.
+        setTimeout(function () { stage.classList.add('is-open'); }, 160);
+      }
+    }
+    bindScroll(check);
   })();
 
   // --- Statement ---------------------------------------------------------
