@@ -27,7 +27,7 @@
    rather than a WebGL twist. script.js drives it off scroll progress. */
 .who-banner {
   position: relative;
-  height: 250vh;
+  height: 200vh;
   margin: 0 calc(-1 * var(--gutter));
 }
 .who-banner-sticky {
@@ -41,12 +41,13 @@
   /* No overflow here — it would kill the sticky. */
 }
 .who-banner-stage {
-  width: min(1000px, 100%);
-  aspect-ratio: 4 / 3;
-  max-height: 78vh;
+  width: min(1120px, 100%);
+  /* The clip's own 2.83:1. Not cropped to something squarer: the headline in
+     it spans the full frame, so any side crop cuts words off it. */
+  aspect-ratio: 1760 / 622;
   border-radius: 28px;
   overflow: hidden;
-  background: #06070A;
+  background: #E9EFF3;
   transform-origin: 50% 100%;
   box-shadow: 0 50px 90px -50px rgba(20, 14, 8, 0.7);
   /* Set inline by the script; this is the pre-JS resting state. */
@@ -214,7 +215,10 @@
 @media (max-width: 900px) {
   /* Shorter runways: a phone scroll covers far less pixel distance per swipe,
      and 250vh of runway for one card reads as the page having stalled. */
-  .who-banner { height: 180vh; }
+  .who-banner { height: 150vh; }
+  /* At 2.83:1 the card is only ~116px tall inside the gutter here, so give it
+     nearly the full width — it is as large as the source shape allows. */
+  .who-banner-sticky { padding: 0 12px; }
   .who-statement { height: 170vh; }
   .who-words { max-width: 100%; }
   .who-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
