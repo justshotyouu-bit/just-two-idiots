@@ -203,29 +203,6 @@
 }
 .who-founder-bio { font-size: 15px; line-height: 1.62; color: #5A5A56; margin: 0; }
 
-/* ---- Work gallery ------------------------------------------------------- */
-.who-gallery {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 1.6vw, 20px);
-}
-.who-tile {
-  margin: 0;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #F1EFEA;
-  aspect-ratio: 3 / 2;
-}
-.who-tile-wide { grid-column: span 2; aspect-ratio: 3 / 1.34; }
-.who-tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s cubic-bezier(.16, 1, .3, 1);
-}
-.who-tile:hover img { transform: scale(1.035); }
-
 /* ---- Close -------------------------------------------------------------- */
 .who-end {
   text-align: center;
@@ -241,7 +218,17 @@
   color: #0A0A0A;
 }
 .who-end .who-statement-cta { margin-bottom: 26px; }
-.who-end-num a { font-size: 15px; font-weight: 600; color: #0A0A0A; }
+/* Was a 121x19 target — under the 24px minimum, and it is the only way to
+   call from the bottom of this page. */
+.who-end-num a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 2px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0A0A0A;
+}
 .who-end-num a:hover { color: #C97A1E; }
 
 /* ---- Responsive --------------------------------------------------------- */
@@ -254,8 +241,6 @@
   .who-statement { height: 170vh; }
   .who-words { max-width: 100%; }
   .who-statement-sticky { min-height: 74vh; }
-  .who-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .who-tile-wide { grid-column: span 2; aspect-ratio: 3 / 1.5; }
 }
 @media (max-width: 620px) {
   .who-founder-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
@@ -274,8 +259,6 @@
   .who-founder-name { grid-column: 2; grid-row: 1; }
   .who-founder-role { grid-column: 2; grid-row: 2; margin-bottom: 0; }
   .who-founder-bio { grid-column: 1 / -1; grid-row: 3; margin-top: 14px; font-size: 14.5px; }
-  .who-gallery { grid-template-columns: minmax(0, 1fr); }
-  .who-tile, .who-tile-wide { grid-column: span 1; aspect-ratio: 3 / 2; }
   .who-statement-cta { width: 100%; }
 }
 
@@ -287,5 +270,4 @@
   .who-statement { height: auto; }
   .who-statement-sticky { position: static; min-height: 0; padding: clamp(48px,7vw,88px) 0; }
   .who-word { opacity: 1; transition: none; }
-  .who-tile img { transition: none; }
 }

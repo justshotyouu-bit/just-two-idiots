@@ -136,10 +136,7 @@ a:hover { color: #C97A1E; }
 @media (max-width: 640px) {
   /* The bar is a no-hamburger design and is already within 8px of its own edge
      at 320px with just two nav links — a third pushes the CTA 92px past it.
-     640px leaves headroom over the ~440px where it actually starts to bind.
-     Below this the link lives in the footer panel instead. Re-measure before
-     adding anything else to the header. */
-  .nav-link-who { display: none; }
+     Re-measure before adding anything else to the header. */
 
   .site-header {
     top: 10px;
@@ -152,6 +149,15 @@ a:hover { color: #C97A1E; }
   .nav-cta { font-size: 13px; padding: 10px 15px; }
   .wrap { padding-top: 74px; }
 }
+/* Measured: the header needs 426px for three links plus the CTA, and has
+   458px to give at 500px wide. It only actually binds below that — at 430px
+   it is 38px over, at 320px 99px over. The old rule dropped the link at
+   640px, which took it away from every large phone and small tablet that
+   could have shown it. Under this width it lives in the footer panel. */
+@media (max-width: 500px) {
+  .nav-link-who { display: none; }
+}
+
 /* At the very narrow end the four words stop fitting together; the CTA keeps
    its full label and the links tighten instead. */
 @media (max-width: 380px) {
