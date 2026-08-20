@@ -1267,8 +1267,25 @@ a:hover { color: #C97A1E; }
      Stacked it fits and reads more deliberately anyway. */
   .hero-rot { flex-direction: column; gap: 0.1em; }
 
-  /* Three columns leave ~70px each here, which wraps every second label. */
-  .cta-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+  /* Three columns leave ~70px each here, which wraps every second label. Two
+     columns fit, but three groups into two leaves the last one alone in the
+     bottom-left with an empty cell beside it — the footer reads as unfinished.
+     The third group spans the full width instead and lays its links out in a
+     row, which closes the hole and squares the block off. */
+  .cta-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .cta-col:last-child {
+    grid-column: 1 / -1;
+    /* One wrapping row, not a three-up grid: equal thirds are 55-68px below
+       400px and every label wrapped inside its own cell. A flexible gap keeps
+       Instagram / LinkedIn / Behance on one line from 360px up and lets them
+       wrap cleanly on a 320px screen, where they cannot fit either way. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: clamp(10px, 5vw, 24px);
+    row-gap: 4px;
+  }
+  .cta-col:last-child .cta-col-title { flex: 0 0 100%; margin-bottom: 8px; }
   /* Rotated and overlapping stops working once the pill is nearly as wide as
      the number it sits on — it goes back into the flow instead. */
   .cta-copy-btn { position: static; transform: none; margin-top: 14px; }

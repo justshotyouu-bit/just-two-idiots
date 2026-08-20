@@ -179,10 +179,24 @@ a[href$=".html"] {
     padding-right: 18px !important;
   }
 
-  /* The sticky header runs a logo plus two nowrap pills; at 320px that is
-     wider than the screen, so the pills wrap under the logo. */
+  /* The sticky header runs a logo plus two nowrap pills. Letting them wrap
+     made it a 112px two-row bar — a sixth of a phone screen pinned to the top,
+     and the row that wraps upward is the one that reads as "half cut" when the
+     browser chrome collapses and shifts a sticky element. It stays one row and
+     the type steps down to fit instead: at 320px that is 269px of content in
+     284px of space. */
   :is([style*="max-width:1280px"], [style*="max-width: 1280px"]):is([style*="space-between"]) {
-    flex-wrap: wrap !important;
-    row-gap: 10px !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    padding-top: 11px !important;
+    padding-bottom: 11px !important;
+  }
+  :is([style*="max-width:1280px"], [style*="max-width: 1280px"]):is([style*="space-between"]) > a {
+    font-size: 12.5px !important;
+  }
+  :is([style*="max-width:1280px"], [style*="max-width: 1280px"]):is([style*="space-between"]) > div { gap: 8px !important; }
+  :is([style*="max-width:1280px"], [style*="max-width: 1280px"]):is([style*="space-between"]) > div > a {
+    font-size: 11.5px !important;
+    padding: 7px 11px !important;
   }
 }

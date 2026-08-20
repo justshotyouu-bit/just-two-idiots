@@ -257,13 +257,19 @@
   // falls back to a plain list, since the effect is scroll-driven by nature.
   var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
 
-  var MAX_SCALE_DROP = 0.085; // how far a fully covered card recedes
-  var MAX_DIM = 0.26;        // how dark a fully covered card goes
+  // Depth is carried by dimming alone, deliberately. A covered card used to
+  // scale down too, and uniform scale shrinks a card horizontally as well as
+  // vertically: at 0.085 that pulled each edge 14px inboard and opened a strip
+  // down both sides of the card, through which the colour field behind the
+  // deck showed. Because the scale tracked scroll position continuously, those
+  // strips changed width and colour on every frame — the sideways "glitching".
+  // Dimming reads as recession just as well and never changes geometry, so the
+  // pile now only ever moves up the screen.
+  var MAX_DIM = 0.34;        // how dark a fully covered card goes
   var ticking = false;
 
   function clear() {
     panels.forEach(function (p) {
-      p.style.transform = '';
       var v = p.querySelector('.svc-panel-veil');
       if (v) v.style.opacity = '0';
     });
@@ -284,7 +290,6 @@
         covered = (h - (nextTop - top)) / h;
         covered = covered < 0 ? 0 : covered > 1 ? 1 : covered;
       }
-      panel.style.transform = 'scale(' + (1 - covered * MAX_SCALE_DROP).toFixed(4) + ')';
       if (veil) veil.style.opacity = (covered * MAX_DIM).toFixed(3);
     }
   }
@@ -489,7 +494,8 @@
 
   var PAGE = [250, 250, 248];   // #FAFAF8, the page behind it
   var REEL = [6, 7, 10];        // #06070A, to meet the reel's own black
-  var OPEN = 0.55;              // fraction of the runway spent opening
+  var OPEN = 0.42;              // fraction of the runway spent opening
+  var CLOSE = 0.74;             // where it starts closing again
   var ticking = false;
 
   function update() {
@@ -500,9 +506,22 @@
     var p = -section.getBoundingClientRect().top / travel;
     p = p < 0 ? 0 : p > 1 ? 1 : p;
 
-    var o = p / OPEN;
-    o = o < 0 ? 0 : o > 1 ? 1 : o;
-    var e = 1 - Math.pow(1 - o, 3);          // easeOutCubic — quick, then settles
+    // Open, hold, then close again. It used to stay full-bleed black right up
+    // to the section's last pixel, so the reel left the screen as a hard black
+    // edge sweeping up under the fixed header — a slab of black above the cut
+    // and page cream below it, with the pill stranded on the boundary. Closing
+    // on the way out mirrors the way it opened and hands the next section a
+    // cream screen to arrive on.
+    var e;
+    if (p <= OPEN) {
+      var o = p / OPEN;
+      e = 1 - Math.pow(1 - o, 3);            // easeOutCubic — quick, then settles
+    } else if (p < CLOSE) {
+      e = 1;                                  // held wide open
+    } else {
+      var c2 = (p - CLOSE) / (1 - CLOSE);
+      e = 1 - c2 * c2 * c2;                   // easeInCubic — lingers, then shuts
+    }
 
     var vw = window.innerWidth, vh = window.innerHeight;
     // Opening frame is the same shape as a "How we work" card.
@@ -516,7 +535,11 @@
     // Content settles more slowly than the frame opens — the parallax.
     video.style.transform = 'scale(' + (1 + 0.16 * (1 - e)).toFixed(4) + ')';
 
-    var c = Math.min(1, e * 1.5);
+    // Opening, the surround darkens ahead of the frame (x1.5) so the black is
+    // already there when the video arrives. Closing, it tracks the frame
+    // exactly — running ahead there would strand a black screen behind a
+    // shut card for the last stretch of the runway.
+    var c = p < CLOSE ? Math.min(1, e * 1.5) : e;
     sticky.style.backgroundColor = 'rgb(' +
       Math.round(PAGE[0] + (REEL[0] - PAGE[0]) * c) + ',' +
       Math.round(PAGE[1] + (REEL[1] - PAGE[1]) * c) + ',' +
