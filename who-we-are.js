@@ -40,21 +40,26 @@
 
     if (!motionOK.matches) return;
 
-    var START_ROT = 34;   // degrees the card is laid back at rest
-    var START_SCALE = 0.82;
+    var START_ROT = 58;    // near edge-on, like the sliver the reference opens from
+    var START_SKEW = -5;   // degrees of tilt that resolves as it settles
+    var START_SCALE = 0.80;
 
     function frame() {
-      var r = runway.getBoundingClientRect();
-      // 0 while the runway's top is at the viewport top, 1 once it has been
-      // scrolled by its full travel (height minus the one sticky viewport).
-      var travel = r.height - window.innerHeight;
-      var p = travel > 0 ? (-r.top) / travel : 1;
+      var r = stage.getBoundingClientRect();
+      var vh = window.innerHeight;
+      // Driven by how far the card has risen into view rather than by a runway:
+      // 0 while its top is still near the bottom edge, 1 once it has climbed to
+      // the upper third. Both ends are clamped, so it holds flat afterwards.
+      var from = vh * 0.92;
+      var to = vh * 0.30;
+      var p = (from - r.top) / (from - to);
       p = p < 0 ? 0 : p > 1 ? 1 : p;
-      // Ease so most of the standing-up happens early and it settles gently.
-      var e = 1 - Math.pow(1 - p, 3);
-      var rot = START_ROT * (1 - e);
-      var sc = START_SCALE + (1 - START_SCALE) * e;
-      stage.style.transform = 'perspective(1400px) rotateX(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')';
+      var e = 1 - Math.pow(1 - p, 3);   // most of the opening happens early
+      stage.style.transform =
+        'rotateX(' + (START_ROT * (1 - e)).toFixed(2) + 'deg) ' +
+        'rotateZ(' + (START_SKEW * (1 - e)).toFixed(2) + 'deg) ' +
+        'scale(' + (START_SCALE + (1 - START_SCALE) * e).toFixed(4) + ')';
+      stage.style.opacity = (0.4 + 0.6 * Math.min(1, e * 2)).toFixed(3);
       stage.style.borderRadius = (28 - 10 * e).toFixed(1) + 'px';
     }
     bindScroll(frame);

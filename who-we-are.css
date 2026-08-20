@@ -2,9 +2,21 @@
    Page-only styles. style.css is loaded first for the tokens, fonts, header
    and .section-pill, so nothing here re-declares those. */
 
+/* The hero owns the first screen. Not padding for its own sake: with the hero
+   only as tall as its text, the banner sat 48px under it and was already 94%
+   unfurled before the reader had scrolled at all — the reveal was over before
+   it began. Filling the viewport puts the card just below the fold so it
+   enters from underneath and opens as you scroll to it, and the space is the
+   hero's rather than the empty gap it was. */
 .who-hero {
+  min-height: calc(100vh - 88px);
+  min-height: calc(100svh - 88px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: clamp(28px, 5vw, 56px) 0 clamp(26px, 4vw, 44px);
+  padding: clamp(24px, 4vw, 48px) 0;
 }
 .who-hero .section-pill { margin: 0 auto 22px; }
 .who-hero-title {
@@ -21,24 +33,21 @@
 .who-hero-title span { display: block; color: #8A8A85; }
 
 /* ---- Banner -------------------------------------------------------------
-   A runway taller than the viewport with a sticky stage inside it. The card
-   starts laid back in perspective and stands up flat as the runway is
-   scrolled, which is the unfurl from the reference read as a single card
-   rather than a WebGL twist. script.js drives it off scroll progress. */
+   The card unfurls as it enters the viewport, in normal flow. It used to be a
+   200vh runway with a sticky stage, but that centres the card in a 100vh box,
+   so between the hero and the card sat ~250px of nothing on desktop and ~340px
+   on a phone — the gap the reference has none of. In flow it follows the hero
+   immediately and the reveal is driven by how far it has risen into view. */
 .who-banner {
-  position: relative;
-  height: 200vh;
   margin: 0 calc(-1 * var(--gutter));
+  padding: clamp(4px, 1.2vw, 16px) var(--gutter) clamp(44px, 6vw, 76px);
 }
 .who-banner-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 0 var(--gutter);
-  /* No overflow here — it would kill the sticky. */
+  /* Perspective lives on the parent so the card itself only carries the
+     rotation — one transform to interpolate instead of two. */
+  perspective: 1500px;
 }
 .who-banner-stage {
   width: min(1120px, 100%);
@@ -48,10 +57,14 @@
   border-radius: 28px;
   overflow: hidden;
   background: #E9EFF3;
-  transform-origin: 50% 100%;
+  transform-origin: 50% 88%;
   box-shadow: 0 50px 90px -50px rgba(20, 14, 8, 0.7);
-  /* Set inline by the script; this is the pre-JS resting state. */
-  transform: perspective(1400px) rotateX(34deg) scale(0.82);
+  /* Near edge-on and slightly skewed, resolving to flat — the reference enters
+     as a thin diagonal sliver that opens out. Set inline by the script after
+     this; this is the pre-JS resting state. */
+  transform: rotateX(58deg) rotateZ(-5deg) scale(0.80);
+  opacity: 0.4;
+  will-change: transform, opacity;
 }
 .who-banner-video {
   width: 100%;
@@ -139,36 +152,48 @@
 .who-founders, .who-work { padding: clamp(56px, 8vw, 100px) 0; }
 .who-founders { border-bottom: 1px solid #EFEDE8; }
 
-/* ---- Founders ----------------------------------------------------------- */
+/* ---- Founders -----------------------------------------------------------
+   Portrait beside the copy rather than above it. Full-width 4:5 photos in a
+   two-column grid came out ~560px tall each and dominated the page; capped at
+   200px they read as portraits next to a bio, which is the quieter thing this
+   section wants to be. */
 .who-founder-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(20px, 3vw, 40px);
+  gap: clamp(28px, 4vw, 56px) clamp(32px, 5vw, 72px);
 }
+.who-founder {
+  display: grid;
+  grid-template-columns: clamp(132px, 15vw, 200px) minmax(0, 1fr);
+  gap: clamp(18px, 2.2vw, 28px);
+  align-items: start;
+}
+/* Name, role and bio are one grid child. Loose in the grid they became three
+   separate items and wrapped back under the photo. */
+.who-founder-text { min-width: 0; }
 .who-founder-photo {
   aspect-ratio: 4 / 5;
-  border-radius: 22px;
+  border-radius: 14px;
   overflow: hidden;
   background: #F1EFEA;
-  margin-bottom: 20px;
 }
 .who-founder-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .who-founder-name {
   font-family: 'Switzer', sans-serif;
   font-weight: 600;
-  font-size: clamp(20px, 2vw, 26px);
+  font-size: clamp(18px, 1.5vw, 21px);
   letter-spacing: -0.01em;
-  margin: 0 0 4px;
+  margin: 0 0 5px;
   color: #0A0A0A;
 }
 .who-founder-role {
-  font-size: 13px;
-  letter-spacing: 0.06em;
+  font-size: 11px;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
-  color: #8A8A85;
-  margin-bottom: 14px;
+  color: #A3A29C;
+  margin-bottom: 12px;
 }
-.who-founder-bio { font-size: 16px; line-height: 1.6; color: #5A5A56; margin: 0; max-width: 46ch; }
+.who-founder-bio { font-size: 15px; line-height: 1.62; color: #5A5A56; margin: 0; }
 
 /* ---- Work gallery ------------------------------------------------------- */
 .who-gallery {
@@ -215,17 +240,31 @@
 @media (max-width: 900px) {
   /* Shorter runways: a phone scroll covers far less pixel distance per swipe,
      and 250vh of runway for one card reads as the page having stalled. */
-  .who-banner { height: 150vh; }
-  /* At 2.83:1 the card is only ~116px tall inside the gutter here, so give it
+  /* At 2.83:1 the card is only ~124px tall inside the gutter here, so give it
      nearly the full width — it is as large as the source shape allows. */
-  .who-banner-sticky { padding: 0 12px; }
+  .who-banner { padding-left: 12px; padding-right: 12px; }
   .who-statement { height: 170vh; }
   .who-words { max-width: 100%; }
   .who-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .who-tile-wide { grid-column: span 2; aspect-ratio: 3 / 1.5; }
 }
 @media (max-width: 620px) {
-  .who-founder-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .who-founder-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+  /* Author-card shape: portrait with the name and role beside it, bio running
+     full width underneath. Side-by-side the whole way down left the little
+     portrait stranded against six lines of bio. `display: contents` lifts the
+     copy out of its wrapper so the three parts can be placed individually. */
+  .who-founder {
+    grid-template-columns: 88px minmax(0, 1fr);
+    column-gap: 16px;
+    row-gap: 2px;
+    align-items: start;
+  }
+  .who-founder-text { display: contents; }
+  .who-founder-photo { grid-column: 1; grid-row: 1 / span 2; }
+  .who-founder-name { grid-column: 2; grid-row: 1; }
+  .who-founder-role { grid-column: 2; grid-row: 2; margin-bottom: 0; }
+  .who-founder-bio { grid-column: 1 / -1; grid-row: 3; margin-top: 14px; font-size: 14.5px; }
   .who-gallery { grid-template-columns: minmax(0, 1fr); }
   .who-tile, .who-tile-wide { grid-column: span 1; aspect-ratio: 3 / 2; }
   .who-statement-cta { width: 100%; }
@@ -235,9 +274,7 @@
    The banner sits flat and the statement is fully legible from the start;
    who-we-are.js also stops driving both. */
 @media (prefers-reduced-motion: reduce) {
-  .who-banner { height: auto; }
-  .who-banner-sticky { position: static; height: auto; padding: 40px var(--gutter); }
-  .who-banner-stage { transform: none; }
+  .who-banner-stage { transform: none; opacity: 1; }
   .who-statement { height: auto; }
   .who-statement-sticky { position: static; min-height: 0; padding: clamp(48px,7vw,88px) 0; }
   .who-word { opacity: 1; transition: none; }
