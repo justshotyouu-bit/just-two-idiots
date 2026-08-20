@@ -38,31 +38,25 @@
       }, { rootMargin: '150% 0px' }).observe(runway);
     } else { arm(); }
 
-    if (!motionOK.matches) return;
+    if (!motionOK.matches) { stage.classList.add('is-open'); return; }
 
-    var START_ROT = 58;    // near edge-on, like the sliver the reference opens from
-    var START_SKEW = -5;   // degrees of tilt that resolves as it settles
-    var START_SCALE = 0.80;
-
-    function frame() {
-      var r = stage.getBoundingClientRect();
-      var vh = window.innerHeight;
-      // Driven by how far the card has risen into view rather than by a runway:
-      // 0 while its top is still near the bottom edge, 1 once it has climbed to
-      // the upper third. Both ends are clamped, so it holds flat afterwards.
-      var from = vh * 0.92;
-      var to = vh * 0.30;
-      var p = (from - r.top) / (from - to);
-      p = p < 0 ? 0 : p > 1 ? 1 : p;
-      var e = 1 - Math.pow(1 - p, 3);   // most of the opening happens early
-      stage.style.transform =
-        'rotateX(' + (START_ROT * (1 - e)).toFixed(2) + 'deg) ' +
-        'rotateZ(' + (START_SKEW * (1 - e)).toFixed(2) + 'deg) ' +
-        'scale(' + (START_SCALE + (1 - START_SCALE) * e).toFixed(4) + ')';
-      stage.style.opacity = (0.4 + 0.6 * Math.min(1, e * 2)).toFixed(3);
-      stage.style.borderRadius = (28 - 10 * e).toFixed(1) + 'px';
-    }
-    bindScroll(frame);
+    // One-shot: the card opens the first time it is meaningfully on screen and
+    // then stays open. Scrubbing it against scroll position was tried and does
+    // not survive a compact hero — with the card near the fold it arrives
+    // already 94% open and the reveal is spent before the reader sees it.
+    function open() { stage.classList.add('is-open'); }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          // A beat after it appears, so the motion is noticed rather than
+          // being over while the page is still settling.
+          setTimeout(open, 160);
+        });
+      }, { threshold: 0.25 });
+      io.observe(stage);
+    } else { open(); }
   })();
 
   // --- Statement ---------------------------------------------------------

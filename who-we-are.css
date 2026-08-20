@@ -2,21 +2,14 @@
    Page-only styles. style.css is loaded first for the tokens, fonts, header
    and .section-pill, so nothing here re-declares those. */
 
-/* The hero owns the first screen. Not padding for its own sake: with the hero
-   only as tall as its text, the banner sat 48px under it and was already 94%
-   unfurled before the reader had scrolled at all — the reveal was over before
-   it began. Filling the viewport puts the card just below the fold so it
-   enters from underneath and opens as you scroll to it, and the space is the
-   hero's rather than the empty gap it was. */
+/* Sized to its content. A full-viewport hero was tried so the card would sit
+   below the fold and have room to animate, but with only a pill and two lines
+   in it that left 274px of dead air above the text and 274px below — a bigger
+   gap than the one it was solving. The card no longer depends on it: its
+   reveal is a one-shot triggered on entry, not scrubbed against scroll. */
 .who-hero {
-  min-height: calc(100vh - 88px);
-  min-height: calc(100svh - 88px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   text-align: center;
-  padding: clamp(24px, 4vw, 48px) 0;
+  padding: clamp(30px, 5vw, 60px) 0 clamp(28px, 4vw, 48px);
 }
 .who-hero .section-pill { margin: 0 auto 22px; }
 .who-hero-title {
@@ -40,7 +33,7 @@
    immediately and the reveal is driven by how far it has risen into view. */
 .who-banner {
   margin: 0 calc(-1 * var(--gutter));
-  padding: clamp(4px, 1.2vw, 16px) var(--gutter) clamp(44px, 6vw, 76px);
+  padding: clamp(4px, 1.2vw, 16px) var(--gutter) clamp(20px, 3vw, 40px);
 }
 .who-banner-sticky {
   display: flex;
@@ -57,15 +50,25 @@
   border-radius: 28px;
   overflow: hidden;
   background: #E9EFF3;
-  transform-origin: 50% 88%;
+  /* Hinged at the TOP edge. At 50% 88% the card swung down inside its own box
+     when closed and left 184px of blank above it — most of the gap that read
+     as a hero/banner void. Hinged here the top edge stays put, so what little
+     foreshortening remains sits below the card, against the next section's
+     padding, where it is not read as a gap. */
+  transform-origin: 50% 0%;
   box-shadow: 0 50px 90px -50px rgba(20, 14, 8, 0.7);
-  /* Near edge-on and slightly skewed, resolving to flat — the reference enters
-     as a thin diagonal sliver that opens out. Set inline by the script after
-     this; this is the pre-JS resting state. */
-  transform: rotateX(58deg) rotateZ(-5deg) scale(0.80);
-  opacity: 0.4;
+  /* Closed: tilted back and slightly skewed, the way the reference opens out
+     of a sliver. `.is-open` is added once by the script when the card first
+     enters view — a one-shot, not scrubbed against scroll, so it plays in full
+     no matter how much of the page is already on screen. */
+  transform: rotateX(46deg) rotateZ(-4deg) scale(0.86);
+  opacity: 0.35;
   will-change: transform, opacity;
+  transition:
+    transform 1.05s cubic-bezier(.16, 1, .3, 1),
+    opacity 0.7s ease;
 }
+.who-banner-stage.is-open { transform: none; opacity: 1; }
 .who-banner-video {
   width: 100%;
   height: 100%;
@@ -80,7 +83,7 @@
   position: relative;
   z-index: 1;
   margin: 0 calc(-1 * var(--gutter));
-  padding: clamp(56px, 8vw, 104px) var(--gutter) 0;
+  padding: clamp(40px, 5.5vw, 72px) var(--gutter) 0;
   background: #FFFFFF;
   border-radius: clamp(28px, 5vw, 64px) clamp(28px, 5vw, 64px) 0 0;
   box-shadow: 0 -30px 60px -40px rgba(20, 14, 8, 0.28);
@@ -91,7 +94,12 @@
 .who-statement-sticky {
   position: sticky;
   top: 0;
-  min-height: 100vh;
+  /* Under a viewport tall on purpose. Centring the copy in a full 100vh put
+     half the leftover slack above it — 282px of blank between the card and the
+     first line on a phone, which reads as another gap. Shorter box, less
+     slack, and the copy settles slightly above centre, which is where you want
+     it while reading anyway. */
+  min-height: 82vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -245,6 +253,7 @@
   .who-banner { padding-left: 12px; padding-right: 12px; }
   .who-statement { height: 170vh; }
   .who-words { max-width: 100%; }
+  .who-statement-sticky { min-height: 74vh; }
   .who-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .who-tile-wide { grid-column: span 2; aspect-ratio: 3 / 1.5; }
 }
@@ -274,7 +283,7 @@
    The banner sits flat and the statement is fully legible from the start;
    who-we-are.js also stops driving both. */
 @media (prefers-reduced-motion: reduce) {
-  .who-banner-stage { transform: none; opacity: 1; }
+  .who-banner-stage { transform: none; opacity: 1; transition: none; }
   .who-statement { height: auto; }
   .who-statement-sticky { position: static; min-height: 0; padding: clamp(48px,7vw,88px) 0; }
   .who-word { opacity: 1; transition: none; }
