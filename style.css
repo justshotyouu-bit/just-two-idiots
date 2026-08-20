@@ -75,6 +75,12 @@ a:hover { color: #C97A1E; }
 }
 .site-logo {
   flex: 0 0 auto;
+  /* Was a 17-21px tall target — under the 24px minimum. Padding buys the
+     height inside the pill without moving the wordmark. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 0;
   font-family: 'Switzer', sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -497,7 +503,11 @@ a:hover { color: #C97A1E; }
    overflow on an ancestor would kill position:sticky. */
 .svc-glow {
   position: absolute;
-  inset: -3% -5%;
+  /* Horizontal inset stays at 0: -5% made this box 110% of the section, which
+     hung 10px past the viewport on each side and put a horizontal overflow on
+     every width from 768 to 1440. The blurred spans inside are positioned past
+     the edges anyway and this box clips them, so the bleed is unchanged. */
+  inset: -3% 0;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
@@ -530,7 +540,7 @@ a:hover { color: #C97A1E; }
 .svc-panel-inner {
   position: relative;
   z-index: 1;
-  min-height: 392px;
+  min-height: 320px;
   padding: clamp(28px, 3.4vw, 40px) clamp(26px, 3.8vw, 48px) clamp(30px, 3.6vw, 44px);
   display: flex;
   flex-direction: column;
@@ -586,9 +596,17 @@ a:hover { color: #C97A1E; }
 .svc-panel-link:hover .svc-panel-arrow { transform: translate(3px, -3px); }
 .svc-panel-tags {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  /* Was a single right-aligned column: five pills stacked vertically made a
+     ragged edge down the middle of a 1328px card and were the thing forcing
+     the panel to 392px with a void above the copy. As a wrapped row they sit
+     opposite the description, two or three to a line, and the panel closes up
+     around its content. */
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
   gap: 9px;
+  max-width: 44%;
 }
 .svc-panel-tags span {
   font-size: 13px;
@@ -656,6 +674,13 @@ a:hover { color: #C97A1E; }
 /* Enough width that erasing to empty doesn't collapse the line and snap the
    surrounding words across; past that it reflows naturally, as the reference
    does — reserving the longest word's width would leave a hole on short ones. */
+/* Deliberately fluid. Reserving the widest word ("packaging", 106px) does
+   stop the centred line sliding as it types — but it then leaves a permanent
+   50px hole after a short word like "brand", which reads as a missing word.
+   Centring the slot instead would un-anchor the typing itself, since text has
+   to grow rightward from a fixed left edge to look like typing at all. The
+   gentle reflow is the lesser artefact and is how this effect normally reads.
+   The 3ch floor just stops the caret jumping into "your" mid-erase. */
 .jti-type { display: inline-block; min-width: 3ch; text-align: left; }
 .jti-type-word { font-weight: 700; }
 .jti-caret {
@@ -668,7 +693,7 @@ a:hover { color: #C97A1E; }
   opacity: 0.8;
   animation: jti-blink 1s steps(1, end) infinite;
 }
-@keyframes jti-blink { 0%, 50% { opacity: 0.8; } 50.01%, 100% { opacity: 0; } }
+@keyframes jti-blink { 0%, 50% { opacity: 0.8; } 50.01%, 100% { opacity: 0.22; } }
 
 /* --- The phone, held --------------------------------------------------------
    A silhouette hand around an iPhone-ish frame, with delivered work cycling
@@ -1230,7 +1255,11 @@ a:hover { color: #C97A1E; }
   .svc-stack { --stack-top: 72px; --sliver: 9px; }
   .svc-panel-inner { min-height: 0; }
   .svc-panel-body { align-items: flex-start; }
-  .svc-panel-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  /* max-width:none matters: the desktop rule caps the tag row at 44% so it
+     sits opposite the copy, but on a 340px card that is 127px against
+     pills 81-143px wide, which forces them back into a one-per-line
+     column. Here they get the full width under the description. */
+  .svc-panel-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; justify-content: flex-start; max-width: none; }
 }
 
 @media (max-width: 620px) {
