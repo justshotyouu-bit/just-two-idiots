@@ -1,0 +1,241 @@
+/* ---- Who we are ----------------------------------------------------------
+   Page-only styles. style.css is loaded first for the tokens, fonts, header
+   and .section-pill, so nothing here re-declares those. */
+
+.who-hero {
+  text-align: center;
+  padding: clamp(28px, 5vw, 56px) 0 clamp(26px, 4vw, 44px);
+}
+.who-hero .section-pill { margin: 0 auto 22px; }
+.who-hero-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(34px, 5.4vw, 68px);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin: 0 auto;
+  max-width: 900px;
+  color: #0A0A0A;
+}
+/* Second clause drops back so the two lines read as statement + qualifier. */
+.who-hero-title span { display: block; color: #8A8A85; }
+
+/* ---- Banner -------------------------------------------------------------
+   A runway taller than the viewport with a sticky stage inside it. The card
+   starts laid back in perspective and stands up flat as the runway is
+   scrolled, which is the unfurl from the reference read as a single card
+   rather than a WebGL twist. script.js drives it off scroll progress. */
+.who-banner {
+  position: relative;
+  height: 250vh;
+  margin: 0 calc(-1 * var(--gutter));
+}
+.who-banner-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--gutter);
+  /* No overflow here — it would kill the sticky. */
+}
+.who-banner-stage {
+  width: min(1000px, 100%);
+  aspect-ratio: 4 / 3;
+  max-height: 78vh;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #06070A;
+  transform-origin: 50% 100%;
+  box-shadow: 0 50px 90px -50px rgba(20, 14, 8, 0.7);
+  /* Set inline by the script; this is the pre-JS resting state. */
+  transform: perspective(1400px) rotateX(34deg) scale(0.82);
+}
+.who-banner-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- The sheet ----------------------------------------------------------
+   Curves up over the banner exactly as the reference does. Full-bleed, so it
+   cancels the wrap gutter and re-applies its own padding. */
+.who-sheet {
+  position: relative;
+  z-index: 1;
+  margin: 0 calc(-1 * var(--gutter));
+  padding: clamp(56px, 8vw, 104px) var(--gutter) 0;
+  background: #FFFFFF;
+  border-radius: clamp(28px, 5vw, 64px) clamp(28px, 5vw, 64px) 0 0;
+  box-shadow: 0 -30px 60px -40px rgba(20, 14, 8, 0.28);
+}
+
+/* ---- Scroll-revealed statement ------------------------------------------ */
+.who-statement { position: relative; height: 210vh; }
+.who-statement-sticky {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 26px;
+}
+.who-words {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 500;
+  font-size: clamp(21px, 3.1vw, 42px);
+  line-height: 1.32;
+  letter-spacing: -0.02em;
+  max-width: min(690px, 100%);
+  margin: 0;
+  color: #0A0A0A;
+}
+/* Each word starts faint and is brought up one at a time by the script. */
+.who-word {
+  opacity: 0.13;
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+}
+.who-word.is-lit { opacity: 1; }
+
+.who-statement-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.who-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 13px 26px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
+}
+.who-btn-dark { background: #0A0A0A; color: #FAFAF8; }
+.who-btn-dark:hover { background: #C97A1E; color: #FFFFFF; }
+.who-btn-light { background: #F1EFEA; color: #0A0A0A; border: 1px solid #E7E5E0; }
+.who-btn-light:hover { background: #FFFFFF; border-color: #0A0A0A; }
+
+/* ---- Shared section furniture ------------------------------------------- */
+.who-h2 {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 16px 0 18px;
+  color: #0A0A0A;
+}
+.who-lede {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #5A5A56;
+  max-width: 62ch;
+  margin: 0 0 clamp(32px, 5vw, 56px);
+}
+.who-founders, .who-work { padding: clamp(56px, 8vw, 100px) 0; }
+.who-founders { border-bottom: 1px solid #EFEDE8; }
+
+/* ---- Founders ----------------------------------------------------------- */
+.who-founder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+}
+.who-founder-photo {
+  aspect-ratio: 4 / 5;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #F1EFEA;
+  margin-bottom: 20px;
+}
+.who-founder-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.who-founder-name {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(20px, 2vw, 26px);
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+  color: #0A0A0A;
+}
+.who-founder-role {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8A8A85;
+  margin-bottom: 14px;
+}
+.who-founder-bio { font-size: 16px; line-height: 1.6; color: #5A5A56; margin: 0; max-width: 46ch; }
+
+/* ---- Work gallery ------------------------------------------------------- */
+.who-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 20px);
+}
+.who-tile {
+  margin: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #F1EFEA;
+  aspect-ratio: 3 / 2;
+}
+.who-tile-wide { grid-column: span 2; aspect-ratio: 3 / 1.34; }
+.who-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(.16, 1, .3, 1);
+}
+.who-tile:hover img { transform: scale(1.035); }
+
+/* ---- Close -------------------------------------------------------------- */
+.who-end {
+  text-align: center;
+  padding: clamp(64px, 9vw, 120px) 0 clamp(56px, 8vw, 96px);
+}
+.who-end-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(28px, 4.4vw, 52px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 28px;
+  color: #0A0A0A;
+}
+.who-end .who-statement-cta { margin-bottom: 26px; }
+.who-end-num a { font-size: 15px; font-weight: 600; color: #0A0A0A; }
+.who-end-num a:hover { color: #C97A1E; }
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 900px) {
+  /* Shorter runways: a phone scroll covers far less pixel distance per swipe,
+     and 250vh of runway for one card reads as the page having stalled. */
+  .who-banner { height: 180vh; }
+  .who-statement { height: 170vh; }
+  .who-words { max-width: 100%; }
+  .who-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .who-tile-wide { grid-column: span 2; aspect-ratio: 3 / 1.5; }
+}
+@media (max-width: 620px) {
+  .who-founder-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .who-gallery { grid-template-columns: minmax(0, 1fr); }
+  .who-tile, .who-tile-wide { grid-column: span 1; aspect-ratio: 3 / 2; }
+  .who-statement-cta { width: 100%; }
+}
+
+/* ---- Reduced motion -----------------------------------------------------
+   The banner sits flat and the statement is fully legible from the start;
+   who-we-are.js also stops driving both. */
+@media (prefers-reduced-motion: reduce) {
+  .who-banner { height: auto; }
+  .who-banner-sticky { position: static; height: auto; padding: 40px var(--gutter); }
+  .who-banner-stage { transform: none; }
+  .who-statement { height: auto; }
+  .who-statement-sticky { position: static; min-height: 0; padding: clamp(48px,7vw,88px) 0; }
+  .who-word { opacity: 1; transition: none; }
+  .who-tile img { transition: none; }
+}

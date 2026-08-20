@@ -134,6 +134,13 @@ a:hover { color: #C97A1E; }
 .wrap { padding-top: 88px; }
 
 @media (max-width: 640px) {
+  /* The bar is a no-hamburger design and is already within 8px of its own edge
+     at 320px with just two nav links — a third pushes the CTA 92px past it.
+     640px leaves headroom over the ~440px where it actually starts to bind.
+     Below this the link lives in the footer panel instead. Re-measure before
+     adding anything else to the header. */
+  .nav-link-who { display: none; }
+
   .site-header {
     top: 10px;
     width: calc(100vw - 20px);
