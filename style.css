@@ -1413,6 +1413,34 @@ a:hover { color: #C97A1E; }
   .svc-panel-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; justify-content: flex-start; max-width: none; }
 }
 
+/* Showreel on phones. These must live AFTER the .srl rules above — the file's
+   other `max-width: 640px` block sits up in the base layer, before .srl-tile
+   exists, so an override placed there loses to the base rule at every width. */
+@media (max-width: 640px) {
+  /* At 150px a 16:9 tile is 267px wide, so barely one fits across a phone and
+     the wall reads as two or three videos rather than a wall. Shorter rows put
+     roughly three per row on screen, and script.js adds a fourth row here, so
+     about ten tiles are in view at once instead of four. Gaps and corner radii
+     come down with the tiles so the proportions hold. */
+  .srl { padding: clamp(26px, 6vw, 40px) 0 clamp(20px, 4vw, 28px); border-radius: 24px; }
+  /* The heading was taking ~350px before a single tile appeared, which is the
+     other half of "only a few videos are visible" on a phone. */
+  .srl-head { margin-bottom: 18px; }
+  .srl-title { font-size: 26px; margin-bottom: 8px; }
+  .srl-sub { font-size: 14.5px; line-height: 1.5; max-width: 34ch; margin: 0 auto; }
+  .srl-wall { gap: 7px; }
+  .srl-row { gap: 7px; }
+  .srl-tile { height: 104px; border-radius: 11px; }
+  .srl-tile::after { border-radius: 11px; }
+  .srl-note { margin-top: 18px; }
+  /* Crop harder here. YouTube's title/logo band has a minimum height, so on a
+     104px tile it eats a much bigger share of the frame than it does on
+     desktop and the 142% crop no longer clears it — which shows the moment
+     autoplay is refused (Low Power Mode, Data Saver). 190% keeps the branding
+     outside the tile even when the player sits paused. */
+  .srl-tile iframe { width: 190%; height: 190%; }
+}
+
 @media (max-width: 620px) {
   /* "Two idiots" + the longest phrase runs ~357px inline, past a 375px screen.
      Stacked it fits and reads more deliberately anyway. */

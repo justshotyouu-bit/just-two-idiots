@@ -682,7 +682,9 @@
     { id: 'MBMhOzkO2kY', kind: 'short', title: 'Celebrating women weavers — Bhadohi, Banaras' }
   ];
 
-  var ROWS = 3;
+  // Four rows on a phone: the tiles are much shorter there (see style.css), so
+  // an extra row buys another band of videos without making the section taller.
+  var ROWS = window.matchMedia('(max-width: 640px)').matches ? 4 : 3;
 
   var section = document.getElementById('showreel');
   var wall = document.getElementById('srl-wall');
