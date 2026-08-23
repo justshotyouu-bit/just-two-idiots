@@ -137,7 +137,6 @@ a:hover { color: #C97A1E; }
   .srl-hint-pointer { display: none; }
   .srl-hint-touch { display: inline; }
 
-
   .site-header {
     top: 10px;
     width: calc(100vw - 20px);
@@ -879,7 +878,6 @@ a:hover { color: #C97A1E; }
 .jti-cta-arrow { transition: transform .3s cubic-bezier(.16,1,.3,1); }
 .jti-cta:hover .jti-cta-arrow { transform: translate(3px, -3px); }
 
-
 /* ---- Showreel — the card opens into full screen -------------------------
    A tall runway with a pinned viewport inside it. As the reader scrolls, a
    card-shaped window in the middle widens to fill the screen while the video
@@ -1038,7 +1036,8 @@ a:hover { color: #C97A1E; }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: clamp(26px, 3vw, 40px);
+  gap: 0;
+  justify-content: center;
   border-radius: 24px;
   padding: clamp(24px, 2.6vw, 36px);
   background: rgba(255, 255, 255, 0.54);
@@ -1049,99 +1048,77 @@ a:hover { color: #C97A1E; }
     0 24px 60px -28px rgba(24, 18, 10, 0.32),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
-.cta-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.cta-col-title {
+/* The panel is now just the two ways to reach the studio. Each line reveals by
+   rising out of its own mask, staggered, and draws a rule under itself on
+   hover — the restraint is the point, so there is one idea here and no more. */
+.cta-line {
+  display: block;
+  padding: clamp(14px, 1.8vw, 22px) 0;
+  border-top: 1px solid rgba(10, 10, 10, 0.10);
+  color: #0A0A0A;
+  position: relative;
+}
+.cta-line:first-of-type { border-top: 0; }
+.cta-line-label {
+  display: block;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8A8A85;
-  margin: 0 0 12px;
+  color: #A3A29C;
+  margin-bottom: 8px;
+  transition: color .35s ease;
 }
-.cta-col a {
+/* The mask is what the value slides out of; it must clip, and it needs the
+   descender room or the tail of the @ and g get shaved. */
+.cta-line-mask {
   display: block;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.3;
-  color: #0A0A0A;
-  padding: 6px 0;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
 }
-.cta-col a:hover { color: #C97A1E; }
-
-.cta-panel-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding-top: clamp(18px, 2vw, 24px);
-  border-top: 1px solid rgba(10, 10, 10, 0.09);
-}
-.cta-legal { font-size: 13px; color: #8A8A85; }
-.cta-book {
-  display: inline-flex;
-  align-items: center;
-  padding: 12px 24px;
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-  background: #0A0A0A;
-  color: #FAFAF8;
-  transition: background .25s ease, color .25s ease;
-}
-.cta-book:hover { background: #FFFFFF; color: #0A0A0A; }
-
-/* The oversized number is decoration — the real control is the pill sitting
-   over it, which is why the text is aria-hidden and the button carries the
-   number. */
-.cta-ghost {
-  position: relative;
-  z-index: 1;
-  margin-top: clamp(22px, 3vw, 40px);
-  text-align: center;
-}
-.cta-ghost-text {
+.cta-line-value {
   display: block;
   font-family: 'Switzer', sans-serif;
-  font-weight: 700;
-  font-size: clamp(28px, 8vw, 120px);
-  line-height: 1.06;
-  letter-spacing: -0.035em;
+  font-weight: 600;
+  font-size: clamp(22px, 3.4vw, 40px);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
   white-space: nowrap;
-  color: rgba(10, 10, 10, 0.085);
-  user-select: none;
+  transform: translateY(105%);
+  opacity: 0;
+  transition: transform .78s cubic-bezier(.16,1,.3,1), opacity .5s ease, color .35s ease;
 }
-.cta-copy-btn {
+.cta-line.is-in .cta-line-value { transform: none; opacity: 1; }
+.cta-line:nth-of-type(2) .cta-line-value { transition-delay: .1s; }
+
+/* Hover: the rule draws in from the left and the value warms to the accent. */
+.cta-line::after {
+  content: "";
   position: absolute;
-  right: 2%;
-  bottom: -6%;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 100px;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  color: #FAFAF8;
-  background: rgba(10, 10, 10, 0.92);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 26px -12px rgba(24, 18, 10, 0.55);
-  cursor: pointer;
-  transform: rotate(-4deg);
-  transition: transform .25s ease, box-shadow .25s ease;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: #C97A1E;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform .5s cubic-bezier(.16,1,.3,1);
 }
-.cta-copy-btn:hover { transform: rotate(-4deg) translateY(-2px); box-shadow: 0 16px 30px -12px rgba(24,18,10,0.6); }
-.cta-copy-icon {
-  width: 12px;
-  height: 12px;
-  border: 1.6px solid currentColor;
-  border-radius: 3px;
-  box-shadow: 3px -3px 0 -1.6px rgba(10,10,10,0.92), 3px -3px 0 0 currentColor;
+.cta-line:hover::after,
+.cta-line:focus-visible::after { transform: scaleX(1); }
+.cta-line:hover .cta-line-value,
+.cta-line:focus-visible .cta-line-value { color: #C97A1E; }
+.cta-line:hover .cta-line-label,
+.cta-line:focus-visible .cta-line-label { color: #C97A1E; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* The reveal is the whole effect; without motion the lines simply sit there. */
+  .cta-line-value { transform: none !important; opacity: 1 !important; transition: none; }
+  .cta-line::after { transition: none; }
 }
+
+
 
 /* Screen-reader-only. The rotator is decorative motion, so it is aria-hidden
    and this carries the same information as one readable sentence — an
@@ -1446,30 +1423,12 @@ a:hover { color: #C97A1E; }
      Stacked it fits and reads more deliberately anyway. */
   .hero-rot { flex-direction: column; gap: 0.1em; }
 
-  /* Three columns leave ~70px each here, which wraps every second label. Two
-     columns fit, but three groups into two leaves the last one alone in the
-     bottom-left with an empty cell beside it — the footer reads as unfinished.
-     The third group spans the full width instead and lays its links out in a
-     row, which closes the hole and squares the block off. */
-  .cta-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .cta-col:last-child {
-    grid-column: 1 / -1;
-    /* One wrapping row, not a three-up grid: equal thirds are 55-68px below
-       400px and every label wrapped inside its own cell. A flexible gap keeps
-       Instagram / LinkedIn / Behance on one line from 360px up and lets them
-       wrap cleanly on a 320px screen, where they cannot fit either way. */
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: clamp(10px, 5vw, 24px);
-    row-gap: 4px;
-  }
-  .cta-col:last-child .cta-col-title { flex: 0 0 100%; margin-bottom: 8px; }
-  /* Rotated and overlapping stops working once the pill is nearly as wide as
-     the number it sits on — it goes back into the flow instead. */
-  .cta-copy-btn { position: static; transform: none; margin-top: 14px; }
-  .cta-copy-btn:hover { transform: translateY(-2px); }
-  .cta-panel-foot { flex-direction: column; align-items: flex-start; gap: 14px; }
+  /* The values are nowrap so they can slide out of their mask as one piece,
+     which means they cannot reflow to fit — at 22px the email measured 210px
+     inside a 184px panel on a 320px screen and the mask simply cut it off.
+     Sized off the viewport here so it always fits. */
+  .cta-line-value { font-size: clamp(16px, 5.4vw, 24px); }
+
 }
 
 /* Supersedes an earlier rule that dropped this link below 500px. That was
@@ -1580,11 +1539,11 @@ a:hover { color: #C97A1E; }
    used to force `display:inline-flex` on every link in the footer and the
    contact block, which is how those 17-19px links reached 24px. The footer is
    gone and the closing CTA's links clear 24px on their own padding, so that
-   declaration now only did damage: an id selector, it outranked `.cta-col a`
-   and laid the link columns out on one line. Kept as a floor rather than
-   dropped, so restyling the type can't quietly reintroduce a small target. */
-.cta-col a,
-.cta-panel-foot a { min-height: 24px; }
+   declaration now only did damage: an id selector, it outranked the panel's
+   own layout. Kept as a floor rather than dropped, so restyling the type
+   can't quietly reintroduce a small target — it now tracks the two contact
+   lines, which are the only links left in the panel. */
+.cta-line { min-height: 24px; }
 
 /* Case-study pages (work/*.html) — "Next project" arrow nudge on hover */
 .cs-next-arrow { display: inline-block; transition: transform 0.3s cubic-bezier(.16,1,.3,1); }

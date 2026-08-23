@@ -555,37 +555,7 @@
   window.addEventListener('resize', onScroll);
   update();
 })();
-// Closing CTA — the pill over the oversized number copies it to the clipboard.
-// The label reports the result in place; there is no toast system on this page
-// and a silent success is indistinguishable from a dead button.
-(function () {
-  var btn = document.getElementById('cta-copy');
-  if (!btn) return;
-  var label = btn.querySelector('.cta-copy-label');
-  var original = label ? label.textContent : '';
-  var timer;
 
-  function report(text) {
-    if (!label) return;
-    label.textContent = text;
-    clearTimeout(timer);
-    timer = setTimeout(function () { label.textContent = original; }, 1800);
-  }
-
-  btn.addEventListener('click', function () {
-    var value = btn.getAttribute('data-copy') || '';
-    // writeText needs a secure context; on http:// it rejects rather than
-    // throwing, so both paths have to land somewhere the reader can see.
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(value).then(
-        function () { report('Copied'); },
-        function () { report(value); }
-      );
-    } else {
-      report(value);
-    }
-  });
-})();
 // Hero rotator — "Two idiots" stays put, the trade after it rolls over on a
 // timer. Phrases always enter from below and leave upward, so the motion reads
 // as one continuous roll rather than alternating direction.
@@ -797,4 +767,34 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   frame();
+})();
+// Contact lines — each value rises out of its mask the first time the panel
+// comes into view. One-shot: it plays once and stays put, rather than
+// re-triggering every time the footer scrolls back past.
+(function () {
+  var lines = Array.prototype.slice.call(document.querySelectorAll('.cta-line'));
+  if (!lines.length) return;
+
+  var show = function () { lines.forEach(function (l) { l.classList.add('is-in'); }); };
+  if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) { show(); return; }
+
+  // Deliberately a position test rather than an IntersectionObserver: the
+  // pre-reveal state is a value pushed fully out of its own mask, so an
+  // observer that never delivers would leave the number and email invisible.
+  // bindScroll's frame runs once synchronously, so this resolves on load.
+  var done = false;
+  function check() {
+    if (done) return;
+    var r = lines[0].getBoundingClientRect();
+    if (r.bottom > 0 && r.top < window.innerHeight * 0.92) { done = true; show(); }
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; check(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  check();
 })();
