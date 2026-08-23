@@ -657,3 +657,113 @@
     slot.style.width = next.offsetWidth + 'px';
   }, HOLD);
 })();
+// Showreel wall — rows of YouTube tiles that drift sideways with the scroll.
+//
+// TO ADD VIDEOS: put them in SHOWREEL below. That is the only edit needed.
+//   id   — the YouTube id. For https://youtu.be/AbC123  ->  'AbC123'
+//          For a Short https://youtube.com/shorts/AbC123 -> 'AbC123'
+//   kind — 'wide'  for normal 16:9 videos
+//          'short' for Shorts / vertical 9:16
+// Order does not matter; the rows are balanced automatically. With the list
+// empty the whole section removes itself, so a half-finished wall never ships.
+(function () {
+  var SHOWREEL = [
+    // { id: 'dQw4w9WgXcQ', kind: 'wide'  },
+    // { id: 'ABCdef12345', kind: 'short' },
+  ];
+
+  var ROWS = 3;
+
+  var section = document.getElementById('showreel');
+  var wall = document.getElementById('srl-wall');
+  if (!section || !wall) return;
+
+  if (!SHOWREEL.length) { section.remove(); return; }   // nothing to show yet
+  section.hidden = false;
+
+  // Deal the tiles across the rows so each row gets a similar total width —
+  // rows of wildly different lengths drift out of sync and look broken.
+  var width = function (v) { return v.kind === 'short' ? 9 / 16 : 16 / 9; };
+  var rows = [], totals = [];
+  for (var r = 0; r < ROWS; r++) { rows.push([]); totals.push(0); }
+  SHOWREEL.forEach(function (v) {
+    var i = totals.indexOf(Math.min.apply(null, totals));
+    rows[i].push(v); totals[i] += width(v);
+  });
+
+  function tile(v) {
+    var el = document.createElement('div');
+    el.className = 'srl-tile srl-tile-' + (v.kind === 'short' ? 'short' : 'wide');
+    el.setAttribute('data-yt', v.id);
+    // Poster first: an iframe per tile costs a full player, so tiles stay as
+    // a still until they are actually on screen (see mount/unmount below).
+    var img = document.createElement('img');
+    img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
+    img.alt = v.title || '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    el.appendChild(img);
+    return el;
+  }
+
+  var rowEls = rows.map(function (list) {
+    var row = document.createElement('div');
+    row.className = 'srl-row';
+    // Duplicated so a drifting row still covers the full width at either end.
+    list.concat(list).forEach(function (v) { row.appendChild(tile(v)); });
+    wall.appendChild(row);
+    return row;
+  });
+
+  // --- play only what is visible -----------------------------------------
+  function mount(el) {
+    if (el.querySelector('iframe')) return;
+    var id = el.getAttribute('data-yt');
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id +
+            '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + id +
+            '&playsinline=1&modestbranding=1&rel=0&disablekb=1&fs=0';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture';
+    f.setAttribute('tabindex', '-1');
+    f.setAttribute('aria-hidden', 'true');
+    f.setAttribute('title', '');
+    el.appendChild(f);
+  }
+  function unmount(el) {
+    var f = el.querySelector('iframe');
+    if (f) f.remove();          // frees the player; the poster stays behind it
+  }
+  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
+  if ('IntersectionObserver' in window && motionOK.matches) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { e.isIntersecting ? mount(e.target) : unmount(e.target); });
+    }, { rootMargin: '10% 0px' });
+    [].forEach.call(wall.querySelectorAll('.srl-tile'), function (t) { io.observe(t); });
+  }
+
+  // --- scroll-driven drift ------------------------------------------------
+  if (!motionOK.matches) return;
+  var TRAVEL = 0.18;   // fraction of a row's own width it may slide end to end
+
+  function frame() {
+    var r = section.getBoundingClientRect();
+    var span = r.height + window.innerHeight;
+    // -1 as the section enters from below, +1 as it leaves past the top.
+    var p = span > 0 ? 1 - 2 * ((r.bottom) / span) : 0;
+    p = p < -1 ? -1 : p > 1 ? 1 : p;
+    rowEls.forEach(function (row, i) {
+      var dir = i % 2 === 0 ? -1 : 1;             // alternate row to row
+      var dist = row.scrollWidth * TRAVEL * 0.5;
+      row.style.transform = 'translate3d(' + (p * dist * dir).toFixed(1) + 'px,0,0)';
+    });
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; frame(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  frame();
+})();
