@@ -134,9 +134,6 @@ a:hover { color: #C97A1E; }
 .wrap { padding-top: 88px; }
 
 @media (max-width: 640px) {
-  /* The bar is a no-hamburger design and is already within 8px of its own edge
-     at 320px with just two nav links — a third pushes the CTA 92px past it.
-     Re-measure before adding anything else to the header. */
 
   .site-header {
     top: 10px;
@@ -144,26 +141,21 @@ a:hover { color: #C97A1E; }
     gap: 4px;
     padding: 7px 7px 7px 15px;
   }
-  .site-logo { font-size: 13.5px; }
-  .nav-link { font-size: 13px; padding: 8px 9px; }
-  .nav-cta { font-size: 13px; padding: 10px 15px; }
+  /* Three nav links have to fit a no-hamburger bar, so the type steps down
+     with the viewport rather than the third link dropping out. */
+  .site-logo { font-size: 13px; }
+  .nav-link { font-size: 12.5px; padding: 8px 7px; }
+  .nav-cta { font-size: 12.5px; padding: 10px 13px; }
   .wrap { padding-top: 74px; }
-}
-/* Measured: the header needs 426px for three links plus the CTA, and has
-   458px to give at 500px wide. It only actually binds below that — at 430px
-   it is 38px over, at 320px 99px over. The old rule dropped the link at
-   640px, which took it away from every large phone and small tablet that
-   could have shown it. Under this width it lives in the footer panel. */
-@media (max-width: 500px) {
-  .nav-link-who { display: none; }
 }
 
 /* At the very narrow end the four words stop fitting together; the CTA keeps
    its full label and the links tighten instead. */
-@media (max-width: 380px) {
-  .site-logo { font-size: 12.5px; }
-  .nav-link { font-size: 12px; padding: 8px 6px; }
-  .nav-cta { font-size: 12px; padding: 9px 12px; }
+@media (max-width: 430px) {
+  .site-header { gap: 2px; padding: 7px 6px 7px 10px; }
+  .site-logo { font-size: 11.5px; }
+  .nav-link { font-size: 11px; padding: 8px 2px; }
+  .nav-cta { font-size: 11px; padding: 9px 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1304,6 +1296,17 @@ a:hover { color: #C97A1E; }
   .cta-copy-btn { position: static; transform: none; margin-top: 14px; }
   .cta-copy-btn:hover { transform: translateY(-2px); }
   .cta-panel-foot { flex-direction: column; align-items: flex-start; gap: 14px; }
+}
+
+/* Supersedes an earlier rule that dropped this link below 500px. That was
+   measured against the old type sizes, where three links needed 426px of bar;
+   with the step-down above they need 329px, so the bar carries them from a
+   360px viewport up and phones keep the link. Below 360 there genuinely isn't
+   the room, and going smaller means shortening the labels rather than the
+   type — only there does it fall back to the footer panel. If the nav copy
+   changes, re-measure the bar's requirement against `100vw - 20`. */
+@media (max-width: 359px) {
+  .nav-link-who { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
