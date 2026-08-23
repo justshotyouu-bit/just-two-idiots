@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="favicon.svg?v=1787502968" type="image/svg+xml">
+<link rel="icon" href="favicon.svg?v=1787509945" type="image/svg+xml">
 <title>Who we are — Just Two Idiots</title>
 <meta name="description" content="Two friends since class one, running one studio. Krishn Yadav on creative direction and Manish Mahiwal on engineering, handling every project end to end.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1787502968">
-<link rel="stylesheet" href="who-we-are.css?v=1787502968">
+<link rel="stylesheet" href="style.css?v=1787509945">
+<link rel="stylesheet" href="who-we-are.css?v=1787509945">
 <link rel="canonical" href="https://justtwoidiots.com/who-we-are.html">
 <meta name="theme-color" content="#FAFAF8">
 <meta property="og:type" content="website">
@@ -74,27 +74,145 @@
     </section>
 
     <section class="who-founders" id="founders">
-      <div class="section-pill">The two of us</div>
-      <h2 class="who-h2">Friends since class one.</h2>
-      <p class="who-lede">We met at six years old and never really stopped working on things together. Twenty-two years later that is still the whole idea behind the studio &mdash; two people who know each other well enough to move fast, handling every project end to end.</p>
+      <!-- The words are pre-split in markup rather than by JS so the accent
+           underline can wrap exactly "class one." and travel with it. Each word
+           rides up out of its own clipping mask; the statement section above
+           already lights words one at a time, so this one moves instead of
+           tinting — two colour-reveals on one page read as the same trick. -->
+      <header class="jf-intro" data-jf-intro>
+        <div class="section-pill">The two of us</div>
 
-      <div class="who-founder-grid">
-        <article class="who-founder">
-          <div class="who-founder-photo"><img src="assets/who/krishn.webp" width="760" height="950" alt="Krishn Yadav" loading="lazy" decoding="async"></div>
-          <div class="who-founder-text">
-            <h3 class="who-founder-name">Krishn Yadav</h3>
-            <div class="who-founder-role">Co-founder &middot; Creative Director</div>
-            <p class="who-founder-bio">Founder of JustShotYou Productions, shooting photography and film across Delhi and Gurgaon. He leads the look of everything that leaves the studio &mdash; art direction, campaigns, and the way a brand is put in front of a camera.</p>
+        <h2 class="who-h2 jf-title">
+          <span class="jf-w"><i>Friends</i></span>
+          <span class="jf-w"><i>since</i></span>
+          <span class="jf-accent"><span class="jf-w"><i>class</i></span> <span class="jf-w"><i>one.</i></span><svg class="jf-underline" viewBox="0 0 220 14" preserveAspectRatio="none" fill="none" aria-hidden="true"><path pathLength="1" d="M3 9.6 C 46 3.4, 92 11.8, 138 5.4 S 200 4.4, 217 8.2" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></span>
+        </h2>
+
+        <div class="jf-intro-row">
+          <p class="who-lede jf-lede">We met at <em>six years old</em> and never really stopped working on things together. <em>Twenty-two years</em> later that is still the whole idea behind the studio &mdash; two people who know each other well enough to move fast, handling every project end to end.</p>
+
+          <!-- Numbers come straight out of the sentence beside them. They are
+               printed in the markup too, so no-JS and reduced-motion both get
+               the finished figure rather than a zero. -->
+          <div class="jf-stats">
+            <div class="jf-stat"><span class="jf-stat-n" data-count="22">22</span><span class="jf-stat-l">years together</span></div>
+            <div class="jf-stat"><span class="jf-stat-n" data-count="2">2</span><span class="jf-stat-l">founders</span></div>
+            <div class="jf-stat"><span class="jf-stat-n" data-count="1">1</span><span class="jf-stat-l">studio</span></div>
           </div>
-        </article>
-        <article class="who-founder">
-          <div class="who-founder-photo"><img src="assets/who/manish.webp" width="499" height="624" alt="Manish Mahiwal" loading="lazy" decoding="async"></div>
-          <div class="who-founder-text">
-            <h3 class="who-founder-name">Manish Mahiwal</h3>
-            <div class="who-founder-role">Co-founder &middot; Engineering</div>
-            <p class="who-founder-bio">An IIIT graduate who would rather ship something real than talk about it. He builds the websites, apps and systems behind the work, and keeps what we design standing up once it is live.</p>
-          </div>
-        </article>
+        </div>
+      </header>
+
+      <!-- Two founder cards on one glass stage. The blobs are SIBLINGS behind
+           the grid, not children of a card: backdrop-filter blurs what is
+           painted *behind* an element, so glass with nothing behind it is just
+           a flat panel and a wasted compositor layer. -->
+      <div class="jf-stage">
+        <div class="jf-blobs" aria-hidden="true">
+          <span class="jf-blob jf-blob-a"></span>
+          <span class="jf-blob jf-blob-b"></span>
+          <span class="jf-blob jf-blob-c"></span>
+        </div>
+
+        <div class="jf-grid">
+
+          <!-- 01 — the creative one. Motif is a design-tool artboard: a pen
+               path draws itself, its anchors pop, a palette deals in. -->
+          <article class="jf-card jf-creative" data-jf-card style="--jf-from: -1;">
+            <div class="jf-face">
+              <header class="jf-head">
+                <span class="jf-index">01</span>
+                <span class="jf-kind">Creative</span>
+              </header>
+
+              <div class="jf-body">
+                <div class="jf-portrait">
+                  <img src="assets/who/krishn-card.webp" width="420" height="525"
+                       alt="Krishn Yadav" loading="lazy" decoding="async">
+                  <span class="jf-wash" aria-hidden="true"></span>
+                </div>
+                <div class="jf-copy">
+                  <h3 class="jf-name">Krishn Yadav</h3>
+                  <p class="jf-role">Co-founder &middot; Creative Director</p>
+                  <p class="jf-bio">Founder of JustShotYou Productions, shooting photography and film across Delhi and Gurgaon. He leads the look of everything that leaves the studio &mdash; art direction, campaigns, and the way a brand is put in front of a camera.</p>
+                </div>
+              </div>
+
+              <div class="jf-motif jf-artboard" aria-hidden="true">
+                <span class="jf-motif-label">Artboard &mdash; 1440 &times; 900</span>
+                <svg class="jf-pen" viewBox="0 0 420 96" preserveAspectRatio="none" fill="none">
+                  <path class="jf-pen-path" d="M8 74 C 92 74, 104 18, 176 22 C 248 26, 250 78, 322 66 C 372 58, 396 34, 412 26"
+                        pathLength="1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <g class="jf-pen-handles" stroke="currentColor" stroke-width="1">
+                    <line x1="176" y1="22" x2="230" y2="26"/>
+                    <line x1="176" y1="22" x2="122" y2="18"/>
+                  </g>
+                  <rect class="jf-anchor jf-anchor-1" x="4"   y="70" width="8" height="8" rx="1"/>
+                  <rect class="jf-anchor jf-anchor-2" x="172" y="18" width="8" height="8" rx="1"/>
+                  <rect class="jf-anchor jf-anchor-3" x="318" y="62" width="8" height="8" rx="1"/>
+                  <rect class="jf-anchor jf-anchor-4" x="408" y="22" width="8" height="8" rx="1"/>
+                </svg>
+                <div class="jf-swatches">
+                  <span style="--c:#C97A1E"></span><span style="--c:#E4A15C"></span>
+                  <span style="--c:#0A0A0A"></span><span style="--c:#F1EFEA"></span>
+                  <span style="--c:#8C3F2B"></span>
+                </div>
+                <span class="jf-aperture">
+                  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <circle cx="16" cy="16" r="12.5"/>
+                    <path d="M16 3.5 L22.5 14.8 M27.3 22.3 L14.3 22.3 M10.2 28.5 L16.7 17.2 M16 28.5 L9.5 17.2 M4.7 22.3 L17.7 22.3 M21.8 3.5 L15.3 14.8"/>
+                  </svg>
+                </span>
+              </div>
+
+              <ul class="jf-chips">
+                <li>Photography</li><li>Film</li><li>Art direction</li><li>Campaigns</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- 02 — the engineer. Motif is a terminal that types a deploy, over
+               a blueprint grid with a scanline crossing it. -->
+          <article class="jf-card jf-tech" data-jf-card style="--jf-from: 1;">
+            <div class="jf-face">
+              <span class="jf-grid-lines" aria-hidden="true"></span>
+              <span class="jf-scan" aria-hidden="true"></span>
+              <header class="jf-head">
+                <span class="jf-index">02</span>
+                <span class="jf-kind">Engineering</span>
+              </header>
+
+              <div class="jf-body">
+                <div class="jf-portrait">
+                  <img src="assets/who/manish-card.webp" width="420" height="525"
+                       alt="Manish Mahiwal" loading="lazy" decoding="async">
+                  <span class="jf-wash" aria-hidden="true"></span>
+                </div>
+                <div class="jf-copy">
+                  <h3 class="jf-name">Manish Mahiwal</h3>
+                  <p class="jf-role">Co-founder &middot; Engineering</p>
+                  <p class="jf-bio">An IIIT graduate who would rather ship something real than talk about it. He builds the websites, apps and systems behind the work, and keeps what we design standing up once it is live.</p>
+                </div>
+              </div>
+
+              <div class="jf-motif jf-terminal" aria-hidden="true">
+                <div class="jf-term-bar">
+                  <i></i><i></i><i></i>
+                  <span class="jf-term-path">~/just-two-idiots</span>
+                </div>
+                <div class="jf-term-body">
+                  <p class="jf-term-line" style="--ch: 26; --i: 0"><b>$</b> npm run build &amp;&amp; deploy</p>
+                  <p class="jf-term-line jf-ok" style="--ch: 23; --i: 1">&#10003; build passed in 2.4s</p>
+                  <p class="jf-term-line jf-ok" style="--ch: 29; --i: 2">&#10003; live &rarr; justtwoidiots.com<span class="jf-caret"></span></p>
+                </div>
+              </div>
+
+              <ul class="jf-chips">
+                <li>Websites</li><li>Apps</li><li>Systems</li><li>Integrations</li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
       </div>
     </section>
 
@@ -109,6 +227,6 @@
 
   </div>
 </div>
-<script src="who-we-are.js?v=1787502968"></script>
+<script src="who-we-are.js?v=1787509945"></script>
 </body>
 </html>

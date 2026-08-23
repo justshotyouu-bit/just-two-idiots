@@ -161,47 +161,343 @@
 .who-founders { border-bottom: 1px solid #EFEDE8; }
 
 /* ---- Founders -----------------------------------------------------------
-   Portrait beside the copy rather than above it. Full-width 4:5 photos in a
-   two-column grid came out ~560px tall each and dominated the page; capped at
-   200px they read as portraits next to a bio, which is the quieter thing this
-   section wants to be. */
-.who-founder-grid {
+   Two profile cards on one glass stage, each themed to the person: a warm
+   design-tool card for the creative director, a dark instrument panel for the
+   engineer. Portraits stay small (~190px) and sit beside the copy — full-width
+   4:5 portraits were tried here once and dominated the section.
+
+   Colours are not free choices. Every text colour below was checked against
+   its own card face composited over BOTH the page and a blob at full strength;
+   all of them clear 4.5:1 in both cases. Re-check if any tint or alpha moves. */
+
+/* --- Section intro: pill, headline, lede, figures ------------------------
+   Scoped to .jf-* rather than restyling .who-h2 / .who-lede, which the rest of
+   the page and any future section still share. */
+.jf-intro { position: relative; }
+.jf-intro .section-pill { opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s cubic-bezier(.22,.61,.36,1); }
+.jf-intro.is-in .section-pill { opacity: 1; transform: none; }
+
+.jf-title {
+  font-size: clamp(32px, 4.8vw, 58px);
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 18px 0 22px;
+  max-width: 16ch;
+}
+/* Each word in its own clipping mask. The padding/negative-margin pair gives
+   descenders room to exist inside a box that is otherwise clipped at the
+   baseline. */
+.jf-w {
+  display: inline-block; overflow: hidden;
+  padding-bottom: .14em; margin-bottom: -.14em;
+  vertical-align: bottom;
+}
+.jf-w > i {
+  display: inline-block; font-style: normal;
+  transform: translateY(110%);
+  transition: transform .78s cubic-bezier(.19,.94,.32,1);
+}
+.jf-intro.is-in .jf-w > i { transform: none; }
+.jf-title .jf-w:nth-of-type(1) > i { transition-delay: .06s; }
+.jf-title .jf-w:nth-of-type(2) > i { transition-delay: .13s; }
+.jf-accent .jf-w:nth-of-type(1) > i { transition-delay: .20s; }
+.jf-accent .jf-w:nth-of-type(2) > i { transition-delay: .27s; }
+
+/* The accent is inline-block so the underline can size to exactly these two
+   words — which also keeps "class one." from ever breaking across lines. */
+.jf-accent { position: relative; display: inline-block; }
+.jf-underline {
+  position: absolute; left: -.04em; right: -.04em; bottom: -.10em;
+  width: auto; height: .22em; overflow: visible;
+  color: #C97A1E; pointer-events: none;
+}
+.jf-underline path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.jf-intro.is-in .jf-underline path { animation: jf-draw .82s cubic-bezier(.55,0,.25,1) .62s forwards; }
+
+.jf-intro-row {
+  display: grid;
+  /* The lede column is sized to the lede, not to the full width: as 1fr it
+     stretched to 910px while the text stopped at its 54ch measure, leaving a
+     void that read as a mistake rather than as space. */
+  grid-template-columns: minmax(0, 54ch) auto;
+  justify-content: start;
+  gap: clamp(30px, 4vw, 56px);
+  align-items: start;
+  margin-bottom: clamp(34px, 5vw, 58px);
+}
+.jf-lede {
+  max-width: 54ch; margin: 0;
+  font-size: clamp(15.5px, 1.3vw, 17.5px);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity .7s ease .58s, transform .7s cubic-bezier(.22,.61,.36,1) .58s;
+}
+.jf-intro.is-in .jf-lede { opacity: 1; transform: none; }
+/* Emphasis by weight and ink, not italics — the page has no italic face and
+   faux-italic Switzer looks like a rendering fault. */
+.jf-lede em { font-style: normal; font-weight: 500; color: #1A1A18; }
+
+/* Figures sit beside the lede as an editorial column rather than stacking
+   under it, which is what made the whole block read as three flat rows. */
+.jf-stats {
+  display: grid; gap: 16px;
+  padding-left: clamp(22px, 3vw, 40px);
+  border-left: 1px solid #E7E5E0;
+}
+.jf-stat { display: flex; align-items: baseline; gap: 11px; opacity: 0; transform: translateY(12px); }
+.jf-intro.is-in .jf-stat { animation: jf-deal .55s cubic-bezier(.2,1.25,.4,1) forwards; }
+.jf-intro.is-in .jf-stat:nth-child(1) { animation-delay: .80s; }
+.jf-intro.is-in .jf-stat:nth-child(2) { animation-delay: .90s; }
+.jf-intro.is-in .jf-stat:nth-child(3) { animation-delay: 1.00s; }
+.jf-stat-n {
+  font-family: 'Switzer', sans-serif; font-weight: 600;
+  font-size: clamp(30px, 3.2vw, 40px); line-height: 1;
+  letter-spacing: -.03em;
+  /* Deeper than the brand #C97A1E, which only clears contrast as large text;
+     this one passes at any size, so shrinking the figure can't break it. */
+  color: #A85F14;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.6ch;
+}
+.jf-stat-l { font-size: 12.5px; line-height: 1.35; color: #5A5A56; white-space: nowrap; }
+
+.jf-stage { position: relative; }
+
+/* The blobs are siblings *behind* the grid, never children of a card:
+   backdrop-filter blurs what is painted behind an element, so a glass card
+   with nothing behind it is a flat panel plus a wasted compositor layer. */
+/* No overflow clip here on purpose: clipping a 64px blur at the container
+   edge draws a hard rounded rectangle behind the cards that reads as an
+   unintended panel. The blur is the only edge treatment these need. */
+/* Horizontal insets stay at 0 and no blob hangs off the side: a box even
+   1.7px past the viewport gives the whole page a horizontal scrollbar. The
+   soft spill is the blur, which is ink overflow and costs no scroll width. */
+.jf-blobs { position: absolute; inset: -4% 0; z-index: 0; pointer-events: none; }
+.jf-blob { position: absolute; border-radius: 50%; filter: blur(64px); }
+.jf-blob-a { width: 42%; aspect-ratio: 1; left: 0;   top: -8%;  background: rgba(201,122,30,.30); }
+.jf-blob-b { width: 40%; aspect-ratio: 1; right: 0;  top: 12%;  background: rgba(79,176,232,.30); }
+.jf-blob-c { width: 34%; aspect-ratio: 1; left: 33%; bottom: -12%; background: rgba(140,63,43,.16); }
+
+.jf-grid {
+  position: relative; z-index: 1;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(28px, 4vw, 56px) clamp(32px, 5vw, 72px);
+  gap: clamp(18px, 2.4vw, 28px);
+  perspective: 1500px;
 }
-.who-founder {
-  display: grid;
-  grid-template-columns: clamp(132px, 15vw, 200px) minmax(0, 1fr);
-  gap: clamp(18px, 2.2vw, 28px);
-  align-items: start;
+
+/* --- The card: entrance, then pointer tilt, on one transform ------------
+   Both live on .jf-card because it is the direct child of the perspective'd
+   grid — a rotate on a deeper element renders as a flat squash. They compose
+   through custom properties so neither clobbers the other; .is-settled swaps
+   the long entrance easing for a short one once the card has landed. */
+.jf-card {
+  position: relative;
+  opacity: 0;
+  transform:
+    translateY(var(--jf-y, 56px))
+    rotateX(calc(var(--jf-rx, 9deg) + var(--tx, 0deg)))
+    rotateY(calc(var(--jf-ry, 15deg) * var(--jf-from, 1) + var(--ty, 0deg)))
+    scale(var(--jf-s, .93));
+  transition: opacity .7s cubic-bezier(.22,.61,.36,1),
+              transform .95s cubic-bezier(.2,.9,.3,1);
+  will-change: transform, opacity;
 }
-/* Name, role and bio are one grid child. Loose in the grid they became three
-   separate items and wrapped back under the photo. */
-.who-founder-text { min-width: 0; }
-.who-founder-photo {
-  aspect-ratio: 4 / 5;
-  border-radius: 14px;
+.jf-grid > .jf-card:nth-child(2) { transition-delay: .14s; }
+.jf-card.is-in { opacity: 1; --jf-y: 0px; --jf-rx: 0deg; --jf-ry: 0deg; --jf-s: 1; }
+.jf-card.is-settled { transition: transform .3s cubic-bezier(.22,.61,.36,1); }
+
+.jf-face {
+  position: relative; height: 100%;
+  display: flex; flex-direction: column;
+  gap: clamp(15px, 1.9vw, 21px);
+  padding: clamp(18px, 2.3vw, 26px);
+  border-radius: 26px;
   overflow: hidden;
-  background: #F1EFEA;
+  backdrop-filter: blur(22px) saturate(168%);
+  -webkit-backdrop-filter: blur(22px) saturate(168%);
+  transition: box-shadow .4s ease, transform .4s ease;
 }
-.who-founder-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.who-founder-name {
-  font-family: 'Switzer', sans-serif;
-  font-weight: 600;
-  font-size: clamp(18px, 1.5vw, 21px);
-  letter-spacing: -0.01em;
-  margin: 0 0 5px;
-  color: #0A0A0A;
+.jf-creative .jf-face {
+  background: rgba(255,251,244,.72);
+  border: 1px solid rgba(201,122,30,.22);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 24px 54px -30px rgba(92,60,20,.45);
 }
-.who-founder-role {
-  font-size: 11px;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: #A3A29C;
-  margin-bottom: 12px;
+.jf-tech .jf-face {
+  background: rgba(13,18,24,.90);
+  border: 1px solid rgba(92,200,242,.22);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 24px 54px -30px rgba(6,20,30,.65);
 }
-.who-founder-bio { font-size: 15px; line-height: 1.62; color: #5A5A56; margin: 0; }
+
+/* Sheen follows the pointer. Deliberately a *white* wash only on the light
+   card, where it lifts contrast for dark ink; the dark card gets a faint cyan
+   instead — a white wash over dark drops its light text toward the 4.5 floor. */
+.jf-face::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  opacity: 0; transition: opacity .35s ease; z-index: 4;
+}
+.jf-creative .jf-face::after { background: radial-gradient(340px circle at var(--mx,50%) var(--my,0%), rgba(255,255,255,.5), transparent 62%); }
+.jf-tech .jf-face::after     { background: radial-gradient(340px circle at var(--mx,50%) var(--my,0%), rgba(92,200,242,.13), transparent 62%); }
+
+/* --- Head row ----------------------------------------------------------- */
+.jf-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 2; }
+.jf-index { font-family: 'Switzer', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: .06em; }
+.jf-kind {
+  font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 100px;
+}
+.jf-creative .jf-index { color: #8A5A22; }
+.jf-creative .jf-kind  { color: #6B5334; background: rgba(201,122,30,.12); border: 1px solid rgba(201,122,30,.24); }
+.jf-tech .jf-index { color: #6FD3F5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.jf-tech .jf-kind  { color: #A9BCC7; background: rgba(92,200,242,.10); border: 1px solid rgba(92,200,242,.24); }
+
+/* --- Portrait beside copy ----------------------------------------------- */
+.jf-body {
+  display: grid;
+  grid-template-columns: clamp(136px, 14.5vw, 186px) minmax(0, 1fr);
+  gap: clamp(15px, 1.8vw, 21px);
+  align-items: start;
+  position: relative; z-index: 2;
+}
+.jf-portrait {
+  position: relative; aspect-ratio: 4 / 5;
+  border-radius: 15px; overflow: hidden; background: #F1EFEA;
+}
+.jf-portrait img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scale(1.015); transition: transform .65s cubic-bezier(.22,.61,.36,1);
+}
+.jf-tech .jf-portrait img { filter: saturate(.55) contrast(1.05) brightness(.97); }
+.jf-wash { position: absolute; inset: 0; pointer-events: none; }
+.jf-creative .jf-wash {
+  background: linear-gradient(202deg, rgba(201,122,30,.30), rgba(201,122,30,0) 54%, rgba(140,63,43,.24));
+  mix-blend-mode: multiply;
+}
+.jf-tech .jf-wash {
+  background:
+    repeating-linear-gradient(180deg, rgba(92,200,242,.07) 0 1px, transparent 1px 3px),
+    linear-gradient(202deg, rgba(20,62,88,.58), rgba(92,200,242,.08) 55%, rgba(4,12,18,.62));
+}
+
+.jf-copy { min-width: 0; }
+.jf-name { font-family: 'Switzer', sans-serif; font-weight: 600; font-size: clamp(19px, 1.6vw, 23px); letter-spacing: -.01em; margin: 0 0 5px; }
+.jf-role { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 12px; }
+.jf-bio  { font-size: 14.5px; line-height: 1.62; margin: 0; }
+.jf-creative .jf-name { color: #0A0A0A; }
+.jf-creative .jf-role { color: #8A5A22; }
+.jf-creative .jf-bio  { color: #57534B; }
+.jf-tech .jf-name { color: #ECF4F8; }
+.jf-tech .jf-role { color: #7FA8BC; }
+.jf-tech .jf-bio  { color: #A9BCC7; }
+
+/* --- Motif strip: the bit that says what each of them actually does ------ */
+.jf-motif { position: relative; border-radius: 15px; overflow: hidden; z-index: 2; }
+
+/* 01 — an artboard. The pen path draws itself, its anchors pop, the palette
+   deals in. pathLength="1" on the path means the dash maths needs no measuring. */
+.jf-artboard {
+  padding: 12px 13px 13px;
+  background:
+    radial-gradient(circle, rgba(10,10,10,.11) 1px, transparent 1.3px) 0 0 / 13px 13px,
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.34));
+  border: 1px solid rgba(201,122,30,.20);
+}
+.jf-motif-label { display: block; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: #6F6A60; margin-bottom: 4px; }
+.jf-pen { display: block; width: 100%; height: 62px; color: #C97A1E; overflow: visible; }
+.jf-pen-path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.jf-card.is-in .jf-pen-path { animation: jf-draw 1.4s cubic-bezier(.55,0,.2,1) .35s forwards; }
+@keyframes jf-draw { to { stroke-dashoffset: 0; } }
+.jf-pen-handles { opacity: 0; }
+.jf-card.is-in .jf-pen-handles { animation: jf-fade .5s ease 1.35s forwards; }
+@keyframes jf-fade { to { opacity: .45; } }
+.jf-anchor { fill: #FFFDF9; stroke: #C97A1E; stroke-width: 1.6; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
+.jf-card.is-in .jf-anchor { animation: jf-pop .42s cubic-bezier(.2,1.5,.4,1) forwards; }
+.jf-card.is-in .jf-anchor-1 { animation-delay: .5s; }
+.jf-card.is-in .jf-anchor-2 { animation-delay: .82s; }
+.jf-card.is-in .jf-anchor-3 { animation-delay: 1.14s; }
+.jf-card.is-in .jf-anchor-4 { animation-delay: 1.42s; }
+@keyframes jf-pop { from { opacity: 0; transform: scale(.2); } to { opacity: 1; transform: scale(1); } }
+.jf-swatches { display: flex; gap: 6px; margin-top: 9px; }
+.jf-swatches span {
+  width: 26px; height: 26px; border-radius: 7px; background: var(--c);
+  border: 1px solid rgba(10,10,10,.12); box-shadow: 0 2px 5px -2px rgba(80,50,15,.4);
+  opacity: 0; transform: translateY(9px) scale(.82);
+}
+.jf-card.is-in .jf-swatches span { animation: jf-deal .48s cubic-bezier(.2,1.4,.4,1) forwards; }
+.jf-card.is-in .jf-swatches span:nth-child(1) { animation-delay: 1.50s; }
+.jf-card.is-in .jf-swatches span:nth-child(2) { animation-delay: 1.58s; }
+.jf-card.is-in .jf-swatches span:nth-child(3) { animation-delay: 1.66s; }
+.jf-card.is-in .jf-swatches span:nth-child(4) { animation-delay: 1.74s; }
+.jf-card.is-in .jf-swatches span:nth-child(5) { animation-delay: 1.82s; }
+@keyframes jf-deal { to { opacity: 1; transform: none; } }
+.jf-aperture { position: absolute; right: 11px; top: 10px; width: 26px; height: 26px; color: #C97A1E; opacity: .5; }
+.jf-aperture svg { display: block; width: 100%; height: 100%; animation: jf-spin 26s linear infinite; }
+@keyframes jf-spin { to { transform: rotate(360deg); } }
+
+/* 02 — a terminal typing a deploy. Each line reveals by width in steps(), so
+   --ch must be the line's character count (rounded up, never down: short and
+   the tail is clipped, long and it simply pauses at the end). */
+.jf-terminal { background: rgba(4,10,15,.74); border: 1px solid rgba(92,200,242,.22); }
+.jf-term-bar {
+  display: flex; align-items: center; gap: 5px;
+  padding: 8px 12px; border-bottom: 1px solid rgba(92,200,242,.16);
+  background: rgba(92,200,242,.05);
+}
+.jf-term-bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(169,188,199,.3); }
+.jf-term-bar i:nth-child(1) { background: rgba(228,112,58,.75); }
+.jf-term-bar i:nth-child(2) { background: rgba(201,163,30,.7); }
+.jf-term-bar i:nth-child(3) { background: rgba(92,200,242,.6); }
+.jf-term-path { margin-left: 7px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; color: #8CA0AC; letter-spacing: .02em; }
+.jf-term-body { padding: 11px 12px 12px; display: grid; gap: 5px; }
+.jf-term-line {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px; line-height: 1.5; margin: 0; color: #A9BCC7;
+  white-space: nowrap; overflow: hidden; width: 0;
+}
+.jf-term-line b { color: #6FD3F5; font-weight: 400; }
+.jf-term-line.jf-ok { color: #7FD8A8; }
+.jf-card.is-in .jf-term-line {
+  animation: jf-type .85s steps(var(--ch)) forwards;
+  animation-delay: calc(.45s + var(--i) * .72s);
+}
+@keyframes jf-type { to { width: calc(var(--ch) * 1ch); } }
+.jf-caret { display: inline-block; width: 6px; height: 12px; background: #6FD3F5; vertical-align: -2px; margin-left: 3px; }
+.jf-card.is-in .jf-caret { animation: jf-blink 1.05s steps(1) 2.6s infinite; }
+@keyframes jf-blink { 50% { opacity: 0; } }
+
+/* Blueprint grid + a scanline crossing the whole dark card. */
+.jf-grid-lines {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(rgba(92,200,242,.10) 1px, transparent 1px) 0 0 / 100% 28px,
+    linear-gradient(90deg, rgba(92,200,242,.10) 1px, transparent 1px) 0 0 / 28px 100%;
+  -webkit-mask-image: radial-gradient(130% 95% at 72% 0%, #000 0%, transparent 74%);
+          mask-image: radial-gradient(130% 95% at 72% 0%, #000 0%, transparent 74%);
+}
+.jf-scan {
+  position: absolute; left: 0; right: 0; top: -150px; height: 150px;
+  z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(92,200,242,.09) 46%, rgba(92,200,242,.15) 52%, transparent);
+}
+.jf-card.is-in .jf-scan { animation: jf-sweep 6s cubic-bezier(.45,0,.5,1) 2.1s infinite; }
+@keyframes jf-sweep { 0% { transform: translateY(0); } 58%, 100% { transform: translateY(880px); } }
+
+/* --- Chips -------------------------------------------------------------- */
+.jf-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; margin: auto 0 0; padding: 0; position: relative; z-index: 2; }
+.jf-chips li { font-size: 11px; padding: 6px 11px; border-radius: 100px; opacity: 0; transform: translateY(9px) scale(.9); }
+.jf-creative .jf-chips li { color: #6B5334; background: rgba(201,122,30,.11); border: 1px solid rgba(201,122,30,.24); }
+.jf-tech .jf-chips li { color: #A9BCC7; background: rgba(92,200,242,.09); border: 1px solid rgba(92,200,242,.22); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: .01em; }
+.jf-card.is-in .jf-chips li { animation: jf-deal .45s cubic-bezier(.2,1.4,.4,1) forwards; }
+.jf-card.is-in .jf-chips li:nth-child(1) { animation-delay: 1.92s; }
+.jf-card.is-in .jf-chips li:nth-child(2) { animation-delay: 2.00s; }
+.jf-card.is-in .jf-chips li:nth-child(3) { animation-delay: 2.08s; }
+.jf-card.is-in .jf-chips li:nth-child(4) { animation-delay: 2.16s; }
+
+@media (hover: hover) and (pointer: fine) {
+  .jf-card:hover .jf-face::after { opacity: 1; }
+  .jf-card:hover .jf-portrait img { transform: scale(1.055); }
+  .jf-creative .jf-face:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 34px 66px -30px rgba(92,60,20,.55); }
+  .jf-tech .jf-face:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 34px 66px -30px rgba(6,20,30,.8); }
+}
 
 /* ---- Close -------------------------------------------------------------- */
 .who-end {
@@ -241,25 +537,49 @@
   .who-statement { height: 170vh; }
   .who-words { max-width: 100%; }
   .who-statement-sticky { min-height: 74vh; }
+  /* One column. Fanning two stacked cards in opposite directions reads as a
+     mistake rather than a set, so they arrive from the same side below 900. */
+  .jf-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .jf-card { --jf-from: 1; }
+  .jf-blobs { inset: -3% 0; }
+
+  /* The figures move under the lede and lie down into a row; the rule that
+     separated them moves from the left edge to the top with them. */
+  .jf-intro-row { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .jf-stats {
+    display: flex; flex-wrap: wrap;          /* wrap, not overflow, on a phone */
+    gap: 16px clamp(22px, 5vw, 44px);
+    padding-left: 0; padding-top: 20px;
+    border-left: 0; border-top: 1px solid #E7E5E0;
+  }
+  .jf-title { max-width: 20ch; }
+
 }
 @media (max-width: 620px) {
-  .who-founder-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
-  /* Author-card shape: portrait with the name and role beside it, bio running
-     full width underneath. Side-by-side the whole way down left the little
-     portrait stranded against six lines of bio. `display: contents` lifts the
-     copy out of its wrapper so the three parts can be placed individually. */
-  .who-founder {
-    grid-template-columns: 88px minmax(0, 1fr);
-    column-gap: 16px;
-    row-gap: 2px;
-    align-items: start;
-  }
-  .who-founder-text { display: contents; }
-  .who-founder-photo { grid-column: 1; grid-row: 1 / span 2; }
-  .who-founder-name { grid-column: 2; grid-row: 1; }
-  .who-founder-role { grid-column: 2; grid-row: 2; margin-bottom: 0; }
-  .who-founder-bio { grid-column: 1 / -1; grid-row: 3; margin-top: 14px; font-size: 14.5px; }
   .who-statement-cta { width: 100%; }
+  /* Author-card shape, same call as the old layout made: a small portrait
+     against six lines of bio leaves the photo stranded, so the name and role
+     move up beside it and the bio runs full width underneath. */
+  .jf-face { padding: 16px; border-radius: 22px; gap: 14px; }
+  .jf-body { grid-template-columns: 92px minmax(0, 1fr); column-gap: 14px; row-gap: 2px; }
+  .jf-copy { display: contents; }
+  .jf-portrait { grid-column: 1; grid-row: 1 / span 2; }
+  /* The portrait spans both text rows, so grid hands each row half its
+     height and the name and role drift apart. Pinning one to the bottom of
+     its row and the other to the top closes the pair back up and centres it
+     against the photo. */
+  .jf-name { grid-column: 2; grid-row: 1; align-self: end; }
+  .jf-role { grid-column: 2; grid-row: 2; align-self: start; margin-bottom: 0; letter-spacing: .09em; }
+  .jf-bio  { grid-column: 1 / -1; grid-row: 3; margin-top: 13px; font-size: 14px; }
+  .jf-pen { height: 52px; }
+  .jf-swatches span { width: 22px; height: 22px; border-radius: 6px; }
+  .jf-term-line { font-size: 10.5px; }
+  .jf-chips li { font-size: 10.5px; padding: 5px 9px; }
+
+  .jf-stat { gap: 8px; }
+  .jf-stat-l { font-size: 11.5px; }
+  .jf-stats { gap: 18px; }
+
 }
 
 /* ---- Reduced motion -----------------------------------------------------
@@ -270,4 +590,19 @@
   .who-statement { height: auto; }
   .who-statement-sticky { position: static; min-height: 0; padding: clamp(48px,7vw,88px) 0; }
   .who-word { opacity: 1; transition: none; }
+  /* The pre-reveal card is a tilt at zero opacity, so nothing here may depend
+     on an animation running: the cards are simply present and finished. */
+  .jf-card { opacity: 1; transform: none; transition: none; }
+  .jf-card *, .jf-card *::after, .jf-card *::before { animation: none !important; }
+  .jf-pen-path { stroke-dashoffset: 0; }
+  .jf-pen-handles { opacity: .45; }
+  .jf-anchor, .jf-swatches span, .jf-chips li { opacity: 1; transform: none; }
+  .jf-term-line { width: auto; }
+  .jf-scan { display: none; }
+  .jf-portrait img { transition: none; }
+
+  .jf-intro .section-pill, .jf-lede, .jf-stat { opacity: 1; transform: none; transition: none; }
+  .jf-w > i { transform: none; transition: none; }
+  .jf-underline path { stroke-dashoffset: 0; }
+
 }
