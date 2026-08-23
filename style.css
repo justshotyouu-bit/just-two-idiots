@@ -1285,15 +1285,30 @@ a:hover { color: #C97A1E; }
    landscape and vertical cuts together without a masonry pass. */
 .srl-tile-wide  { aspect-ratio: 16 / 9; }
 .srl-tile-short { aspect-ratio: 9 / 16; }
-.srl-tile iframe,
-.srl-tile img,
-.srl-tile video {
+.srl-tile img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  border: 0;
   object-fit: cover;
+  display: block;
+}
+/* The embed is oversized and centre-cropped on purpose. YouTube paints its
+   own chrome inside the player — title, channel avatar, logo, the "watch on
+   YouTube" affordance — and neither controls=0 nor modestbranding removes it;
+   modestbranding is deprecated outright. Blowing the frame up ~1.42x pushes
+   those top and bottom bands outside the tile, where overflow:hidden clips
+   them, leaving just the picture. pointer-events:none stops a hover from
+   summoning the chrome back and keeps the wall scrollable over the tiles. */
+.srl-tile iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 142%;
+  height: 142%;
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none;
   display: block;
 }
 /* Specular edge so the tiles read as glass panes rather than flat rectangles. */

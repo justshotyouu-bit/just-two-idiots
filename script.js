@@ -668,8 +668,18 @@
 // empty the whole section removes itself, so a half-finished wall never ships.
 (function () {
   var SHOWREEL = [
-    // { id: 'dQw4w9WgXcQ', kind: 'wide'  },
-    // { id: 'ABCdef12345', kind: 'short' },
+    { id: 'calKufPhTI0', kind: 'wide', title: 'TARC — a film' },
+    { id: 'vY0o0vvMHbI', kind: 'wide', title: 'Prakshi Fine Jewellery — fashion film' },
+    { id: 'zmFRbHPj8lI', kind: 'wide', title: 'Tender Heart School — trailer' },
+    { id: 'NxR14zywB-c', kind: 'wide', title: 'Dhagon Ki Kahaniya — GetMyRugs documentary' },
+    { id: 'iFUMYRc_ySM', kind: 'wide', title: 'GetMyRugs' },
+    { id: 'o21rQhNwzcU', kind: 'wide', title: 'Crafting Elegance — the artistry behind hand-knotted rugs' },
+    { id: 'KVkGkP-NP14', kind: 'wide', title: 'With Love, Banaras' },
+    { id: 'oAGKwS4uE_A', kind: 'wide', title: 'Every Bounce Tells a Story — Plurality for Unbox Designs' },
+    { id: 'b5Pu2DggF5Q', kind: 'wide', title: 'Family Series — GetMyRugs' },
+    { id: '48PI9tmkLkM', kind: 'short', title: 'Bhadohi, where tradition meets dedication — GetMyRugs' },
+    { id: 'Ec3Elq5cMP8', kind: 'short', title: 'Prakshi Fine Jewellery' },
+    { id: 'MBMhOzkO2kY', kind: 'short', title: 'Celebrating women weavers — Bhadohi, Banaras' }
   ];
 
   var ROWS = 3;
@@ -733,16 +743,34 @@
     var f = el.querySelector('iframe');
     if (f) f.remove();          // frees the player; the poster stays behind it
   }
-  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
-  if ('IntersectionObserver' in window && motionOK.matches) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { e.isIntersecting ? mount(e.target) : unmount(e.target); });
-    }, { rootMargin: '10% 0px' });
-    [].forEach.call(wall.querySelectorAll('.srl-tile'), function (t) { io.observe(t); });
+  // Cap on how many players may exist at once. The wall is short enough that
+  // every tile can be on screen together, and 24 live YouTube iframes is not
+  // something a phone survives — each is a full player. The nearest few to the
+  // middle of the screen play; the rest hold their poster, which is a real
+  // frame from the same film, so the wall still reads as one moving piece.
+  var MAX_LIVE = window.matchMedia('(max-width: 860px)').matches ? 3 : 6;
+  var allTiles = [].slice.call(wall.querySelectorAll('.srl-tile'));
+
+  function refreshPlayers() {
+    var mid = window.innerHeight / 2;
+    var live = allTiles
+      .map(function (el) {
+        var r = el.getBoundingClientRect();
+        var onScreen = r.bottom > 0 && r.top < window.innerHeight;
+        return { el: el, d: Math.abs((r.top + r.bottom) / 2 - mid), on: onScreen };
+      })
+      .filter(function (t) { return t.on; })
+      .sort(function (a, b) { return a.d - b.d; })
+      .slice(0, MAX_LIVE);
+    var keep = live.map(function (t) { return t.el; });
+    allTiles.forEach(function (el) {
+      if (keep.indexOf(el) > -1) mount(el); else unmount(el);
+    });
   }
 
   // --- scroll-driven drift ------------------------------------------------
-  if (!motionOK.matches) return;
+  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
+  if (!motionOK.matches) return;   // no drift, and no autoplaying video either
   var TRAVEL = 0.18;   // fraction of a row's own width it may slide end to end
 
   function frame() {
@@ -756,6 +784,7 @@
       var dist = row.scrollWidth * TRAVEL * 0.5;
       row.style.transform = 'translate3d(' + (p * dist * dir).toFixed(1) + 'px,0,0)';
     });
+    refreshPlayers();
   }
   var ticking = false;
   function onScroll() {
