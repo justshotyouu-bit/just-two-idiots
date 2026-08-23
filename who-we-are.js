@@ -216,6 +216,13 @@
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
+    // Synchronous, so a reveal whose closed state is opacity 0 never depends on
+    // a frame callback arriving. The bind-time call covers a normal load; the
+    // load listener covers arriving at #founders, where the browser scrolls to
+    // the fragment only *after* this script has run, leaving the rest to a rAF
+    // that a backgrounded tab is free to sit on. Every frame() here is
+    // idempotent, so calling it more than once costs nothing.
     frame();
+    window.addEventListener('load', frame);
   }
 })();
