@@ -16,8 +16,10 @@
   // whole, edge to edge, with nothing cut off.
   var PROJECTS = [
     { image: 'assets/work/fig.webp', name: 'Fig', category: 'Lighting & Living — eCommerce' },
+    { image: 'assets/work/denver.webp', name: 'Denver', category: 'Autograph Collection — Fragrance' },
     { image: 'assets/work/getmyrugs.webp', name: 'GetMyRugs', category: 'Handmade Rugs — eCommerce' },
     { image: 'assets/work/rugs499.webp', name: 'Rugs499', category: 'Handmade Rugs — eCommerce' },
+    { image: 'assets/work/bbhhomes.webp', name: 'BBH Homes', category: 'Rugs & Furniture — eCommerce' },
     { image: 'assets/work/parmandesigns.webp', name: 'Parman Designs', category: 'Furniture & Decor — Brand site' },
     { image: 'assets/work/justshotyou.webp', name: 'justshotyou', category: 'Photography & Film — Portfolio' }
   ];
