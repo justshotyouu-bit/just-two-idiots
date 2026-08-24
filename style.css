@@ -1298,6 +1298,152 @@ a:hover { color: #C97A1E; }
   background: linear-gradient(150deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 32%, rgba(255,255,255,0) 78%, rgba(255,255,255,0.08) 100%);
   mix-blend-mode: screen;
 }
+/* Click target laid over the tile. It has to be a layer of our own: the iframe
+   below keeps pointer-events:none so YouTube cannot summon its chrome back on
+   hover, which also makes the embed itself unclickable. A plain button does not
+   capture wheel or touch the way an iframe does, so the wall stays scrollable. */
+.srl-open {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.srl-open::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(10, 8, 6, 0.34);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.srl-open:hover::before,
+.srl-open:focus-visible::before { opacity: 1; }
+.srl-open:focus-visible { outline: 2px solid #FFFFFF; outline-offset: -3px; }
+.srl-play {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: #14120F;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: scale(0.82);
+  transition: opacity 0.25s ease, transform 0.28s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+.srl-play svg { width: 19px; height: 19px; margin-left: 2px; }
+.srl-open:hover .srl-play,
+.srl-open:focus-visible .srl-play { opacity: 1; transform: none; }
+/* No hover to reveal it on a touch screen, so it rests visible and smaller. */
+@media (hover: none) {
+  .srl-play { width: 36px; height: 36px; opacity: 0.9; transform: none; }
+  .srl-play svg { width: 15px; height: 15px; }
+}
+
+/* --- Full-size player ---------------------------------------------------- */
+.srl-lb {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 46px);
+  background: rgba(6, 5, 4, 0.9);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+.srl-lb[hidden] { display: none; }
+/* The entrance is a keyframe on the stage rather than a class the script adds
+   on the next frame, and it deliberately has NO fill mode: with `both` the
+   resting state before the animation starts is opacity 0, so an overlay in a
+   tab that suspends animations would open invisible. Unfilled, the resting
+   state is the normal visible one and the keyframes only apply while actually
+   running — the entrance is decoration, never the thing that reveals it. */
+.srl-lb-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  animation: srl-lb-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+@keyframes srl-lb-in {
+  from { opacity: 0; transform: translateY(15px) scale(0.975); }
+}
+.srl-lb-frame {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  background: #000000;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 44px 96px -34px rgba(0, 0, 0, 0.95);
+}
+/* Capped against the viewport HEIGHT as well as its width, or a 16:9 player on
+   a short laptop screen runs off the bottom. */
+.srl-lb[data-kind="wide"] .srl-lb-frame {
+  aspect-ratio: 16 / 9;
+  max-width: min(1180px, calc((100vh - 150px) * 16 / 9));
+  max-width: min(1180px, calc((100dvh - 150px) * 16 / 9));
+}
+.srl-lb[data-kind="short"] .srl-lb-frame {
+  aspect-ratio: 9 / 16;
+  max-width: min(420px, calc((100vh - 150px) * 9 / 16));
+  max-width: min(420px, calc((100dvh - 150px) * 9 / 16));
+}
+.srl-lb-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.srl-lb-title {
+  margin: 0;
+  max-width: 60ch;
+  text-align: center;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.86);
+}
+.srl-lb-close {
+  position: absolute;
+  top: clamp(12px, 2.2vw, 24px);
+  right: clamp(12px, 2.2vw, 24px);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.srl-lb-close svg { width: 19px; height: 19px; }
+.srl-lb-close:hover { background: rgba(255, 255, 255, 0.24); transform: scale(1.06); }
+.srl-lb-close:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+/* Padding replaces the width the scrollbar gives back, so locking the page
+   behind the overlay does not shift it sideways. */
+body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
+
 .srl-tile-empty {
   display: flex;
   align-items: center;
@@ -1324,6 +1470,10 @@ a:hover { color: #C97A1E; }
 @media (prefers-reduced-motion: reduce) {
   /* The drift is the whole effect; without it the rows just sit still. */
   .srl-row { transform: none !important; }
+  /* The overlay still opens — a film someone clicked is not incidental
+     motion — it just arrives without the rise. */
+  .srl-lb-stage { animation: none; }
+  .srl-play, .srl-open::before { transition: none; }
 }
 
 /* ---- Responsive layer ---------------------------------------------------- */

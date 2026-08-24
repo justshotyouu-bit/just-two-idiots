@@ -673,18 +673,36 @@
     rows[i].push(v); totals[i] += width(v);
   });
 
-  function tile(v) {
+  function tile(v, dup) {
     var el = document.createElement('div');
     el.className = 'srl-tile srl-tile-' + (v.kind === 'short' ? 'short' : 'wide');
     el.setAttribute('data-yt', v.id);
+    el.setAttribute('data-kind', v.kind === 'short' ? 'short' : 'wide');
+    el.setAttribute('data-title', v.title || '');
     // Poster first: an iframe per tile costs a full player, so tiles stay as
     // a still until they are actually on screen (see mount/unmount below).
     var img = document.createElement('img');
     img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
-    img.alt = v.title || '';
+    img.alt = dup ? '' : (v.title || '');
     img.loading = 'lazy';
     img.decoding = 'async';
     el.appendChild(img);
+
+    // The click target is a button laid over the tile, not the tile itself.
+    // The iframe must keep pointer-events:none — that is what stops YouTube
+    // summoning its own chrome back on hover — so nothing on the tile can be
+    // clicked without a layer of our own above it.
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'srl-open';
+    btn.setAttribute('aria-label', 'Play ' + (v.title || 'video'));
+    btn.innerHTML = '<span class="srl-play" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6L19 12z"/></svg></span>';
+    // Every tile is dealt twice so a drifting row still covers both ends. The
+    // second copy is scenery: keeping it focusable would give a reader 24
+    // items for 12 films.
+    if (dup) { btn.tabIndex = -1; btn.setAttribute('aria-hidden', 'true'); }
+    el.appendChild(btn);
     return el;
   }
 
@@ -692,7 +710,8 @@
     var row = document.createElement('div');
     row.className = 'srl-row';
     // Duplicated so a drifting row still covers the full width at either end.
-    list.concat(list).forEach(function (v) { row.appendChild(tile(v)); });
+    list.forEach(function (v) { row.appendChild(tile(v, false)); });
+    list.forEach(function (v) { row.appendChild(tile(v, true)); });
     wall.appendChild(row);
     return row;
   });
@@ -723,7 +742,101 @@
   var MAX_LIVE = window.matchMedia('(max-width: 860px)').matches ? 3 : 6;
   var allTiles = [].slice.call(wall.querySelectorAll('.srl-tile'));
 
+  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
+
+  // --- open one tile full size -------------------------------------------
+  // Everything below is wired before the reduced-motion return further down:
+  // that branch turns off the drift and the autoplaying wall, but a film the
+  // visitor deliberately clicked is not incidental motion and should still
+  // play.
+  var lb = null, lbFrame = null, lbTitle = null, lbClose = null;
+  var lbOpen = false, lastFocus = null;
+
+  function buildLightbox() {
+    lb = document.createElement('div');
+    lb.className = 'srl-lb';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Video player');
+    lb.hidden = true;
+    lb.innerHTML =
+      '<button type="button" class="srl-lb-close" aria-label="Close video">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none"><path d="M6 6l12 12M18 6L6 18" ' +
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
+      '<div class="srl-lb-stage"><div class="srl-lb-frame"></div>' +
+      '<p class="srl-lb-title"></p></div>';
+    document.body.appendChild(lb);
+    lbFrame = lb.querySelector('.srl-lb-frame');
+    lbTitle = lb.querySelector('.srl-lb-title');
+    lbClose = lb.querySelector('.srl-lb-close');
+    lbClose.addEventListener('click', closeLightbox);
+    // The stage is only as big as the player, so anything landing on the
+    // scrim itself is a click beside the video and means "close".
+    lb.addEventListener('click', function (e) { if (e.target === lb) closeLightbox(); });
+  }
+
+  function openLightbox(el) {
+    if (!lb) buildLightbox();
+    var id = el.getAttribute('data-yt');
+    var title = el.getAttribute('data-title') || '';
+    lastFocus = document.activeElement;
+    lb.setAttribute('data-kind', el.getAttribute('data-kind') || 'wide');
+    lbTitle.textContent = title;
+
+    // A second, honest player: full size, real controls, sound on, uncropped.
+    // The wall's embeds are muted and blown up 1.42x to hide YouTube's chrome,
+    // which is exactly wrong for actually watching something.
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id +
+            '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.setAttribute('allowfullscreen', '');
+    f.setAttribute('title', title || 'Video');
+    lbFrame.innerHTML = '';
+    lbFrame.appendChild(f);
+
+    // Lock the page behind the overlay, padding out the width the scrollbar
+    // gives back so the layout does not jump. The header is fixed and sized
+    // off 100vw, which already includes the scrollbar, so it stays put.
+    var sbw = window.innerWidth - document.documentElement.clientWidth;
+    document.documentElement.style.setProperty('--srl-sbw', (sbw > 0 ? sbw : 0) + 'px');
+    document.body.classList.add('srl-lb-lock');
+
+    lb.hidden = false;
+    lbOpen = true;
+    allTiles.forEach(unmount);   // hand the whole player budget to this one
+    lbClose.focus();
+    document.addEventListener('keydown', onLightboxKey);
+  }
+
+  function closeLightbox() {
+    if (!lbOpen) return;
+    lbOpen = false;
+    lbFrame.innerHTML = '';      // removing the iframe is what stops the audio
+    lb.hidden = true;
+    document.body.classList.remove('srl-lb-lock');
+    document.removeEventListener('keydown', onLightboxKey);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (motionOK.matches) refreshPlayers();
+  }
+
+  function onLightboxKey(e) {
+    if (e.key === 'Escape') { closeLightbox(); return; }
+    if (e.key !== 'Tab') return;
+    var f = [].slice.call(lb.querySelectorAll('button, iframe'));
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  wall.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.srl-open');
+    if (btn && btn.parentNode) openLightbox(btn.parentNode);
+  });
+
   function refreshPlayers() {
+    if (lbOpen) return;          // one full-size player is enough
     var mid = window.innerHeight / 2;
     var live = allTiles
       .map(function (el) {
@@ -741,7 +854,6 @@
   }
 
   // --- scroll-driven drift ------------------------------------------------
-  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
   if (!motionOK.matches) return;   // no drift, and no autoplaying video either
   var TRAVEL = 0.18;   // fraction of a row's own width it may slide end to end
 
