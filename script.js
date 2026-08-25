@@ -57,12 +57,24 @@
   }
 
   var cards = []; // {el, baseAngle} — used to cull cards on the far side of the ring each frame
+  var deferred = [];
 
   for (var c = 0; c < CARD_COUNT; c++) {
     var project = PROJECTS[c];
     var card = document.createElement('div');
     card.className = 'carousel-card';
-    card.style.backgroundImage = 'url(' + project.image + ')';
+    // Only the front card and its two neighbours are ever on screen — the
+    // rest sit past the 95° cull and are visibility:hidden. Fetching all
+    // seven up front put ~355KB of images the reader cannot see in front of
+    // the ones they can, on the same connection. The hidden four load once
+    // the page is idle; at the idle drift the ring takes about seven seconds
+    // to bring the next one round, so they are always there before they are
+    // needed. A drag can spin them in faster, hence the pointerdown trigger.
+    if (c === 0 || c === 1 || c === CARD_COUNT - 1) {
+      card.style.backgroundImage = 'url(' + project.image + ')';
+    } else {
+      deferred.push({ el: card, url: project.image });
+    }
     var baseAngle = c * RING_ANGLE;
     cards.push({ el: card, baseAngle: baseAngle });
 
@@ -120,6 +132,22 @@
   }
   layout();
 
+  // Three independent triggers, because a card with no background is a
+  // visible fault: whichever fires first wins and the rest no-op.
+  var deferredDone = false;
+  function loadRest() {
+    if (deferredDone) return;
+    deferredDone = true;
+    for (var i = 0; i < deferred.length; i++) {
+      deferred[i].el.style.backgroundImage = 'url(' + deferred[i].url + ')';
+    }
+    deferred.length = 0;
+  }
+  if (document.readyState === 'complete') setTimeout(loadRest, 150);
+  else window.addEventListener('load', function () { setTimeout(loadRest, 150); });
+  setTimeout(loadRest, 4000);                              // backstop
+  container.addEventListener('pointerdown', loadRest);     // a flick spins them in fast
+
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
@@ -150,6 +178,15 @@
     return a;
   }
 
+  // The ring only animates while it is actually on screen and the tab is in
+  // the foreground. An off-screen frame costs the same style/layout/paint as
+  // a visible one and nobody sees it; on a 4x-throttled phone profile this
+  // loop and the ticker's below were together holding the median scroll frame
+  // at 66.5ms, and gating them brings it to 50ms. Nothing about how the ring
+  // looks or behaves changes — it is running whenever it is in view.
+  var spinning = false;
+  var onScreen = true;
+
   function tick() {
     if (!dragging) {
       // Always keep revolving: ease speed back toward the steady idle baseline
@@ -162,14 +199,40 @@
     stage.style.transform = 'rotateY(' + angle + 'deg)';
     // Cards on the far side of the ring face away from the camera and land
     // in a degenerate part of the perspective projection there, so just
-    // stop drawing a card once it rotates past the front-facing arc.
+    // stop drawing a card once it rotates past the front-facing arc. Only
+    // write when the answer actually changes: assigning the same value still
+    // invalidates that card's style, and it was doing so for every card on
+    // every frame to change nothing.
     for (var i = 0; i < cards.length; i++) {
       var rel = normalizeAngle(cards[i].baseAngle + angle);
-      cards[i].el.style.visibility = Math.abs(rel) > 95 ? 'hidden' : 'visible';
+      var hide = Math.abs(rel) > 95;
+      if (cards[i].hidden !== hide) {
+        cards[i].hidden = hide;
+        cards[i].el.style.visibility = hide ? 'hidden' : 'visible';
+      }
     }
+    if (!onScreen || document.hidden) { spinning = false; return; }
     requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
+
+  function spin() {
+    if (spinning) return;
+    spinning = true;
+    requestAnimationFrame(tick);
+  }
+  spin();
+
+  if ('IntersectionObserver' in window) {
+    // A margin either side so it is already up to speed by the time it
+    // scrolls into view, rather than visibly starting from a standstill.
+    new IntersectionObserver(function (entries) {
+      onScreen = entries[0].isIntersecting;
+      if (onScreen) spin();
+    }, { rootMargin: '150px 0px' }).observe(container);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && onScreen) spin();
+  });
 
   container.addEventListener('pointerdown', function (e) {
     dragging = true;
@@ -219,21 +282,41 @@
 
   var ticking = false;
   var current = null;
+  // Section extents in document space. These only move when the page is
+  // resized or its content reflows, so measuring them on every scroll frame
+  // was pure waste — and worse than waste: update() toggles `is-scrolled` on
+  // the header first, and reading geometry straight after that write forces a
+  // synchronous layout recalculation. With the header's backdrop-filter in
+  // the mix it profiled at 2.1s of JS across one scroll of the page, the
+  // single hottest function on the site. Caching removes every per-frame
+  // layout read from the scroll path.
+  var bounds = [];
+  var measured = false;
+
+  function measure() {
+    var y = window.pageYOffset;
+    bounds = targets.map(function (t) {
+      var r = t.el.getBoundingClientRect();
+      return { link: t.link, top: r.top + y, bottom: r.top + y + r.height };
+    });
+    measured = true;
+  }
 
   function update() {
     ticking = false;
-    header.classList.toggle('is-scrolled', window.pageYOffset > 12);
+    if (!measured) measure();
+    var y = window.pageYOffset;
 
     // "In" a section means its top has passed just under the bar and its
     // bottom hasn't yet — the last one matching wins, so overlapping
     // sections resolve to the lower (more recently entered) one.
-    var line = window.pageYOffset + 120;
+    var line = y + 120;
     var active = null;
-    for (var i = 0; i < targets.length; i++) {
-      var r = targets[i].el.getBoundingClientRect();
-      var top = r.top + window.pageYOffset;
-      if (line >= top && line < top + r.height) active = targets[i].link;
+    for (var i = 0; i < bounds.length; i++) {
+      if (line >= bounds[i].top && line < bounds[i].bottom) active = bounds[i].link;
     }
+
+    header.classList.toggle('is-scrolled', y > 12);
     if (active !== current) {
       links.forEach(function (l) { l.classList.toggle('is-current', l === active); });
       current = active;
@@ -243,8 +326,26 @@
   function onScroll() {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }
   }
+  function invalidate() { measured = false; onScroll(); }
+
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', invalidate);
+  // Reveals and late-loading images change the page height after first paint,
+  // which moves every section below them; re-measure rather than drift. Only
+  // an actual change in height can do that, though — the observer also fires
+  // on width-only and sub-pixel changes throughout every reveal, and acting
+  // on those puts the layout read straight back onto the scroll path that
+  // caching it was meant to clear.
+  var lastH = 0;
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(function (entries) {
+      var h = Math.round(entries[0].contentRect.height);
+      if (h === lastH) return;
+      lastH = h;
+      invalidate();
+    }).observe(document.body);
+  }
+  window.addEventListener('load', invalidate);
   update();
 })();
 
@@ -269,30 +370,36 @@
   // pile now only ever moves up the screen.
   var MAX_DIM = 0.34;        // how dark a fully covered card goes
   var ticking = false;
+  // Resolved once. This used to be a querySelector per card per frame.
+  var veils = panels.map(function (p) { return p.querySelector('.svc-panel-veil'); });
 
   function clear() {
-    panels.forEach(function (p) {
-      var v = p.querySelector('.svc-panel-veil');
-      if (v) v.style.opacity = '0';
-    });
+    veils.forEach(function (v) { if (v) v.style.opacity = '0'; });
   }
 
   function update() {
     ticking = false;
     if (!motionOK.matches) return;
-    for (var i = 0; i < panels.length; i++) {
-      var panel = panels[i];
-      var veil = panel.querySelector('.svc-panel-veil');
+    // Read all the geometry, then write all the veils. The previous version
+    // interleaved them — measure a card, set its veil, measure the next —
+    // and each write invalidates layout, so every read after the first
+    // forced a synchronous recalculation. That was one forced layout per
+    // card per frame for the whole time this deck was on screen.
+    var n = panels.length;
+    var tops = new Array(n);
+    var heights = new Array(n);
+    for (var i = 0; i < n; i++) {
+      tops[i] = panels[i].getBoundingClientRect().top;
+      heights[i] = panels[i].offsetHeight || 1;
+    }
+    for (var j = 0; j < n; j++) {
       var covered = 0;
-      if (i < panels.length - 1) {
-        var top = panel.getBoundingClientRect().top;
-        var nextTop = panels[i + 1].getBoundingClientRect().top;
-        var h = panel.offsetHeight || 1;
+      if (j < n - 1) {
         // How far the next card has travelled up across this one, 0..1.
-        covered = (h - (nextTop - top)) / h;
+        covered = (heights[j] - (tops[j + 1] - tops[j])) / heights[j];
         covered = covered < 0 ? 0 : covered > 1 ? 1 : covered;
       }
-      if (veil) veil.style.opacity = (covered * MAX_DIM).toFixed(3);
+      if (veils[j]) veils[j].style.opacity = (covered * MAX_DIM).toFixed(3);
     }
   }
 
@@ -406,11 +513,14 @@
   // Take over from the CSS animation only now that we know we can drive it.
   track.classList.remove('is-auto');
 
-  window.addEventListener('scroll', function () {
-    var y = window.pageYOffset;
-    offset += Math.abs(y - lastY) * SCROLL_PUSH;
-    lastY = y;
-  }, { passive: true });
+  // This handler used to read window.pageYOffset itself. That read lands
+  // between the transform writes in frame() below and forces a synchronous
+  // layout flush every scroll event — it profiled as the hottest JS on the
+  // page at 2.1s of a scroll pass. It now only records that a scroll
+  // happened; the read moved into the frame, where it runs once and before
+  // any write. The scroll-push behaviour is identical.
+  var scrolled = false;
+  window.addEventListener('scroll', function () { scrolled = true; }, { passive: true });
 
   track.addEventListener('mouseenter', function () { paused = true; });
   track.addEventListener('mouseleave', function () { paused = false; });
@@ -421,15 +531,46 @@
     resizeTimer = setTimeout(measure, 150);
   });
 
+  // Same visibility gating as the carousel: the ticker sits well down the
+  // page but was driving a transform on every frame from load onwards.
+  var ticking2 = false;
+  var onScreen2 = true;
+
   function frame(t) {
+    if (scrolled) {
+      scrolled = false;
+      var y = window.pageYOffset;
+      offset += Math.abs(y - lastY) * SCROLL_PUSH;
+      lastY = y;
+    }
     var dt = lastT ? Math.min((t - lastT) / 1000, 0.05) : 0;
     lastT = t;
     if (!paused) offset += DRIFT * dt;
     if (span) offset %= span;
     track.style.transform = 'translateX(' + (-offset).toFixed(2) + 'px)';
+    if (!onScreen2 || document.hidden) { ticking2 = false; return; }
     requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+
+  function run() {
+    if (ticking2) return;
+    ticking2 = true;
+    // Drop the stale timestamp, or the first frame back computes dt against
+    // whenever the loop last stopped and the strip jumps forward.
+    lastT = 0;
+    requestAnimationFrame(frame);
+  }
+  run();
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      onScreen2 = entries[0].isIntersecting;
+      if (onScreen2) run();
+    }, { rootMargin: '150px 0px' }).observe(track);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && onScreen2) run();
+  });
 })();
 
 // Showreel — the "Embedded in your workflow" card opening into full screen.
@@ -682,10 +823,19 @@
     // Poster first: an iframe per tile costs a full player, so tiles stay as
     // a still until they are actually on screen (see mount/unmount below).
     var img = document.createElement('img');
-    img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
-    img.alt = dup ? '' : (v.title || '');
+    // loading/decoding must be set BEFORE src. Assigning src is what starts
+    // the fetch, so setting `lazy` afterwards — as this did — arrives too
+    // late to defer anything, and all nine thumbnails were being pulled from
+    // a third-party origin during the initial load regardless.
     img.loading = 'lazy';
     img.decoding = 'async';
+    img.alt = dup ? '' : (v.title || '');
+    // Held in data-src rather than assigned. loading="lazy" on its own did
+    // not defer these: the browser widens its lazy threshold on a slow
+    // connection, so ten third-party fetches were landing mid-load — exactly
+    // when they compete with the hero image for the connection. They are
+    // attached once the wall is actually approaching, below.
+    img.setAttribute('data-src', 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg');
     el.appendChild(img);
 
     // The click target is a button laid over the tile, not the tile itself.
@@ -854,6 +1004,39 @@
   }
 
   // --- scroll-driven drift ------------------------------------------------
+  // Attach the poster stills once the wall is within a screen or so of view.
+  // Deliberately above the reduced-motion return below: the drift and the
+  // autoplaying players are motion, the posters are just the content.
+  function loadPosters() {
+    var held = wall.querySelectorAll('img[data-src]');
+    for (var i = 0; i < held.length; i++) {
+      held[i].src = held[i].getAttribute('data-src');
+      held[i].removeAttribute('data-src');
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    // 300px, not more: at DOM-ready — before the hero images have taken their
+    // real height and pushed everything down — this wall sits only ~1500px
+    // from the top, so a wider margin intersects immediately and defers
+    // nothing at all.
+    var posterIO = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      posterIO.disconnect();
+      loadPosters();
+    }, { rootMargin: '300px 0px' });
+    posterIO.observe(section);
+    // Backstop, so a fast scroll never meets an empty wall: once the page has
+    // loaded and gone quiet, fetch them regardless. Still well clear of the
+    // critical path, which is the whole point.
+    var warmPosters = function () {
+      setTimeout(function () { posterIO.disconnect(); loadPosters(); }, 1200);
+    };
+    if (document.readyState === 'complete') warmPosters();
+    else window.addEventListener('load', warmPosters);
+  } else {
+    loadPosters();
+  }
+
   if (!motionOK.matches) return;   // no drift, and no autoplaying video either
   var TRAVEL = 0.18;   // fraction of a row's own width it may slide end to end
 

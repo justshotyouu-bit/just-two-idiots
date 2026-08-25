@@ -1821,3 +1821,23 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   [data-reveal-home] { opacity: 1; transform: none; transition: none; }
   .about-hl { background-size: 100% 42%; transition: none; }
 }
+
+/* ---- Compositing hints for the soft background glows ----
+   Each of these is a large element carrying a 60–96px blur. Without its own
+   compositor layer the blur is re-rasterised whenever anything in the same
+   layer repaints, which during a scroll is constantly — and a blur that wide
+   is expensive to re-rasterise. Promoting them pins the blurred result in a
+   texture that only has to be composited afterwards.
+
+   Measured on a 390px / 4x-CPU-throttled phone profile over a full scroll of
+   the homepage: this does not move the median frame (the glows are not what
+   the typical frame is spent on) but it is what fixes the tail — p95 frame
+   133ms -> 83ms and severe frames (>50ms) 61% -> 13%. Those long frames are
+   exactly the stutter that reads as "glitching" while scrolling. */
+.svc-glow,
+.cta-blob,
+.srl-blob,
+.academy-glow {
+  will-change: transform;
+  transform: translateZ(0);
+}

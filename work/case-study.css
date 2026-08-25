@@ -200,3 +200,50 @@ a[href$=".html"] {
     padding: 7px 11px !important;
   }
 }
+
+/* ---- Reduced motion ----
+   Five of these seven pages animate — marquees, float and glow loops, and a
+   reveal on nearly every block — and only two carried a reduced-motion block
+   of their own. This file is included by all of them, so the rule lives here
+   once rather than seven times.
+
+   The reveals are the part that actually matters. Each one is written inline
+   as `opacity:0; transform:translateY(28px)` and is brought in by script, so
+   simply shortening the transition is not enough: the inline declaration wins
+   on specificity and the content would stay invisible. It has to be an
+   explicit override, and nothing a reader needs should depend on an animation
+   having run. Nothing here listens for transitionend or animationend, so
+   collapsing the durations is safe. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Keyboard focus ----
+   These pages load this stylesheet and nothing else — the site stylesheet,
+   which does style focus, is not included here — so a keyboard reader had
+   only the browser default across sections that run from cream to near
+   black. Two rings rather than one: the dark outline carries the shape and
+   the white halo outside it guarantees the ring stays visible whichever way
+   the background goes, without either having to match a specific section.
+   Applied on :focus-visible only, so a mouse click does not draw it. */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #0A0A0A;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.92);
+  border-radius: 2px;
+}
