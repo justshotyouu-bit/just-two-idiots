@@ -1581,16 +1581,10 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
 
 }
 
-/* Supersedes an earlier rule that dropped this link below 500px. That was
-   measured against the old type sizes, where three links needed 426px of bar;
-   with the step-down above they need 329px, so the bar carries them from a
-   360px viewport up and phones keep the link. Below 360 there genuinely isn't
-   the room, and going smaller means shortening the labels rather than the
-   type — only there does it fall back to the footer panel. If the nav copy
-   changes, re-measure the bar's requirement against `100vw - 20`. */
-@media (max-width: 359px) {
-  .nav-link-who { display: none; }
-}
+/* The rule that used to live here dropped "Who we are" below 360px, which
+   made that page unreachable from the navigation on a small phone. The
+   disclosure at the end of this file removes the need for it: the links move
+   out of the bar entirely on phones, so all three survive at every width. */
 
 @media (prefers-reduced-motion: reduce) {
   .site-nav { transition: none; }
@@ -1841,3 +1835,133 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   will-change: transform;
   transform: translateZ(0);
 }
+
+/* ---- Phone header disclosure ----
+   The pill was designed for three things: the wordmark, two section links and
+   the CTA. It was verified at 320px then and it did fit. "Who we are" was
+   added later when that page was built, which took the bar to five items, and
+   the only way they all fitted was stepping the type down to 11px and then
+   dropping "Who we are" below 360px — so the smallest phones lost the page
+   from the navigation altogether.
+
+   Measured, in the real font stack, at 320px (bar is 100vw - 20 = 300px, so
+   276px of usable width): a wordmark plus three links plus a labelled CTA
+   needs 420px at a comfortable 13px. Shrinking the wordmark to "JTI" AND
+   shortening "Who we are" to "About" still needs 323px. There is no
+   arrangement that keeps all five visible and legible, so the links move
+   behind a button and the bar goes back to carrying three things:
+
+       wordmark 103px + "Book a call" 95px + toggle 40px + gaps = +22px slack
+
+   Everything here is gated on `.has-nav-js`, which nav.js sets. Without that
+   file the stylesheet falls through to the always-visible row above: cramped,
+   but no link is ever unreachable because a script failed to load.
+
+   The breakpoint is 520px rather than the 640px used elsewhere in this file,
+   because that is where the measurement actually turns over: the full inline
+   row needs 420px of bar at a comfortable 13px, which a 520px viewport clears
+   with ~58px to spare. Taking the disclosure any wider would put a menu button
+   on a bar with 300px of visible slack, which looks like a mistake. */
+@media (max-width: 520px) {
+  .has-nav-js .site-header {
+    gap: 8px;
+    padding: 8px 8px 8px 16px;
+  }
+
+  /* Back up from 11.5px — the room the links vacated goes into the wordmark
+     and the CTA, which are what the bar is actually for now. */
+  .has-nav-js .site-logo { font-size: 15px; }
+  .has-nav-js .nav-cta { font-size: 13.5px; padding: 12px 14px; margin-left: auto; }
+
+  /* The sheet IS .site-nav — same element, same links, still a child of the
+     header. Nothing else has to know it moved, so the scroll spy that marks
+     the current section keeps working untouched. */
+  .has-nav-js .site-nav {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 8px;
+    border-radius: 24px;
+    /* Opaque on purpose. A backdrop-filter here would be nested inside the
+       header's own, which does not blur — the page reads straight through it.
+       Verified in Chrome before settling on a solid panel. */
+    background: #FCFBF8;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 18px 40px -16px rgba(24, 18, 10, 0.34);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.985);
+  }
+  /* visibility, not display: it keeps the links out of the tab order while
+     closed and still allows the panel to animate. */
+  .has-nav-js .site-header.nav-open .site-nav {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  /* The transition is declared only where motion is welcome, rather than
+     being undone later — an override would have to beat `.site-header
+     .nav-open .site-nav` on specificity, which is the kind of thing that
+     silently stops working. */
+  @media (prefers-reduced-motion: no-preference) {
+    .has-nav-js .site-nav {
+      transition: opacity .22s ease,
+                  transform .22s cubic-bezier(.16, 1, .3, 1),
+                  visibility .22s;
+    }
+  }
+
+  .has-nav-js .nav-link {
+    justify-content: flex-start;
+    min-height: 48px;
+    padding: 13px 14px;
+    border-radius: 16px;
+    font-size: 15px;
+  }
+  .has-nav-js .nav-link.is-current { background: rgba(201, 122, 30, 0.10); }
+
+  /* Two rules rather than the usual three, and they fold into an X. A studio
+     called Just Two Idiots gets two. */
+  .has-nav-js .nav-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0;
+    cursor: pointer;
+    border: 1px solid rgba(20, 16, 10, 0.10);
+    border-radius: 999px;
+    background: rgba(20, 16, 10, 0.055);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-toggle-bar {
+    display: block;
+    width: 16px;
+    height: 1.8px;
+    border-radius: 2px;
+    background: #0A0A0A;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-toggle-bar { transition: transform .28s cubic-bezier(.16, 1, .3, 1); }
+  }
+  .has-nav-js .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) {
+    transform: translateY(2.9px) rotate(45deg);
+  }
+  .has-nav-js .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) {
+    transform: translateY(-2.9px) rotate(-45deg);
+  }
+}
+
+/* The button only ever exists on phones; above the breakpoint the links are
+   in the bar and it would be a second way to reach the same three things. */
+.nav-toggle { display: none; }
