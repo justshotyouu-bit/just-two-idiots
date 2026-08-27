@@ -1,11 +1,16 @@
 // 3D "spin the work" carousel — revolves continuously at a steady pace;
 // click-and-drag speeds it up or reverses it, then it settles back to drifting.
-// Each card is a single flat panel arranged around a ring and rotated to
-// face outward. (An earlier version built each card out of several thin
-// rotated strips to fake a slight curve — it looked nice front-on, but the
-// strip seams and the first/last strip's rounded corner never quite lined
-// up the same on both sides, so it's a plain flat panel now: a real
-// border-radius on the whole card instead, which is always symmetric.)
+// Each card is one panel arranged around a ring and rotated to face outward,
+// with its silhouette bowed so the ring reads as genuinely circular.
+//
+// The bow is a CLIP, not a bend. An early version built each card out of thin
+// rotated strips to fake real curvature: it looked right front-on, but the
+// seams showed and the first and last strip's rounded corner never landed the
+// same on both sides. Clipping one panel is seamless by construction, and it
+// is what the reference does too — on those cards the artwork is visibly
+// undistorted, so only the outline is curved. The varying skew from card to
+// card is not in the clip at all; it falls out of each card's own rotateY
+// under perspective, so every card can share one path.
 (function () {
   var container = document.getElementById('carousel-container');
   var stage = document.getElementById('carousel-stage');
@@ -56,6 +61,58 @@
     return Math.min(1, (stageW * frontShare) / (BASE_CARD_W * FRONT_MAG));
   }
 
+  // A rounded rectangle whose top and bottom edges bow outward from the centre
+  // — what a panel wrapped on a vertical cylinder looks like when its middle
+  // is the part nearest the camera.
+  //
+  // Built by outlining a normal rounded rectangle and then squeezing each
+  // column vertically into the bowed edges: every point's y is remapped into
+  // the gap between the top and bottom curves at that x. Corners come along
+  // for the ride, so they stay smooth and identical on both sides instead of
+  // being special-cased — which is exactly where the old strip build fell over.
+  //
+  // A clip can only take area away, never add it, so the bow is expressed as
+  // the corners easing IN while the centre column keeps the card's full
+  // height. The card's own width and height are untouched.
+  function barrelClip(bow, rx, ry, seg) {
+    var pts = [];
+    function at(x, y) {
+      var t = 2 * x - 1;
+      var top = bow * t * t;              // 0 at the centre, `bow` at either end
+      var Y = top + y * (1 - 2 * top);    // squeeze into that column's gap
+      pts.push((x * 100).toFixed(2) + '% ' + (Y * 100).toFixed(2) + '%');
+    }
+    function arc(cx, cy, from, to) {
+      for (var i = 0; i <= seg; i++) {
+        var a = (from + (to - from) * (i / seg)) * Math.PI / 180;
+        at(cx + rx * Math.cos(a), cy + ry * Math.sin(a));
+      }
+    }
+    function edge(x0, x1, y) {
+      for (var i = 0; i <= seg * 3; i++) at(x0 + (x1 - x0) * (i / (seg * 3)), y);
+    }
+    arc(rx, ry, 180, 270);            // top-left
+    edge(rx, 1 - rx, 0);              // top edge — sampled, this is the bow
+    arc(1 - rx, ry, 270, 360);        // top-right
+    at(1, ry); at(1, 1 - ry);         // right edge: the bow is flat here
+    arc(1 - rx, 1 - ry, 0, 90);       // bottom-right
+    edge(1 - rx, rx, 1);              // bottom edge
+    arc(rx, 1 - ry, 90, 180);         // bottom-left
+    at(0, 1 - ry); at(0, ry);         // left edge
+    return 'polygon(' + pts.join(', ') + ')';
+  }
+
+  // Percentages, so one path fits the card at every breakpoint and never needs
+  // recomputing on resize. The corner radius is given as a fraction of each
+  // axis off the card's fixed aspect ratio, which keeps it a true circle.
+  // The bow is measured at the very edge (x=0), but the corner rounding starts
+  // inboard of that, so what the eye actually sees is the curve at x=rx —
+  // about 75% of this number. 0.05 lands the visible bow near the 3.5% the
+  // reference runs at; anything much past this and the cards read as sagging
+  // rather than curved.
+  var BOW = 0.05;
+  var CARD_CLIP = barrelClip(BOW, 30 / BASE_CARD_W, 30 / (BASE_CARD_W / IMAGE_ASPECT), 7);
+
   var cards = []; // {el, baseAngle} — used to cull cards on the far side of the ring each frame
   var deferred = [];
 
@@ -75,6 +132,8 @@
     } else {
       deferred.push({ el: card, url: project.image });
     }
+    card.style.clipPath = CARD_CLIP;
+    card.style.webkitClipPath = CARD_CLIP;
     var baseAngle = c * RING_ANGLE;
     cards.push({ el: card, baseAngle: baseAngle });
 
@@ -171,6 +230,18 @@
   // endDrag already handles.
   container.style.cursor = 'grab';
 
+  // Cards past this face away from the camera and land in a degenerate part of
+  // the perspective projection, so they stop drawing there. The fade above is
+  // scaled to reach zero at exactly this angle.
+  var CULL_ANGLE = 95;
+  var DEG = Math.PI / 180;
+  var COS_CULL = Math.cos(CULL_ANGLE * DEG);
+  // Below 1 this keeps the front of the ring bright and puts the fall-off late,
+  // so the fade reads as depth rather than as the cards dimming overall. At
+  // 0.75 the two neighbours sit near 0.73 and a card edge-on at 90 deg is down
+  // to 0.15 — visibly receding, still clearly a card.
+  var FADE_GAMMA = 0.75;
+
   function normalizeAngle(a) {
     a = a % 360;
     if (a > 180) a -= 360;
@@ -197,18 +268,32 @@
       angle += speed;
     }
     stage.style.transform = 'rotateY(' + angle + 'deg)';
-    // Cards on the far side of the ring face away from the camera and land
-    // in a degenerate part of the perspective projection there, so just
-    // stop drawing a card once it rotates past the front-facing arc. Only
-    // write when the answer actually changes: assigning the same value still
-    // invalidates that card's style, and it was doing so for every card on
-    // every frame to change nothing.
+    // Cards on the far side of the ring face away from the camera and land in
+    // a degenerate part of the perspective projection there, so a card stops
+    // drawing once it rotates past the front-facing arc. Before that it fades:
+    // opacity comes from cos(rel) — the card's real depth, not its raw angle —
+    // normalised against the cull so it reaches exactly 0 at that boundary.
+    // The card is therefore already invisible by the time it stops drawing,
+    // where the bare visibility flip used to pop a whole card in and out at
+    // the edge and flatten the ring.
+    //
+    // BOTH writes are guarded. Assigning the same value still invalidates a
+    // card's style and this runs for every card on every frame, so opacity is
+    // compared at the precision it is written at — a card only touches the DOM
+    // when it has actually changed by a visible amount.
     for (var i = 0; i < cards.length; i++) {
       var rel = normalizeAngle(cards[i].baseAngle + angle);
-      var hide = Math.abs(rel) > 95;
+      var hide = Math.abs(rel) > CULL_ANGLE;
       if (cards[i].hidden !== hide) {
         cards[i].hidden = hide;
         cards[i].el.style.visibility = hide ? 'hidden' : 'visible';
+      }
+      if (hide) continue;
+      var t = (Math.cos(rel * DEG) - COS_CULL) / (1 - COS_CULL);
+      var op = t > 0 ? Math.pow(t, FADE_GAMMA).toFixed(3) : '0';
+      if (cards[i].op !== op) {
+        cards[i].op = op;
+        cards[i].el.style.opacity = op;
       }
     }
     if (!onScreen || document.hidden) { spinning = false; return; }

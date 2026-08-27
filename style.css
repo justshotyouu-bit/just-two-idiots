@@ -258,26 +258,26 @@ a:hover { color: #C97A1E; }
   transform-style: preserve-3d;
   transform: rotateY(0deg);
 }
-/* Each card is a single flat panel (see script.js) — width/height/background
-   are set inline, sized to match each project image's real aspect ratio
-   exactly. A real border-radius + box-shadow on the card itself, rather
-   than the old strip-built curve: always symmetric on both edges, and the
-   shadow correctly hugs the actual rounded shape instead of rendering as a
-   flat rectangle behind it. */
+/* Each card is one panel (see script.js) — width/height/background are set
+   inline, sized to match each project image's real aspect ratio exactly.
+   The rounded, bowed silhouette is a clip-path script.js generates and sets
+   inline; it owns the outline entirely, so there is deliberately NO
+   border-radius here. A border-radius would clip a second time and the two
+   shapes only agree at one card size: the radius is a fixed 30px while the
+   clip is in percentages, so on a phone the radius would round harder than
+   the clip and flatten its corners.
+   No shadow, by design. Depth comes from the ring's own perspective and the
+   bowed edge — a cast shadow under a curved panel reads as a flat rectangle
+   sitting behind it, which is what gives these away as stickers. */
 .carousel-card {
   position: absolute;
-  border-radius: 30px;
   overflow: hidden;
   background-repeat: no-repeat;
   background-color: #16140f;
-  box-shadow:
-    0 42px 60px -18px rgba(0,0,0,0.30),
-    0 12px 22px -8px rgba(0,0,0,0.16);
 }
 .carousel-card-overlay {
   position: absolute;
   inset: 0;
-  border-radius: 30px;
   pointer-events: none;
   background: linear-gradient(115deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 76%, rgba(255,255,255,0.1) 100%);
   mix-blend-mode: screen;
@@ -292,7 +292,6 @@ a:hover { color: #C97A1E; }
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 0 0 30px 30px;
   pointer-events: none;
   padding: 1.125em 1.25em;
   background: linear-gradient(transparent, rgba(0,0,0,0.65));
