@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Just Two Idiots — Websites and brands, built with care.</title>
 <meta name="description" content="A web and creative studio in India. Brand identity, websites, apps, packaging, content and campaigns — handled end to end by the two founders.">
-<link rel="icon" href="favicon.svg?v=1787814310" type="image/svg+xml">
+<link rel="icon" href="favicon.svg?v=1788468067" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1787814310">
+<link rel="stylesheet" href="style.css?v=1788468067">
 <!-- The ring is built by script.js, so its cards — the LCP element — do not
      exist at parse time and the preload scanner cannot find them. Card 0 faces
      front on load, so this is the image LCP waits for. Deliberately NOT
@@ -71,7 +71,17 @@
     </div>
   </section>
 
-  <section id="work" style="padding-bottom:clamp(72px,12vw,180px)">
+  <section id="reel" class="reel-section" aria-label="Just Two Idiots showreel">
+    <div class="reel-sticky">
+      <div class="reel-stage">
+        <video class="reel-video" poster="assets/reel/reel-poster.webp" muted loop playsinline preload="none" tabindex="-1">
+          <source src="assets/reel/just-two-idiots-reel.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" style="padding-top:clamp(72px,10vw,120px); padding-bottom:clamp(72px,12vw,180px)">
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:16px">
       <h2 style="font-family:'Switzer',sans-serif; font-weight:600; font-size:clamp(26px,4vw,32px); letter-spacing:-0.01em; margin:0">Selected work</h2>
       <a href="#work" style="font-size:15px; color:#8A8A85; padding:6px 0; white-space:nowrap">View all →</a>
@@ -80,7 +90,7 @@
     <div class="work-rail">
       <a href="work/bbhhomes.html" class="work-card" style="z-index:1; --rise:0px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
-          <div style="width:100%; height:100%; background-image:url('assets/covers/bbhhomes.webp?v=1787814310'); background-size:cover; background-position:center"></div>
+          <div style="width:100%; height:100%; background-image:url('assets/covers/bbhhomes.webp?v=1788468067'); background-size:cover; background-position:center"></div>
           <div style="position:absolute; inset:0; background:linear-gradient(to right, transparent 65%, rgba(0,0,0,0.35) 100%); pointer-events:none"></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:16px 18px; background:linear-gradient(transparent, rgba(0,0,0,0.6)); pointer-events:none">
             <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#fff">BBH Homes</div>
@@ -90,7 +100,7 @@
       </a>
       <a href="work/getmyrugs.html" class="work-card" style="z-index:2; --rise:-12px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
-          <div style="width:100%; height:100%; background-image:url('assets/covers/getmyrugs.webp?v=1787814310'); background-size:cover; background-position:center"></div>
+          <div style="width:100%; height:100%; background-image:url('assets/covers/getmyrugs.webp?v=1788468067'); background-size:cover; background-position:center"></div>
           <div style="position:absolute; inset:0; background:linear-gradient(to right, transparent 65%, rgba(0,0,0,0.35) 100%); pointer-events:none"></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:16px 18px; background:linear-gradient(transparent, rgba(0,0,0,0.6)); pointer-events:none">
             <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#fff">GetMyRugs</div>
@@ -100,7 +110,7 @@
       </a>
       <a href="work/parmandesigns.html" class="work-card" style="z-index:3; --rise:-24px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
-          <div style="width:100%; height:100%; background-image:url('assets/covers/parmandesigns.webp?v=1787814310'); background-size:cover; background-position:center"></div>
+          <div style="width:100%; height:100%; background-image:url('assets/covers/parmandesigns.webp?v=1788468067'); background-size:cover; background-position:center"></div>
           <div style="position:absolute; inset:0; background:linear-gradient(to right, transparent 65%, rgba(0,0,0,0.35) 100%); pointer-events:none"></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:16px 18px; background:linear-gradient(transparent, rgba(0,0,0,0.6)); pointer-events:none">
             <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#fff">Parman Designs</div>
@@ -110,7 +120,7 @@
       </a>
       <a href="work/prakshi.html" class="work-card" style="z-index:4; --rise:-36px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
-          <div style="width:100%; height:100%; background-image:url('assets/covers/prakshi.webp?v=1787814310'); background-size:cover; background-position:center"></div>
+          <div style="width:100%; height:100%; background-image:url('assets/covers/prakshi.webp?v=1788468067'); background-size:cover; background-position:center"></div>
           <div style="position:absolute; inset:0; background:linear-gradient(to right, transparent 65%, rgba(0,0,0,0.35) 100%); pointer-events:none"></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:16px 18px; background:linear-gradient(transparent, rgba(0,0,0,0.6)); pointer-events:none">
             <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#fff">Prakshi Fine Jewellery</div>
@@ -120,7 +130,7 @@
       </a>
       <a href="work/fig.html" class="work-card" style="z-index:5; --rise:-48px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
-          <div style="width:100%; height:100%; background-image:url('assets/covers/fig.webp?v=1787814310'); background-size:cover; background-position:center"></div>
+          <div style="width:100%; height:100%; background-image:url('assets/covers/fig.webp?v=1788468067'); background-size:cover; background-position:center"></div>
           <div style="position:absolute; inset:0; background:linear-gradient(to right, transparent 65%, rgba(0,0,0,0.35) 100%); pointer-events:none"></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:16px 18px; background:linear-gradient(transparent, rgba(0,0,0,0.6)); pointer-events:none">
             <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#fff">Fig Living</div>
@@ -130,7 +140,7 @@
       </a>
       <a href="work/tenderheartschool.html" class="work-card" style="z-index:6; --rise:-60px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
-          <div style="width:100%; height:100%; background-image:url('assets/covers/tenderheartschool.webp?v=1787814310'); background-size:cover; background-position:center"></div>
+          <div style="width:100%; height:100%; background-image:url('assets/covers/tenderheartschool.webp?v=1788468067'); background-size:cover; background-position:center"></div>
           <div style="position:absolute; inset:0; background:linear-gradient(to right, transparent 65%, rgba(0,0,0,0.35) 100%); pointer-events:none"></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:16px 18px; background:linear-gradient(transparent, rgba(0,0,0,0.6)); pointer-events:none">
             <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#fff">Tender Heart School</div>
@@ -140,7 +150,7 @@
       </a>
       <a href="work/denver.html" class="work-card" style="z-index:7; --rise:-72px">
         <div style="position:relative; border-radius:14px; overflow:hidden; height:350px; box-shadow:0 24px 50px -18px rgba(0,0,0,0.3); background:#fff">
-          <div style="width:100%; height:100%; background-image:url('assets/covers/denver.webp?v=1787814310'); background-size:cover; background-position:center"></div>
+          <div style="width:100%; height:100%; background-image:url('assets/covers/denver.webp?v=1788468067'); background-size:cover; background-position:center"></div>
           <div style="position:absolute; inset:0; background:linear-gradient(to right, transparent 65%, rgba(0,0,0,0.35) 100%); pointer-events:none"></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:16px 18px; background:linear-gradient(transparent, rgba(0,0,0,0.6)); pointer-events:none">
             <div style="font-family:'Switzer',sans-serif; font-weight:600; font-size:16px; color:#fff">Denver</div>
@@ -225,13 +235,35 @@
           </div>
         </div>
       </article>
-      <article class="svc-panel" style="--i:2; --bg:rgba(228,112,58,0.88); --fg:#2A1108; --veil:#2A1108">
+      <article class="svc-panel" style="--i:2; --bg:rgba(37,86,107,0.84); --fg:#E8F1F5; --veil:#000000">
+        <div class="svc-panel-veil"></div>
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 15V9h3.6L14 4.5v15L7.6 15H4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M17.5 9.2a4.2 4.2 0 0 1 0 5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 6.6a7.8 7.8 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <h3 class="svc-panel-title">Marketing</h3>
+            <span class="svc-panel-num">03</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Good work still needs someone to see it. We run the campaigns, the search and the email behind a launch — and report on what actually brought money in, not what looked busy.</p>
+              <a href="#contact" class="svc-panel-link">Start a project <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>Performance campaigns</span>
+              <span>SEO</span>
+              <span>Email &amp; CRM</span>
+              <span>Analytics &amp; reporting</span>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="svc-panel" style="--i:3; --bg:rgba(228,112,58,0.88); --fg:#2A1108; --veil:#2A1108">
         <div class="svc-panel-veil"></div>
         <div class="svc-panel-inner">
           <div class="svc-panel-head">
             <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10.2 9.3v5.4l4.6-2.7Z" fill="currentColor"/></svg></span>
             <h3 class="svc-panel-title">Content</h3>
-            <span class="svc-panel-num">03</span>
+            <span class="svc-panel-num">04</span>
           </div>
           <div class="svc-panel-body">
             <div class="svc-panel-copy">
@@ -247,13 +279,13 @@
           </div>
         </div>
       </article>
-      <article class="svc-panel" style="--i:3; --bg:rgba(34,32,28,0.66); --fg:#F5F1E8; --veil:#000000">
+      <article class="svc-panel" style="--i:4; --bg:rgba(34,32,28,0.66); --fg:#F5F1E8; --veil:#000000">
         <div class="svc-panel-veil"></div>
         <div class="svc-panel-inner">
           <div class="svc-panel-head">
             <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="18" r="1.15" fill="currentColor"/></svg></span>
             <h3 class="svc-panel-title">Apps</h3>
-            <span class="svc-panel-num">04</span>
+            <span class="svc-panel-num">05</span>
           </div>
           <div class="svc-panel-body">
             <div class="svc-panel-copy">
@@ -269,13 +301,13 @@
           </div>
         </div>
       </article>
-      <article class="svc-panel" style="--i:4; --bg:rgba(242,194,79,0.64); --fg:#2A2008; --veil:#2A2008">
+      <article class="svc-panel" style="--i:5; --bg:rgba(242,194,79,0.64); --fg:#2A2008; --veil:#2A2008">
         <div class="svc-panel-veil"></div>
         <div class="svc-panel-inner">
           <div class="svc-panel-head">
             <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 2.8 21 7.4v9.2L12 21.2 3 16.6V7.4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 7.4 12 12l9-4.6M12 12v9.2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
             <h3 class="svc-panel-title">Packaging</h3>
-            <span class="svc-panel-num">05</span>
+            <span class="svc-panel-num">06</span>
           </div>
           <div class="svc-panel-body">
             <div class="svc-panel-copy">
@@ -290,13 +322,13 @@
           </div>
         </div>
       </article>
-      <article class="svc-panel" style="--i:5; --bg:rgba(58,53,96,0.76); --fg:#EDEAF7; --veil:#000000">
+      <article class="svc-panel" style="--i:6; --bg:rgba(58,53,96,0.76); --fg:#EDEAF7; --veil:#000000">
         <div class="svc-panel-veil"></div>
         <div class="svc-panel-inner">
           <div class="svc-panel-head">
             <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 2.5c.5 5 1.9 6.4 6.9 6.9-5 .5-6.4 1.9-6.9 6.9-.5-5-1.9-6.4-6.9-6.9 5-.5 6.4-1.9 6.9-6.9Z" fill="currentColor"/><path d="M18.2 15.1c.28 2.6 1 3.3 3.6 3.6-2.6.28-3.32 1-3.6 3.6-.28-2.6-1-3.32-3.6-3.6 2.6-.28 3.32-1 3.6-3.6Z" fill="currentColor" opacity=".72"/></svg></span>
             <h3 class="svc-panel-title">AI</h3>
-            <span class="svc-panel-num">06</span>
+            <span class="svc-panel-num">07</span>
           </div>
           <div class="svc-panel-body">
             <div class="svc-panel-copy">
@@ -311,13 +343,13 @@
           </div>
         </div>
       </article>
-      <article class="svc-panel" style="--i:6; --bg:rgba(231,168,166,0.68); --fg:#2E1614; --veil:#2E1614">
+      <article class="svc-panel" style="--i:7; --bg:rgba(231,168,166,0.68); --fg:#2E1614; --veil:#2E1614">
         <div class="svc-panel-veil"></div>
         <div class="svc-panel-inner">
           <div class="svc-panel-head">
             <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20.5 12.4c0 4.1-3.8 7.4-8.5 7.4a10 10 0 0 1-2.6-.34L4.2 21.3l1.5-3.8A7 7 0 0 1 3.5 12.4C3.5 8.3 7.3 5 12 5s8.5 3.3 8.5 7.4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
             <h3 class="svc-panel-title">Social</h3>
-            <span class="svc-panel-num">07</span>
+            <span class="svc-panel-num">08</span>
           </div>
           <div class="svc-panel-body">
             <div class="svc-panel-copy">
@@ -332,13 +364,13 @@
           </div>
         </div>
       </article>
-      <article class="svc-panel" style="--i:7; --bg:rgba(140,63,43,0.87); --fg:#F8EDE6; --veil:#000000">
+      <article class="svc-panel" style="--i:8; --bg:rgba(140,63,43,0.87); --fg:#F8EDE6; --veil:#000000">
         <div class="svc-panel-veil"></div>
         <div class="svc-panel-inner">
           <div class="svc-panel-head">
             <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/><path d="M12 3v4.4M12 16.6V21M3 12h4.4M16.6 12H21" stroke="currentColor" stroke-width="2"/></svg></span>
             <h3 class="svc-panel-title">Art direction</h3>
-            <span class="svc-panel-num">08</span>
+            <span class="svc-panel-num">09</span>
           </div>
           <div class="svc-panel-body">
             <div class="svc-panel-copy">
@@ -349,28 +381,6 @@
               <span>Creative direction</span>
               <span>Mood boards</span>
               <span>Campaign concepts</span>
-            </div>
-          </div>
-        </div>
-      </article>
-      <article class="svc-panel" style="--i:8; --bg:rgba(37,86,107,0.84); --fg:#E8F1F5; --veil:#000000">
-        <div class="svc-panel-veil"></div>
-        <div class="svc-panel-inner">
-          <div class="svc-panel-head">
-            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 15V9h3.6L14 4.5v15L7.6 15H4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M17.5 9.2a4.2 4.2 0 0 1 0 5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 6.6a7.8 7.8 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-            <h3 class="svc-panel-title">Marketing</h3>
-            <span class="svc-panel-num">09</span>
-          </div>
-          <div class="svc-panel-body">
-            <div class="svc-panel-copy">
-              <p class="svc-panel-desc">Good work still needs someone to see it. We run the campaigns, the search and the email behind a launch — and report on what actually brought money in, not what looked busy.</p>
-              <a href="#contact" class="svc-panel-link">Start a project <span class="svc-panel-arrow">&#8599;</span></a>
-            </div>
-            <div class="svc-panel-tags">
-              <span>Performance campaigns</span>
-              <span>SEO</span>
-              <span>Email &amp; CRM</span>
-              <span>Analytics &amp; reporting</span>
             </div>
           </div>
         </div>
@@ -405,10 +415,10 @@
             </div>
             <div class="pit-canvas">
               <div class="pit-slide" style="--n:0; background-image:url('assets/casestudy/getmyrugs/app-design-studio.webp')" title="GetMyRugs — AI design studio, iOS"></div>
-              <div class="pit-slide" style="--n:1; background-image:url('assets/covers/fig.webp?v=1787814310')" title="Fig Living — brand &amp; storefront"></div>
+              <div class="pit-slide" style="--n:1; background-image:url('assets/covers/fig.webp?v=1788468067')" title="Fig Living — brand &amp; storefront"></div>
               <div class="pit-slide" style="--n:2; background-image:url('assets/casestudy/prakshi/prakshi-zodiac-locket.webp')" title="Prakshi — campaign &amp; product"></div>
               <div class="pit-slide" style="--n:3; background-image:url('assets/casestudy/parmandesigns/parman-magazine-cover.webp')" title="Parman Designs — print &amp; editorial"></div>
-              <div class="pit-slide" style="--n:4; background-image:url('assets/covers/tenderheartschool.webp?v=1787814310')" title="Tender Heart School — identity"></div>
+              <div class="pit-slide" style="--n:4; background-image:url('assets/covers/tenderheartschool.webp?v=1788468067')" title="Tender Heart School — identity"></div>
             </div>
           </div>
         </div>
@@ -467,16 +477,6 @@
         <h3 class="hww-label"><svg class="hww-label-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5-9 4.5Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/><path d="M3 12l9 4.5L21 12M3 16.5 12 21l9-4.5" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></svg>Embedded in your workflow</h3>
         <p class="hww-desc">Slack, Notion, Figma, Jira, Linear and the rest. We plug into whatever you already use and work like part of your team.</p>
       </article>
-    </div>
-  </section>
-
-  <section id="reel" class="reel-section" aria-label="Just Two Idiots showreel">
-    <div class="reel-sticky">
-      <div class="reel-stage">
-        <video class="reel-video" poster="assets/reel/reel-poster.webp" muted loop playsinline preload="none" tabindex="-1">
-          <source src="assets/reel/just-two-idiots-reel.mp4" type="video/mp4">
-        </video>
-      </div>
     </div>
   </section>
 
@@ -584,7 +584,7 @@
 
     <div class="cta-cards">
       <div class="cta-brand">
-        <img class="cta-brand-logo" src="assets/brand/logo-wordmark-white.webp?v=1787814310" width="520" height="94" alt="Just Two Idiots" decoding="async">
+        <img class="cta-brand-logo" src="assets/brand/logo-wordmark-white.webp?v=1788468067" width="520" height="94" alt="Just Two Idiots" decoding="async">
         <p class="cta-brand-tag">Websites and brands,<span>built with care.</span></p>
       </div>
 
@@ -602,7 +602,7 @@
   </section>
 
 </div>
-<script defer src="script.js?v=1787814310"></script>
-<script defer src="nav.js?v=1787814310"></script>
+<script defer src="script.js?v=1788468067"></script>
+<script defer src="nav.js?v=1788468067"></script>
 </body>
 </html>

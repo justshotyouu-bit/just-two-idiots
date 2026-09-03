@@ -685,6 +685,25 @@
     video.preload = 'auto';
   }
 
+  // The reel used to sit far down the page, so its 150% preload margin was
+  // never in range at load time. It now sits just under the carousel, where
+  // that margin reaches it while the page is still loading — putting 5MB of
+  // video on the same connection as the carousel's LCP image. So the early
+  // warm-up waits for the page to finish and then for an idle moment. The
+  // on-screen observer below still calls ensureLoaded() directly, so someone
+  // scrolling straight down never waits on this.
+  var warming = false;
+  function warm() {
+    if (started || warming) return;
+    warming = true;
+    if (document.readyState === 'complete') { idle(ensureLoaded); return; }
+    window.addEventListener('load', function () { idle(ensureLoaded); }, { once: true });
+  }
+  function idle(fn) {
+    if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 2000 });
+    else setTimeout(fn, 200);
+  }
+
   var shouldPlay = false;
   function tryPlay() {
     if (!shouldPlay) return;
@@ -697,7 +716,7 @@
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) ensureLoaded();
+      if (entries[0].isIntersecting) warm();
     }, { rootMargin: '150% 0px' }).observe(section);
 
     // Play only while it is actually on screen, so it isn't burning battery
