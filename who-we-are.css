@@ -206,25 +206,23 @@
 /* The accent is inline-block so the underline can size to exactly these two
    words — which also keeps "one room." from ever breaking across lines. */
 .jf-accent { position: relative; display: inline-block; }
+/* An SVG is a replaced element: with width:auto its used width comes from the
+   intrinsic 220/14 ratio times the height, and `right` is simply dropped. That
+   happened to measure ~200px, which matched the old "class one." by luck. Set
+   the width explicitly so the rule spans whatever the accent actually is. */
 .jf-underline {
-  position: absolute; left: -.04em; right: -.04em; bottom: -.10em;
-  width: auto; height: .22em; overflow: visible;
+  position: absolute; left: -.04em; bottom: -.10em;
+  width: calc(100% + .08em); height: .22em; overflow: visible;
   color: #C97A1E; pointer-events: none;
 }
 .jf-underline path { stroke-dasharray: 1; stroke-dashoffset: 1; }
 .jf-intro.is-in .jf-underline path { animation: jf-draw .82s cubic-bezier(.55,0,.25,1) .62s forwards; }
+@keyframes jf-draw { to { stroke-dashoffset: 0; } }
 
-.jf-intro-row {
-  display: grid;
-  /* The lede column is sized to the lede, not to the full width: as 1fr it
-     stretched to 910px while the text stopped at its 54ch measure, leaving a
-     void that read as a mistake rather than as space. */
-  grid-template-columns: minmax(0, 54ch) auto;
-  justify-content: start;
-  gap: clamp(30px, 4vw, 56px);
-  align-items: start;
-  margin-bottom: clamp(34px, 5vw, 58px);
-}
+/* The figures that sat beside the lede are gone, so it is one measured
+   column: as 1fr it stretched to 910px while the text stopped at its 54ch
+   measure, leaving a void that read as a mistake rather than as space. */
+.jf-intro-row { max-width: 62ch; }
 .jf-lede {
   max-width: 54ch; margin: 0;
   font-size: clamp(15.5px, 1.3vw, 17.5px);
@@ -236,29 +234,9 @@
    faux-italic Switzer looks like a rendering fault. */
 .jf-lede em { font-style: normal; font-weight: 500; color: #1A1A18; }
 
-/* Figures sit beside the lede as an editorial column rather than stacking
-   under it, which is what made the whole block read as three flat rows. */
-.jf-stats {
-  display: grid; gap: 16px;
-  padding-left: clamp(22px, 3vw, 40px);
-  border-left: 1px solid #E7E5E0;
-}
-.jf-stat { display: flex; align-items: baseline; gap: 11px; opacity: 0; transform: translateY(12px); }
-.jf-intro.is-in .jf-stat { animation: jf-deal .55s cubic-bezier(.2,1.25,.4,1) forwards; }
-.jf-intro.is-in .jf-stat:nth-child(1) { animation-delay: .80s; }
-.jf-intro.is-in .jf-stat:nth-child(2) { animation-delay: .90s; }
-.jf-intro.is-in .jf-stat:nth-child(3) { animation-delay: 1.00s; }
-.jf-stat-n {
-  font-family: 'Switzer', sans-serif; font-weight: 600;
-  font-size: clamp(30px, 3.2vw, 40px); line-height: 1;
-  letter-spacing: -.03em;
-  /* Deeper than the brand #C97A1E, which only clears contrast as large text;
-     this one passes at any size, so shrinking the figure can't break it. */
-  color: #A85F14;
-  font-variant-numeric: tabular-nums;
-  min-width: 1.6ch;
-}
-.jf-stat-l { font-size: 12.5px; line-height: 1.35; color: #5A5A56; white-space: nowrap; }
+
+
+
 
 .jf-stage { position: relative; }
 
@@ -362,42 +340,32 @@
 /* --- Portrait beside copy ----------------------------------------------- */
 .jf-body {
   display: grid;
-  grid-template-columns: clamp(96px, 7.8vw, 118px) minmax(0, 1fr);
-  column-gap: clamp(13px, 1.2vw, 17px);
-  row-gap: 2px;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: clamp(13px, 1.4vw, 17px);
   position: relative; z-index: 2;
 }
-/* The portrait spans both text rows, so grid hands each row half its height and
-   the name and role drift apart. Pinning one to the bottom of its row and the
-   other to the top closes the pair back up and centres it against the photo. */
-.jf-copy { display: contents; }
-.jf-portrait { grid-column: 1; grid-row: 1 / span 2; }
-.jf-name { grid-column: 2; grid-row: 1; align-self: end; }
-.jf-role { grid-column: 2; grid-row: 2; align-self: start; margin-bottom: 0; }
-.jf-bio  { grid-column: 1 / -1; grid-row: 3; margin-top: 14px; }
 .jf-portrait {
-  position: relative; aspect-ratio: 4 / 5;
+  position: relative; aspect-ratio: 4 / 3;
   border-radius: 15px; overflow: hidden; background: #F1EFEA;
 }
 .jf-portrait img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   transform: scale(1.015); transition: transform .65s cubic-bezier(.22,.61,.36,1);
 }
-.jf-growth .jf-portrait img { filter: saturate(.82) contrast(1.02) brightness(.96); }
-.jf-tech .jf-portrait img { filter: saturate(.55) contrast(1.05) brightness(.97); }
+.jf-growth .jf-portrait img { filter: saturate(.95) contrast(1.01) brightness(.99); }
+.jf-tech .jf-portrait img { filter: saturate(.85) contrast(1.02) brightness(.99); }
 .jf-wash { position: absolute; inset: 0; pointer-events: none; }
 .jf-creative .jf-wash {
-  background: linear-gradient(202deg, rgba(201,122,30,.30), rgba(201,122,30,0) 54%, rgba(140,63,43,.24));
+  background: linear-gradient(202deg, rgba(201,122,30,.14), rgba(201,122,30,0) 52%, rgba(140,63,43,.12));
   mix-blend-mode: multiply;
 }
 .jf-growth .jf-wash {
-  background: linear-gradient(202deg, rgba(140,63,43,.42), rgba(224,164,48,.10) 56%, rgba(52,20,12,.52));
+  background: linear-gradient(202deg, rgba(140,63,43,.18), rgba(224,164,48,.05) 56%, rgba(52,20,12,.24));
 }
 .jf-tech .jf-wash {
   background:
-    repeating-linear-gradient(180deg, rgba(92,200,242,.07) 0 1px, transparent 1px 3px),
-    linear-gradient(202deg, rgba(20,62,88,.58), rgba(92,200,242,.08) 55%, rgba(4,12,18,.62));
+    repeating-linear-gradient(180deg, rgba(92,200,242,.04) 0 1px, transparent 1px 3px),
+    linear-gradient(202deg, rgba(20,62,88,.24), rgba(92,200,242,.04) 55%, rgba(4,12,18,.28));
 }
 
 .jf-copy { min-width: 0; }
@@ -413,114 +381,6 @@
 .jf-tech .jf-name { color: #ECF4F8; }
 .jf-tech .jf-role { color: #7FA8BC; }
 .jf-tech .jf-bio  { color: #A9BCC7; }
-
-/* --- Motif strip: the bit that says what each of them actually does ------ */
-.jf-motif { position: relative; border-radius: 15px; overflow: hidden; z-index: 2; }
-
-/* 01 — an artboard. The pen path draws itself, its anchors pop, the palette
-   deals in. pathLength="1" on the path means the dash maths needs no measuring. */
-.jf-artboard {
-  padding: 12px 13px 13px;
-  background:
-    radial-gradient(circle, rgba(10,10,10,.11) 1px, transparent 1.3px) 0 0 / 13px 13px,
-    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.34));
-  border: 1px solid rgba(201,122,30,.20);
-}
-.jf-motif-label { display: block; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: #6F6A60; margin-bottom: 4px; }
-.jf-pen { display: block; width: 100%; height: 52px; color: #C97A1E; overflow: visible; }
-.jf-pen-path { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.jf-card.is-in .jf-pen-path { animation: jf-draw 1.4s cubic-bezier(.55,0,.2,1) .35s forwards; }
-@keyframes jf-draw { to { stroke-dashoffset: 0; } }
-.jf-pen-handles { opacity: 0; }
-.jf-card.is-in .jf-pen-handles { animation: jf-fade .5s ease 1.35s forwards; }
-@keyframes jf-fade { to { opacity: .45; } }
-.jf-anchor { fill: #FFFDF9; stroke: #C97A1E; stroke-width: 1.6; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
-.jf-card.is-in .jf-anchor { animation: jf-pop .42s cubic-bezier(.2,1.5,.4,1) forwards; }
-.jf-card.is-in .jf-anchor-1 { animation-delay: .5s; }
-.jf-card.is-in .jf-anchor-2 { animation-delay: .82s; }
-.jf-card.is-in .jf-anchor-3 { animation-delay: 1.14s; }
-.jf-card.is-in .jf-anchor-4 { animation-delay: 1.42s; }
-@keyframes jf-pop { from { opacity: 0; transform: scale(.2); } to { opacity: 1; transform: scale(1); } }
-.jf-swatches { display: flex; gap: 6px; margin-top: 9px; }
-.jf-swatches span {
-  width: 26px; height: 26px; border-radius: 7px; background: var(--c);
-  border: 1px solid rgba(10,10,10,.12); box-shadow: 0 2px 5px -2px rgba(80,50,15,.4);
-  opacity: 0; transform: translateY(9px) scale(.82);
-}
-.jf-card.is-in .jf-swatches span { animation: jf-deal .48s cubic-bezier(.2,1.4,.4,1) forwards; }
-.jf-card.is-in .jf-swatches span:nth-child(1) { animation-delay: 1.50s; }
-.jf-card.is-in .jf-swatches span:nth-child(2) { animation-delay: 1.58s; }
-.jf-card.is-in .jf-swatches span:nth-child(3) { animation-delay: 1.66s; }
-.jf-card.is-in .jf-swatches span:nth-child(4) { animation-delay: 1.74s; }
-.jf-card.is-in .jf-swatches span:nth-child(5) { animation-delay: 1.82s; }
-@keyframes jf-deal { to { opacity: 1; transform: none; } }
-.jf-aperture { position: absolute; right: 11px; top: 10px; width: 26px; height: 26px; color: #C97A1E; opacity: .5; }
-.jf-aperture svg { display: block; width: 100%; height: 100%; animation: jf-spin 26s linear infinite; }
-@keyframes jf-spin { to { transform: rotate(360deg); } }
-
-/* 02 — a campaign panel. The curve draws on the same pathLength="1" trick as
-   the pen path, its read-points pop, then the spend bars deal in. Decorative
-   and aria-hidden: no figure here is a claim about a real account. */
-.jf-chart {
-  padding: 12px 13px 13px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
-  border: 1px solid rgba(224,164,48,.20);
-}
-.jf-growth .jf-motif-label { color: #C79E86; }
-.jf-curve { display: block; width: 100%; height: 48px; color: #E0A430; overflow: visible; }
-.jf-curve-grid { stroke: rgba(255,255,255,.12); }
-.jf-curve-path { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.jf-card.is-in .jf-curve-path { animation: jf-draw 1.4s cubic-bezier(.55,0,.2,1) .35s forwards; }
-.jf-dot { fill: #FFF6EC; stroke: #E0A430; stroke-width: 1.6; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
-.jf-card.is-in .jf-dot { animation: jf-pop .42s cubic-bezier(.2,1.5,.4,1) forwards; }
-.jf-card.is-in .jf-dot-1 { animation-delay: .52s; }
-.jf-card.is-in .jf-dot-2 { animation-delay: .86s; }
-.jf-card.is-in .jf-dot-3 { animation-delay: 1.18s; }
-.jf-card.is-in .jf-dot-4 { animation-delay: 1.46s; }
-.jf-bars { display: flex; align-items: flex-end; gap: 6px; height: 30px; margin-top: 9px; max-width: 260px; }
-.jf-bars span {
-  flex: 1; height: var(--h); border-radius: 4px 4px 2px 2px;
-  background: linear-gradient(180deg, rgba(224,164,48,.95), rgba(201,122,30,.55));
-  opacity: 0; transform: translateY(9px) scaleY(.5); transform-origin: 50% 100%;
-}
-.jf-card.is-in .jf-bars span { animation: jf-deal .48s cubic-bezier(.2,1.4,.4,1) forwards; }
-.jf-card.is-in .jf-bars span:nth-child(1) { animation-delay: 1.50s; }
-.jf-card.is-in .jf-bars span:nth-child(2) { animation-delay: 1.58s; }
-.jf-card.is-in .jf-bars span:nth-child(3) { animation-delay: 1.66s; }
-.jf-card.is-in .jf-bars span:nth-child(4) { animation-delay: 1.74s; }
-.jf-card.is-in .jf-bars span:nth-child(5) { animation-delay: 1.82s; }
-
-/* 03 — a terminal typing a deploy. Each line reveals by width in steps(), so
-   --ch must be the line's character count (rounded up, never down: short and
-   the tail is clipped, long and it simply pauses at the end). */
-.jf-terminal { background: rgba(4,10,15,.74); border: 1px solid rgba(92,200,242,.22); }
-.jf-term-bar {
-  display: flex; align-items: center; gap: 5px;
-  padding: 8px 12px; border-bottom: 1px solid rgba(92,200,242,.16);
-  background: rgba(92,200,242,.05);
-}
-.jf-term-bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(169,188,199,.3); }
-.jf-term-bar i:nth-child(1) { background: rgba(228,112,58,.75); }
-.jf-term-bar i:nth-child(2) { background: rgba(201,163,30,.7); }
-.jf-term-bar i:nth-child(3) { background: rgba(92,200,242,.6); }
-.jf-term-path { margin-left: 7px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; color: #8CA0AC; letter-spacing: .02em; }
-.jf-term-body { padding: 11px 12px 12px; display: grid; gap: 5px; }
-.jf-term-line {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 11.5px; line-height: 1.5; margin: 0; color: #A9BCC7;
-  white-space: nowrap; overflow: hidden; width: 0;
-}
-.jf-term-line b { color: #6FD3F5; font-weight: 400; }
-.jf-term-line.jf-ok { color: #7FD8A8; }
-.jf-card.is-in .jf-term-line {
-  animation: jf-type .85s steps(var(--ch)) forwards;
-  animation-delay: calc(.45s + var(--i) * .72s);
-}
-@keyframes jf-type { to { width: calc(var(--ch) * 1ch); } }
-.jf-caret { display: inline-block; width: 6px; height: 12px; background: #6FD3F5; vertical-align: -2px; margin-left: 3px; }
-.jf-card.is-in .jf-caret { animation: jf-blink 1.05s steps(1) 2.6s infinite; }
-@keyframes jf-blink { 50% { opacity: 0; } }
 
 /* Blueprint grid + a scanline crossing the whole dark card. */
 .jf-grid-lines {
@@ -545,11 +405,12 @@
 .jf-creative .jf-chips li { color: #6B5334; background: rgba(201,122,30,.11); border: 1px solid rgba(201,122,30,.24); }
 .jf-growth .jf-chips li { color: #E8C6AE; background: rgba(224,164,48,.11); border: 1px solid rgba(224,164,48,.26); }
 .jf-tech .jf-chips li { color: #A9BCC7; background: rgba(92,200,242,.09); border: 1px solid rgba(92,200,242,.22); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: .01em; }
+@keyframes jf-deal { to { opacity: 1; transform: none; } }
 .jf-card.is-in .jf-chips li { animation: jf-deal .45s cubic-bezier(.2,1.4,.4,1) forwards; }
-.jf-card.is-in .jf-chips li:nth-child(1) { animation-delay: 1.92s; }
-.jf-card.is-in .jf-chips li:nth-child(2) { animation-delay: 2.00s; }
-.jf-card.is-in .jf-chips li:nth-child(3) { animation-delay: 2.08s; }
-.jf-card.is-in .jf-chips li:nth-child(4) { animation-delay: 2.16s; }
+.jf-card.is-in .jf-chips li:nth-child(1) { animation-delay: .44s; }
+.jf-card.is-in .jf-chips li:nth-child(2) { animation-delay: .52s; }
+.jf-card.is-in .jf-chips li:nth-child(3) { animation-delay: .60s; }
+.jf-card.is-in .jf-chips li:nth-child(4) { animation-delay: .68s; }
 
 @media (hover: hover) and (pointer: fine) {
   .jf-card:hover .jf-face::after { opacity: 1; }
@@ -597,7 +458,10 @@
   .jf-card { --jf-from: 1; }
   /* Full-width cards stretch the motifs into thin strips; they were drawn for a
      third of a row, so cap them rather than let them span 900px. */
-  .jf-motif, .jf-bio { max-width: 560px; }
+  /* Full-width cards would blow the photo up to 870px and push the card past
+     900px tall; hold it to roughly what it gets in a three-up row. */
+  .jf-portrait { max-width: 430px; }
+  .jf-bio { max-width: 62ch; }
 }
 @media (max-width: 900px) {
   /* Shorter runways: a phone scroll covers far less pixel distance per swipe,
@@ -612,15 +476,6 @@
      than a set, so they all arrive from the same side once stacked. */
   .jf-blobs { inset: -3% 0; }
 
-  /* The figures move under the lede and lie down into a row; the rule that
-     separated them moves from the left edge to the top with them. */
-  .jf-intro-row { grid-template-columns: minmax(0, 1fr); gap: 26px; }
-  .jf-stats {
-    display: flex; flex-wrap: wrap;          /* wrap, not overflow, on a phone */
-    gap: 16px clamp(22px, 5vw, 44px);
-    padding-left: 0; padding-top: 20px;
-    border-left: 0; border-top: 1px solid #E7E5E0;
-  }
   .jf-title { max-width: 20ch; }
 
 }
@@ -630,19 +485,10 @@
      against six lines of bio leaves the photo stranded, so the name and role
      move up beside it and the bio runs full width underneath. */
   .jf-face { padding: 16px; border-radius: 22px; gap: 14px; }
-  .jf-body { grid-template-columns: 92px minmax(0, 1fr); column-gap: 14px; }
   .jf-role { letter-spacing: .09em; }
   .jf-bio  { margin-top: 13px; font-size: 14px; }
-  .jf-pen { height: 52px; }
-  .jf-curve { height: 48px; }
-  .jf-bars { height: 26px; }
-  .jf-swatches span { width: 22px; height: 22px; border-radius: 6px; }
-  .jf-term-line { font-size: 10.5px; }
   .jf-chips li { font-size: 10.5px; padding: 5px 9px; }
 
-  .jf-stat { gap: 8px; }
-  .jf-stat-l { font-size: 11.5px; }
-  .jf-stats { gap: 18px; }
 
 }
 
@@ -658,14 +504,11 @@
      on an animation running: the cards are simply present and finished. */
   .jf-card { opacity: 1; transform: none; transition: none; }
   .jf-card *, .jf-card *::after, .jf-card *::before { animation: none !important; }
-  .jf-pen-path, .jf-curve-path { stroke-dashoffset: 0; }
-  .jf-pen-handles { opacity: .45; }
-  .jf-anchor, .jf-swatches span, .jf-chips li, .jf-dot, .jf-bars span { opacity: 1; transform: none; }
-  .jf-term-line { width: auto; }
+  .jf-chips li { opacity: 1; transform: none; }
   .jf-scan { display: none; }
   .jf-portrait img { transition: none; }
 
-  .jf-intro .section-pill, .jf-lede, .jf-stat { opacity: 1; transform: none; transition: none; }
+  .jf-intro .section-pill, .jf-lede { opacity: 1; transform: none; transition: none; }
   .jf-w > i { transform: none; transition: none; }
   .jf-underline path { stroke-dashoffset: 0; }
 

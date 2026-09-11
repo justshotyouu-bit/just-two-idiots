@@ -113,9 +113,7 @@
       return;
     }
 
-    // The intro rides the same one-shot test as the cards. Its figures are
-    // already printed in the markup, so the count-up only ever replays a
-    // number that is correct before and after it runs.
+    // The intro rides the same one-shot test as the cards.
     if (intro) {
       var introDone = false;
       bindScroll(function () {
@@ -124,11 +122,6 @@
         if (r.bottom > 0 && r.top < window.innerHeight * 0.88) {
           introDone = true;
           intro.classList.add('is-in');
-          intro.querySelectorAll('.jf-stat-n').forEach(function (el, i) {
-            var to = parseInt(el.getAttribute('data-count'), 10);
-            if (isNaN(to)) return;
-            setTimeout(function () { countUp(el, to, 900); }, 820 + i * 100);
-          });
         }
       });
     }
@@ -195,17 +188,6 @@
 
   // Counts a figure up from zero. Writes the exact target on the last frame
   // rather than trusting the easing to land on it.
-  function countUp(el, to, dur) {
-    var t0 = 0;
-    function step(ts) {
-      if (!t0) t0 = ts;
-      var p = Math.min(1, (ts - t0) / dur);
-      el.textContent = p >= 1 ? to : Math.round(to * (1 - Math.pow(1 - p, 3)));
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
   // rAF-coalesced scroll binding, shared by all three effects.
   function bindScroll(frame) {
     var ticking = false;

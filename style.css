@@ -1610,7 +1610,7 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
    These used to be two stacked sections: "Who we are" as a two-column grid
    whose left column held only a short heading (so most of it was empty), and
    then a separate centred team section below it. One block of copy beside the
-   two founders reads as one thought, fills the dead column, and removes a
+   team reads as one thought, fills the dead column, and removes a
    divider and a whole screen of scrolling before the CTA. */
 .about-grid {
   display: grid;
