@@ -1,0 +1,11 @@
+{
+  // Static site: there is no Worker script, only files to serve. An assets-only
+  // Worker is exactly that, and "directory" is what `wrangler versions upload`
+  // was looking for when it failed with "Missing entry-point to Worker script
+  // or to assets directory".
+  "name": "just-two-idiots",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./"
+  }
+}
