@@ -20,7 +20,7 @@
   // this exact 2500x2125 aspect ratio so background-size can show each image
   // whole, edge to edge, with nothing cut off.
   var PROJECTS = [
-    { image: 'assets/work/fig.webp', name: 'Fig', category: 'Lighting & Living — eCommerce' },
+    { image: 'assets/work/fig.webp', name: 'Fig', category: 'Lighting & Living — Performance marketing' },
     { image: 'assets/work/denver.webp', name: 'Denver', category: 'Autograph Collection — Fragrance' },
     { image: 'assets/work/getmyrugs.webp', name: 'GetMyRugs', category: 'Handmade Rugs — eCommerce' },
     { image: 'assets/work/rugs499.webp', name: 'Rugs499', category: 'Handmade Rugs — eCommerce' },

@@ -101,7 +101,7 @@
     bindScroll(frame);
   })();
 
-  // --- Founders ----------------------------------------------------------
+  // --- Team ---------------------------------------------------------------
   (function () {
     var cards = [].slice.call(document.querySelectorAll('[data-jf-card]'));
     var intro = document.querySelector('[data-jf-intro]');
@@ -135,7 +135,7 @@
 
     // One-shot, and a plain position test rather than an IntersectionObserver
     // for the same reason the banner uses one: the pre-reveal card is a tilt at
-    // zero opacity, so an observer that never delivers leaves both founders
+    // zero opacity, so an observer that never delivers leaves the cards
     // invisible rather than merely un-animated. bindScroll runs this once
     // synchronously at bind time, so it resolves on load either way.
     var pending = cards.slice();

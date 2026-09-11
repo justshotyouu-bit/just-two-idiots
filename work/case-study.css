@@ -28,7 +28,7 @@ body { overflow-x: clip; }
 /* The width/height attributes on these images exist to reserve space while
    they load. But those attributes are also presentational hints, so an image
    styled `width:100%` with no height would be pinned to the literal attribute
-   height and stretched — fig-product-tote rendered 1278x925 instead of
+   height and stretched — a 1600x925 case-study still rendered 1278x925 instead of
    1278x738. Pairing them with height:auto is what makes the attributes
    reserve the right box instead of forcing the wrong one. Images that set
    their own height inline (object-fit:cover crops) are unaffected: inline
