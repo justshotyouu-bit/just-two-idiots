@@ -411,6 +411,7 @@
 .jf-card.is-in .jf-chips li:nth-child(2) { animation-delay: .52s; }
 .jf-card.is-in .jf-chips li:nth-child(3) { animation-delay: .60s; }
 .jf-card.is-in .jf-chips li:nth-child(4) { animation-delay: .68s; }
+.jf-card.is-in .jf-chips li:nth-child(5) { animation-delay: .76s; }
 
 @media (hover: hover) and (pointer: fine) {
   .jf-card:hover .jf-face::after { opacity: 1; }
