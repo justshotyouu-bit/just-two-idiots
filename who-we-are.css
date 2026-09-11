@@ -204,7 +204,7 @@
 .jf-accent .jf-w:nth-of-type(2) > i { transition-delay: .27s; }
 
 /* The accent is inline-block so the underline can size to exactly these two
-   words — which also keeps "class one." from ever breaking across lines. */
+   words — which also keeps "one room." from ever breaking across lines. */
 .jf-accent { position: relative; display: inline-block; }
 .jf-underline {
   position: absolute; left: -.04em; right: -.04em; bottom: -.10em;
@@ -362,11 +362,20 @@
 /* --- Portrait beside copy ----------------------------------------------- */
 .jf-body {
   display: grid;
-  grid-template-columns: clamp(136px, 14.5vw, 186px) minmax(0, 1fr);
-  gap: clamp(15px, 1.8vw, 21px);
+  grid-template-columns: clamp(96px, 7.8vw, 118px) minmax(0, 1fr);
+  column-gap: clamp(13px, 1.2vw, 17px);
+  row-gap: 2px;
   align-items: start;
   position: relative; z-index: 2;
 }
+/* The portrait spans both text rows, so grid hands each row half its height and
+   the name and role drift apart. Pinning one to the bottom of its row and the
+   other to the top closes the pair back up and centres it against the photo. */
+.jf-copy { display: contents; }
+.jf-portrait { grid-column: 1; grid-row: 1 / span 2; }
+.jf-name { grid-column: 2; grid-row: 1; align-self: end; }
+.jf-role { grid-column: 2; grid-row: 2; align-self: start; margin-bottom: 0; }
+.jf-bio  { grid-column: 1 / -1; grid-row: 3; margin-top: 14px; }
 .jf-portrait {
   position: relative; aspect-ratio: 4 / 5;
   border-radius: 15px; overflow: hidden; background: #F1EFEA;
@@ -418,7 +427,7 @@
   border: 1px solid rgba(201,122,30,.20);
 }
 .jf-motif-label { display: block; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: #6F6A60; margin-bottom: 4px; }
-.jf-pen { display: block; width: 100%; height: 62px; color: #C97A1E; overflow: visible; }
+.jf-pen { display: block; width: 100%; height: 52px; color: #C97A1E; overflow: visible; }
 .jf-pen-path { stroke-dasharray: 1; stroke-dashoffset: 1; }
 .jf-card.is-in .jf-pen-path { animation: jf-draw 1.4s cubic-bezier(.55,0,.2,1) .35s forwards; }
 @keyframes jf-draw { to { stroke-dashoffset: 0; } }
@@ -459,7 +468,7 @@
   border: 1px solid rgba(224,164,48,.20);
 }
 .jf-growth .jf-motif-label { color: #C79E86; }
-.jf-curve { display: block; width: 100%; height: 58px; color: #E0A430; overflow: visible; }
+.jf-curve { display: block; width: 100%; height: 48px; color: #E0A430; overflow: visible; }
 .jf-curve-grid { stroke: rgba(255,255,255,.12); }
 .jf-curve-path { stroke-dasharray: 1; stroke-dashoffset: 1; }
 .jf-card.is-in .jf-curve-path { animation: jf-draw 1.4s cubic-bezier(.55,0,.2,1) .35s forwards; }
@@ -586,6 +595,9 @@
 @media (max-width: 1100px) {
   .jf-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .jf-card { --jf-from: 1; }
+  /* Full-width cards stretch the motifs into thin strips; they were drawn for a
+     third of a row, so cap them rather than let them span 900px. */
+  .jf-motif, .jf-bio { max-width: 560px; }
 }
 @media (max-width: 900px) {
   /* Shorter runways: a phone scroll covers far less pixel distance per swipe,
@@ -618,16 +630,9 @@
      against six lines of bio leaves the photo stranded, so the name and role
      move up beside it and the bio runs full width underneath. */
   .jf-face { padding: 16px; border-radius: 22px; gap: 14px; }
-  .jf-body { grid-template-columns: 92px minmax(0, 1fr); column-gap: 14px; row-gap: 2px; }
-  .jf-copy { display: contents; }
-  .jf-portrait { grid-column: 1; grid-row: 1 / span 2; }
-  /* The portrait spans both text rows, so grid hands each row half its
-     height and the name and role drift apart. Pinning one to the bottom of
-     its row and the other to the top closes the pair back up and centres it
-     against the photo. */
-  .jf-name { grid-column: 2; grid-row: 1; align-self: end; }
-  .jf-role { grid-column: 2; grid-row: 2; align-self: start; margin-bottom: 0; letter-spacing: .09em; }
-  .jf-bio  { grid-column: 1 / -1; grid-row: 3; margin-top: 13px; font-size: 14px; }
+  .jf-body { grid-template-columns: 92px minmax(0, 1fr); column-gap: 14px; }
+  .jf-role { letter-spacing: .09em; }
+  .jf-bio  { margin-top: 13px; font-size: 14px; }
   .jf-pen { height: 52px; }
   .jf-curve { height: 48px; }
   .jf-bars { height: 26px; }
