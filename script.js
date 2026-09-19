@@ -980,6 +980,40 @@
     return row;
   });
 
+  // --- warm the YouTube origins ------------------------------------------
+  // Clicking a tile used to start from nothing: DNS, TCP and TLS to the embed
+  // host, then the embed page, then the player JS, then another handshake to
+  // whichever googlevideo host serves the file — several round trips before a
+  // frame exists, which on a phone is the multi-second nothing that made the
+  // tile feel broken. Opening the sockets while the wall is merely approaching
+  // takes those handshakes off the click. Deliberately not in the <head>:
+  // connections held open for someone who never scrolls this far are pure cost
+  // on the initial load, which is what the rest of this file just went to
+  // trouble to protect.
+  var warmed = false;
+  function warmYT() {
+    if (warmed) return;
+    warmed = true;
+    // fonts.gstatic.com is already preconnected in the <head>; the player's
+    // own assets come from www.gstatic.com, which is a different host.
+    ['https://www.youtube-nocookie.com', 'https://i.ytimg.com',
+     'https://www.gstatic.com'].forEach(function (href) {
+      var l = document.createElement('link');
+      l.rel = 'preconnect'; l.href = href; l.crossOrigin = '';
+      document.head.appendChild(l);
+    });
+    // The media itself comes from a per-request rr*.googlevideo.com host that
+    // cannot be named in advance; resolving the parent at least primes DNS.
+    var d = document.createElement('link');
+    d.rel = 'dns-prefetch'; d.href = 'https://googlevideo.com';
+    document.head.appendChild(d);
+  }
+  // Belt and braces: a pointer arriving over the wall is a stronger signal
+  // than proximity, and fires a few hundred ms before the click lands.
+  ['pointerenter', 'touchstart'].forEach(function (ev) {
+    wall.addEventListener(ev, warmYT, { once: true, passive: true });
+  });
+
   // --- play only what is visible -----------------------------------------
   function mount(el) {
     if (el.querySelector('iframe')) return;
@@ -1013,7 +1047,7 @@
   // that branch turns off the drift and the autoplaying wall, but a film the
   // visitor deliberately clicked is not incidental motion and should still
   // play.
-  var lb = null, lbFrame = null, lbTitle = null, lbClose = null;
+  var lb = null, lbFrame = null, lbTitle = null, lbYT = null, lbClose = null;
   var lbOpen = false, lastFocus = null;
 
   function buildLightbox() {
@@ -1027,11 +1061,15 @@
       '<button type="button" class="srl-lb-close" aria-label="Close video">' +
         '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none"><path d="M6 6l12 12M18 6L6 18" ' +
         'stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
-      '<div class="srl-lb-stage"><div class="srl-lb-frame"></div>' +
-      '<p class="srl-lb-title"></p></div>';
+      '<div class="srl-lb-stage"><div class="srl-lb-frame">' +
+        '<div class="srl-lb-load" aria-hidden="true"><i></i><i></i><i></i></div>' +
+      '</div>' +
+      '<p class="srl-lb-title"></p>' +
+      '<a class="srl-lb-yt" target="_blank" rel="noopener noreferrer">Watch on YouTube &#8599;</a></div>';
     document.body.appendChild(lb);
     lbFrame = lb.querySelector('.srl-lb-frame');
     lbTitle = lb.querySelector('.srl-lb-title');
+    lbYT = lb.querySelector('.srl-lb-yt');
     lbClose = lb.querySelector('.srl-lb-close');
     lbClose.addEventListener('click', closeLightbox);
     // The stage is only as big as the player, so anything landing on the
@@ -1050,14 +1088,22 @@
     // A second, honest player: full size, real controls, sound on, uncropped.
     // The wall's embeds are muted and blown up 1.42x to hide YouTube's chrome,
     // which is exactly wrong for actually watching something.
+    warmYT();   // no-op once warm; covers a keyboard open that saw no pointer
+
     var f = document.createElement('iframe');
     f.src = 'https://www.youtube-nocookie.com/embed/' + id +
             '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
     f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
     f.setAttribute('allowfullscreen', '');
     f.setAttribute('title', title || 'Video');
-    lbFrame.innerHTML = '';
+    // The frame is empty until YouTube answers. Showing that emptiness is what
+    // read as "nothing is happening": keep the indicator up and clear it on
+    // load, so the wait always looks like a wait.
+    lbFrame.innerHTML = '<div class="srl-lb-load" aria-hidden="true"><i></i><i></i><i></i></div>';
+    lbFrame.classList.add('is-loading');
+    f.addEventListener('load', function () { lbFrame.classList.remove('is-loading'); }, { once: true });
     lbFrame.appendChild(f);
+    lbYT.href = 'https://www.youtube.com/watch?v=' + id;
 
     // Lock the page behind the overlay, padding out the width the scrollbar
     // gives back so the layout does not jump. The header is fixed and sized
@@ -1137,6 +1183,7 @@
       if (!entries[0].isIntersecting) return;
       posterIO.disconnect();
       loadPosters();
+      warmYT();   // same moment: the wall is close, so a click is plausible
     }, { rootMargin: '300px 0px' });
     posterIO.observe(section);
     // Backstop, so a fast scroll never meets an empty wall: once the page has
