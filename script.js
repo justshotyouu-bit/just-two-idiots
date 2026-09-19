@@ -872,7 +872,10 @@
   // Rotating text is motion for its own sake — hold the first phrase instead.
   if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
 
-  var HOLD = 2600; // ms a phrase is readable before the next one starts
+  // 2600 with a 620ms roll left each phrase sitting still for about two
+  // seconds, which read as slow. 1400 against a 420ms roll keeps roughly a
+  // second of settled, readable type and cuts the cycle nearly in half.
+  var HOLD = 1400; // ms a phrase is readable before the next one starts
 
   setInterval(function () {
     var prev = words[i];
