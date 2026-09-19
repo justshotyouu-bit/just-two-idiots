@@ -705,7 +705,9 @@ a:hover { color: #C97A1E; }
    A silhouette hand around an iPhone-ish frame, with delivered work cycling
    on the screen. Built from markup rather than a photo: the palm is one SVG
    behind the phone, the four fingers another in front of it, so the phone
-   sits inside the grip. */
+   sits inside the grip. The palm's outer edge sits slightly LEFT of where the
+   fingers root, so it fills the gaps between them — pull it right and the
+   fingers read as four loose pills floating beside the phone. */
 .pit-stage {
   position: relative;
   width: min(100%, clamp(320px, 46vw, 520px));

@@ -685,20 +685,30 @@
     video.preload = 'auto';
   }
 
-  // The reel used to sit far down the page, so its 150% preload margin was
-  // never in range at load time. It now sits just under the carousel, where
-  // that margin reaches it while the page is still loading — putting 5MB of
-  // video on the same connection as the carousel's LCP image. So the early
-  // warm-up waits for the page to finish and then for an idle moment. The
-  // on-screen observer below still calls ensureLoaded() directly, so someone
-  // scrolling straight down never waits on this.
+  // The reel starts ~106px below the fold on a phone, and rootMargin extends
+  // past the viewport BOTTOM — reach is viewport + margin — so no proximity
+  // margin small enough to miss it at rest leaves any lead time. It was
+  // fetching megabytes of video on every page load, before anyone scrolled,
+  // competing with the markup and the carousel's LCP image on a cold
+  // connection. So proximity is not the gate: a first scroll is. Land and read
+  // the hero and you never pay for the video; scroll and it starts at once,
+  // with the poster covering the gap. The on-screen observer below still calls
+  // ensureLoaded() directly, so a fast scroller never waits on this.
   var warming = false;
+  var scrolled = window.scrollY > 0;   // reload part-way down counts as scrolled
+  var queued = false;
   function warm() {
     if (started || warming) return;
+    if (!scrolled) { queued = true; return; }
     warming = true;
     if (document.readyState === 'complete') { idle(ensureLoaded); return; }
     window.addEventListener('load', function () { idle(ensureLoaded); }, { once: true });
   }
+  window.addEventListener('scroll', function () {
+    if (scrolled) return;
+    scrolled = true;
+    if (queued) warm();
+  }, { passive: true, once: true });
   function idle(fn) {
     if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 2000 });
     else setTimeout(fn, 200);
