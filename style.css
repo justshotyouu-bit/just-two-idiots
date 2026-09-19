@@ -1574,8 +1574,31 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
      at this width and the last of the eight pins at 135px, so even the tallest
      bottoms out near 595px, inside a 640px viewport. Geometry is tightened
      from desktop's 84/14 so the pile of slivers doesn't eat the screen. */
-  .svc-stack { --stack-top: 72px; --sliver: 9px; }
-  .svc-panel-inner { min-height: 0; }
+  /* THE DECK DOES NOT STACK ON A PHONE. It was nine position:sticky cards,
+     each running backdrop-filter: blur(20px) saturate(165%) over three
+     80px-blurred colour blobs. A phone compositor re-blurs the whole viewport
+     once per card per frame, which is the stutter, and the blobs re-rasterise
+     as they move, which is the colour block that appeared to jitter. Worse,
+     every card is translucent, so the card underneath showed THROUGH the one
+     on top — the previous panel's body copy and its "Start a project" link
+     were legible across the face of the next one. Here it is a plain list of
+     solid cards: no sticky, no backdrop-filter, no glow, and nothing for
+     script.js to measure. --solid carries each card's colour at full opacity
+     (every pairing clears WCAG AA against its own --fg, 5.65:1 at worst). */
+  .svc-panel {
+    position: static;
+    top: auto;
+    background: var(--solid, var(--bg));
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 1px solid rgba(16, 12, 8, 0.07);
+    box-shadow: 0 12px 26px -18px rgba(20, 14, 8, 0.34);
+    margin-bottom: 12px;
+    border-radius: 22px;
+  }
+  .svc-panel-veil { display: none; }
+  .svc-glow { display: none; }
+  .svc-panel-inner { min-height: 0; padding: 24px 22px 26px; gap: 20px; }
   .svc-panel-body { align-items: flex-start; }
   /* max-width:none matters: the desktop rule caps the tag row at 44% so it
      sits opposite the copy, but on a 340px card that is 127px against

@@ -168,6 +168,12 @@ a[href$=".html"] {
 }
 
 @media (max-width: 560px) {
+  /* Stat tiles hold a value and a label. Two tiles across a 390px screen give
+     each about 119px of content, and a word like "Shopping" set at 32px needs
+     140px — it ran straight out of its card. These are single words that
+     cannot wrap, so the size has to come down rather than the text break. */
+  [style*="font-size:32px"] { font-size: 23px !important; letter-spacing: -0.02em !important; }
+
   /* Below this, two columns of body copy stop being readable. Swatch and
      logo rows keep a 2-up; text grids go single file. */
   [style*="repeat(6"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }

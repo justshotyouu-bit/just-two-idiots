@@ -441,9 +441,14 @@
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.svc-panel'));
   if (panels.length < 2) return;
-  // The deck stacks at every width now, phones included; only reduced motion
-  // falls back to a plain list, since the effect is scroll-driven by nature.
+  // The deck stacks on desktop only. Below 900px style.css lays the panels out
+  // as a plain solid list — no sticky, no veils — so there is nothing here to
+  // measure, and measuring anyway meant nine getBoundingClientRect reads per
+  // frame on the device least able to afford them. Reduced motion falls back
+  // to the same list, since the effect is scroll-driven by nature.
+  var deckOK = window.matchMedia('(min-width: 901px)');
   var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
+  function deckActive() { return deckOK.matches && motionOK.matches; }
 
   // Depth is carried by dimming alone, deliberately. A covered card used to
   // scale down too, and uniform scale shrinks a card horizontally as well as
@@ -464,7 +469,7 @@
 
   function update() {
     ticking = false;
-    if (!motionOK.matches) return;
+    if (!deckActive()) return;
     // Read all the geometry, then write all the veils. The previous version
     // interleaved them — measure a card, set its veil, measure the next —
     // and each write invalidates layout, so every read after the first
@@ -492,10 +497,16 @@
     if (!ticking) { ticking = true; requestAnimationFrame(update); }
   }
 
+  // Bound unconditionally but cheap: onScroll schedules one rAF that returns
+  // immediately when the deck is not active, and a width change flips it
+  // without a reload.
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', function () { clear(); onScroll(); });
-  if (motionOK.addEventListener) motionOK.addEventListener('change', function () { clear(); onScroll(); });
-  else if (motionOK.addListener) motionOK.addListener(function () { clear(); onScroll(); });
+  [deckOK, motionOK].forEach(function (mq) {
+    var onChange = function () { clear(); onScroll(); };
+    if (mq.addEventListener) mq.addEventListener('change', onChange);
+    else if (mq.addListener) mq.addListener(onChange);
+  });
   update();
 })();
 
