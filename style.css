@@ -851,15 +851,21 @@ a:hover { color: #C97A1E; }
   background-size: cover;
   background-position: center top;
   opacity: 0;
-  animation: pit-cycle 20s linear infinite;
+  /* Each slide owns a 4s slot, so the cycle is slides x 4s and the keyframe
+     percentages are that slot expressed against it. Both are tuned to the
+     NUMBER OF SLIDES: with Fig Living parked there are 4, so 16s and the
+     percentages below. RESTORING FIG means 5 slides again — put the duration
+     back to 20s and the stops back to 3 / 18 / 22%, or one slide's worth of
+     the loop plays to an empty phone. */
+  animation: pit-cycle 16s linear infinite;
   animation-delay: calc(var(--n) * 4s);
 }
 @keyframes pit-cycle {
-  0%   { opacity: 0; transform: scale(1.04); }
-  3%   { opacity: 1; transform: none; }
-  18%  { opacity: 1; transform: none; }
-  22%  { opacity: 0; transform: scale(1.04); }
-  100% { opacity: 0; transform: scale(1.04); }
+  0%     { opacity: 0; transform: scale(1.04); }
+  3.75%  { opacity: 1; transform: none; }
+  22.5%  { opacity: 1; transform: none; }
+  27.5%  { opacity: 0; transform: scale(1.04); }
+  100%   { opacity: 0; transform: scale(1.04); }
 }
 
 .jti-cta {

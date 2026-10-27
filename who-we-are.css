@@ -258,7 +258,11 @@
 .jf-grid {
   position: relative; z-index: 1;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* auto-fit, not repeat(3): with a card parked there are two, and a fixed
+     three-track grid would leave a third of the row empty. Empty tracks
+     collapse and the remaining cards share the width, so this is right at
+     two cards and right again at three when one is restored. */
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: clamp(18px, 2.4vw, 28px);
   perspective: 1500px;
 }
