@@ -240,9 +240,11 @@
 
 .jf-stage { position: relative; }
 
-/* The blobs are siblings *behind* the grid, never children of a card:
-   backdrop-filter blurs what is painted behind an element, so a glass card
-   with nothing behind it is a flat panel plus a wasted compositor layer. */
+/* The blobs are siblings *behind* the grid, never children of a card: the
+   cards are translucent, and the colour field showing through them is what
+   reads as glass. (They no longer carry a backdrop-filter — see .jf-face.)
+   These blobs are NOT promoted to their own layers, so their blur is painted
+   once into the page rather than re-applied every frame; keep it that way. */
 /* No overflow clip here on purpose: clipping a 64px blur at the container
    edge draws a hard rounded rectangle behind the cards that reads as an
    unintended panel. The blur is the only edge treatment these need. */
@@ -296,12 +298,16 @@
   padding: clamp(18px, 2.3vw, 26px);
   border-radius: 26px;
   overflow: hidden;
-  backdrop-filter: blur(22px) saturate(168%);
-  -webkit-backdrop-filter: blur(22px) saturate(168%);
+  /* No backdrop-filter. What sits behind these cards is the blob field, which
+     is already a blur — blurring it again changed nothing you could see, but
+     it was re-filtered on every frame the cards were drawn, and it was the
+     whole cost of this section while scrolling (8% of frames dropped on a
+     laptop, 0% without it). The light card takes a little more opacity to
+     keep the same frosted read. */
   transition: box-shadow .4s ease, transform .4s ease;
 }
 .jf-creative .jf-face {
-  background: rgba(255,251,244,.72);
+  background: rgba(255,251,244,.8);
   border: 1px solid rgba(201,122,30,.22);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 24px 54px -30px rgba(92,60,20,.45);
 }

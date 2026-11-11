@@ -435,82 +435,6 @@
   update();
 })();
 
-// Services deck — the stacking itself is pure CSS (position:sticky at
-// stepped top offsets, see style.css). This only adds depth to it: once a
-// card starts being covered by the next one it eases back and dims, so the
-// pile reads as receding layers rather than flat overlaps.
-(function () {
-  var panels = Array.prototype.slice.call(document.querySelectorAll('.svc-panel'));
-  if (panels.length < 2) return;
-  // The deck stacks on desktop only. Below 900px style.css lays the panels out
-  // as a plain solid list — no sticky, no veils — so there is nothing here to
-  // measure, and measuring anyway meant nine getBoundingClientRect reads per
-  // frame on the device least able to afford them. Reduced motion falls back
-  // to the same list, since the effect is scroll-driven by nature.
-  var deckOK = window.matchMedia('(min-width: 901px)');
-  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
-  function deckActive() { return deckOK.matches && motionOK.matches; }
-
-  // Depth is carried by dimming alone, deliberately. A covered card used to
-  // scale down too, and uniform scale shrinks a card horizontally as well as
-  // vertically: at 0.085 that pulled each edge 14px inboard and opened a strip
-  // down both sides of the card, through which the colour field behind the
-  // deck showed. Because the scale tracked scroll position continuously, those
-  // strips changed width and colour on every frame — the sideways "glitching".
-  // Dimming reads as recession just as well and never changes geometry, so the
-  // pile now only ever moves up the screen.
-  var MAX_DIM = 0.34;        // how dark a fully covered card goes
-  var ticking = false;
-  // Resolved once. This used to be a querySelector per card per frame.
-  var veils = panels.map(function (p) { return p.querySelector('.svc-panel-veil'); });
-
-  function clear() {
-    veils.forEach(function (v) { if (v) v.style.opacity = '0'; });
-  }
-
-  function update() {
-    ticking = false;
-    if (!deckActive()) return;
-    // Read all the geometry, then write all the veils. The previous version
-    // interleaved them — measure a card, set its veil, measure the next —
-    // and each write invalidates layout, so every read after the first
-    // forced a synchronous recalculation. That was one forced layout per
-    // card per frame for the whole time this deck was on screen.
-    var n = panels.length;
-    var tops = new Array(n);
-    var heights = new Array(n);
-    for (var i = 0; i < n; i++) {
-      tops[i] = panels[i].getBoundingClientRect().top;
-      heights[i] = panels[i].offsetHeight || 1;
-    }
-    for (var j = 0; j < n; j++) {
-      var covered = 0;
-      if (j < n - 1) {
-        // How far the next card has travelled up across this one, 0..1.
-        covered = (heights[j] - (tops[j + 1] - tops[j])) / heights[j];
-        covered = covered < 0 ? 0 : covered > 1 ? 1 : covered;
-      }
-      if (veils[j]) veils[j].style.opacity = (covered * MAX_DIM).toFixed(3);
-    }
-  }
-
-  function onScroll() {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
-  }
-
-  // Bound unconditionally but cheap: onScroll schedules one rAF that returns
-  // immediately when the deck is not active, and a width change flips it
-  // without a reload.
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { clear(); onScroll(); });
-  [deckOK, motionOK].forEach(function (mq) {
-    var onChange = function () { clear(); onScroll(); };
-    if (mq.addEventListener) mq.addEventListener('change', onChange);
-    else if (mq.addListener) mq.addListener(onChange);
-  });
-  update();
-})();
-
 // "Who we are" — fades the section up (and sweeps its highlighted phrases
 // in) the first time it scrolls into view.
 (function () {
@@ -539,7 +463,9 @@
   // Reduced motion keeps the first word on screen rather than typing forever.
   if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
 
-  var WORDS = ['brand', 'website', 'app', 'packaging', 'campaign', 'identity'];
+  // WORDS[0] must match the word already in the markup — the loop starts by
+  // erasing it.
+  var WORDS = ['go-to-market', 'brand', 'product', 'launch', 'campaigns', 'growth'];
   var TYPE_MS = 82, ERASE_MS = 42, HOLD_MS = 1500, GAP_MS = 320;
   var wordIndex = 0, charCount = WORDS[0].length, erasing = true, timer = null;
   var running = false;
@@ -583,93 +509,6 @@
   }
 })();
 
-// "How we work" rail — always travels right-to-left. A steady drift, plus
-// whatever the reader scrolls: scrolling either way pushes the rail further
-// left, so the cards behave as if gravity pulled them that way.
-// Falls back to the CSS keyframes (.hww-track.is-auto) if this never runs.
-(function () {
-  var track = document.querySelector('.hww-track');
-  if (!track) return;
-  if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
-
-  var DRIFT = 26;        // px per second at rest
-  var SCROLL_PUSH = 0.5; // px of travel per px scrolled, either direction
-  var offset = 0;
-  var span = 0;          // width of one card set — where the loop repeats
-  var lastY = window.pageYOffset;
-  var lastT = 0;
-  var paused = false;
-
-  function measure() {
-    // Half the track is the duplicate set, so one set is where it wraps.
-    span = track.scrollWidth / 2;
-  }
-  measure();
-  if (!span) return;
-
-  // Take over from the CSS animation only now that we know we can drive it.
-  track.classList.remove('is-auto');
-
-  // This handler used to read window.pageYOffset itself. That read lands
-  // between the transform writes in frame() below and forces a synchronous
-  // layout flush every scroll event — it profiled as the hottest JS on the
-  // page at 2.1s of a scroll pass. It now only records that a scroll
-  // happened; the read moved into the frame, where it runs once and before
-  // any write. The scroll-push behaviour is identical.
-  var scrolled = false;
-  window.addEventListener('scroll', function () { scrolled = true; }, { passive: true });
-
-  track.addEventListener('mouseenter', function () { paused = true; });
-  track.addEventListener('mouseleave', function () { paused = false; });
-
-  var resizeTimer;
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(measure, 150);
-  });
-
-  // Same visibility gating as the carousel: the ticker sits well down the
-  // page but was driving a transform on every frame from load onwards.
-  var ticking2 = false;
-  var onScreen2 = true;
-
-  function frame(t) {
-    if (scrolled) {
-      scrolled = false;
-      var y = window.pageYOffset;
-      offset += Math.abs(y - lastY) * SCROLL_PUSH;
-      lastY = y;
-    }
-    var dt = lastT ? Math.min((t - lastT) / 1000, 0.05) : 0;
-    lastT = t;
-    if (!paused) offset += DRIFT * dt;
-    if (span) offset %= span;
-    track.style.transform = 'translateX(' + (-offset).toFixed(2) + 'px)';
-    if (!onScreen2 || document.hidden) { ticking2 = false; return; }
-    requestAnimationFrame(frame);
-  }
-
-  function run() {
-    if (ticking2) return;
-    ticking2 = true;
-    // Drop the stale timestamp, or the first frame back computes dt against
-    // whenever the loop last stopped and the strip jumps forward.
-    lastT = 0;
-    requestAnimationFrame(frame);
-  }
-  run();
-
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
-      onScreen2 = entries[0].isIntersecting;
-      if (onScreen2) run();
-    }, { rootMargin: '150px 0px' }).observe(track);
-  }
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && onScreen2) run();
-  });
-})();
-
 // Showreel — the "Embedded in your workflow" card opening into full screen.
 // A card-sized window in the middle of a pinned viewport widens to fill it
 // as the reader scrolls, while the video inside eases back from a slight
@@ -681,6 +520,7 @@
   var sticky = section.querySelector('.reel-sticky');
   var stage = section.querySelector('.reel-stage');
   var video = section.querySelector('.reel-video');
+  var dim = section.querySelector('.reel-dim');
   if (!sticky || !stage || !video) return;
 
   // 5MB of video has no business loading with the page — it only starts
@@ -809,7 +649,12 @@
     // exactly — running ahead there would strand a black screen behind a
     // shut card for the last stretch of the runway.
     var c = p < CLOSE ? Math.min(1, e * 1.5) : e;
-    sticky.style.backgroundColor = 'rgb(' +
+    // An opacity on a black layer, not a background colour on the sticky
+    // stage: a new background colour repaints the whole viewport-sized layer
+    // every scroll frame, where opacity is applied by the compositor and
+    // repaints nothing. Same colours on screen at every point of the scroll.
+    if (dim) dim.style.opacity = c.toFixed(3);
+    else sticky.style.backgroundColor = 'rgb(' +
       Math.round(PAGE[0] + (REEL[0] - PAGE[0]) * c) + ',' +
       Math.round(PAGE[1] + (REEL[1] - PAGE[1]) * c) + ',' +
       Math.round(PAGE[2] + (REEL[2] - PAGE[2]) * c) + ')';
@@ -830,19 +675,18 @@
   var slot = document.getElementById('hero-rot-slot');
   if (!slot) return;
 
+  // Kept in step with the sr-only sentence under the H1 in index.html.
   var PHRASES = [
-    'mastering AI learning',
-    'crafting graphic worlds',
-    'running elite production',
-    'driving bold art direction',
-    'designing slick apps',
-    'engineering websites',
-    'building powerful brands',
-    'growing ambitious businesses',
-    'executing killer marketing',
-    'dropping fresh brand identities',
-    'creating scroll-stopping content',
-    'designing stunning packaging'
+    'shaping go-to-market strategy',
+    'reading trends before they peak',
+    'building category-leading brands',
+    'mapping markets and consumers',
+    'launching brands into new markets',
+    'directing campaign films',
+    'engineering digital products',
+    'scaling performance marketing',
+    'designing identity systems',
+    'putting AI to work'
   ];
 
   var words = PHRASES.map(function (text) {
@@ -1052,7 +896,10 @@
   // something a phone survives — each is a full player. The nearest few to the
   // middle of the screen play; the rest hold their poster, which is a real
   // frame from the same film, so the wall still reads as one moving piece.
-  var MAX_LIVE = window.matchMedia('(max-width: 860px)').matches ? 3 : 6;
+  // Four on a laptop, two on a phone. It was six and three: each is a full
+  // YouTube player decoding its own video, and six of them at once is what
+  // made the rest of the page stutter whenever the wall was in view.
+  var MAX_LIVE = window.matchMedia('(max-width: 860px)').matches ? 2 : 4;
   var allTiles = [].slice.call(wall.querySelectorAll('.srl-tile'));
 
   var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
@@ -1216,6 +1063,27 @@
   if (!motionOK.matches) return;   // no drift, and no autoplaying video either
   var TRAVEL = 0.18;   // fraction of a row's own width it may slide end to end
 
+  // Row widths only change on resize, so they are measured then rather than
+  // read back on every scroll frame.
+  var rowW = [];
+  function measureRows() {
+    rowW = rowEls.map(function (row) { return row.scrollWidth; });
+  }
+  measureRows();
+
+  // Which tiles hold a live player is decided once the scroll comes to rest,
+  // never during it. It used to run every frame: 24 rect reads straight after
+  // the transform writes, and an iframe created or torn down each time a tile
+  // crossed the edge — and starting a YouTube player is one of the heaviest
+  // things a page can do, so the wall hitched exactly while it was moving.
+  // Mid-scroll the tiles show their posters, which are frames from the same
+  // films, so nothing looks empty; the players pick up a beat after you stop.
+  var settleTimer = 0;
+  function settle() {
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(refreshPlayers, 180);
+  }
+
   function frame() {
     var r = section.getBoundingClientRect();
     var span = r.height + window.innerHeight;
@@ -1224,20 +1092,21 @@
     p = p < -1 ? -1 : p > 1 ? 1 : p;
     rowEls.forEach(function (row, i) {
       var dir = i % 2 === 0 ? -1 : 1;             // alternate row to row
-      var dist = row.scrollWidth * TRAVEL * 0.5;
+      var dist = rowW[i] * TRAVEL * 0.5;
       row.style.transform = 'translate3d(' + (p * dist * dir).toFixed(1) + 'px,0,0)';
     });
-    refreshPlayers();
   }
   var ticking = false;
   function onScroll() {
+    settle();
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function () { ticking = false; frame(); });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', function () { measureRows(); onScroll(); });
   frame();
+  refreshPlayers();
 })();
 // Contact lines — each value rises out of its mask the first time the panel
 // comes into view. One-shot: it plays once and stays put, rather than

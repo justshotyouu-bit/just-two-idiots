@@ -39,6 +39,66 @@ a:hover { color: #C97A1E; }
 /* Buttons that invert (dark -> white) on hover */
 .btn-invert { background: #0A0A0A; color: #FAFAF8; }
 .btn-invert:hover { background: #FFFFFF; color: #0A0A0A; }
+/* Secondary action: an outline that fills on hover, same shape as the
+   primary so the pair reads as one control group. */
+.btn-ghost {
+  background: transparent;
+  color: #0A0A0A;
+  box-shadow: inset 0 0 0 1px #CFCCC4;
+  transition: box-shadow .25s ease, background .25s ease;
+}
+.btn-ghost:hover { color: #0A0A0A; background: #FFFFFF; box-shadow: inset 0 0 0 1px #0A0A0A; }
+
+/* ---- Hero ----------------------------------------------------------------
+   Statement, the rotating line, then one plain sentence of what the agency
+   actually does — the rotator alone flashes each phrase for about a second,
+   which is not enough to carry the positioning. */
+.hero { padding: 64px 0 44px; text-align: center; }
+.hero-eyebrow {
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8A8A85;
+  margin-bottom: 22px;
+}
+.hero-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(42px, 6.6vw, 88px);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  margin: 0 auto 26px;
+  max-width: 980px;
+}
+.hero-lede {
+  font-size: clamp(16px, 1.35vw, 18px);
+  line-height: 1.6;
+  color: #5A5A56;
+  max-width: 68ch;
+  margin: 0 auto 34px;
+  text-wrap: balance;
+}
+.hero-ctas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 500;
+}
+/* Side by side down to a 360px phone; stacked, two pills of different widths
+   read as a mistake. */
+@media (max-width: 440px) {
+  .hero-ctas { gap: 8px; }
+  .hero-cta { padding: 13px 17px; font-size: 14.5px; }
+}
 
 /* ---- Header — a floating glass pill, fixed on every screen size ----------
    Three items only (logo, two links, one CTA), which is few enough to fit a
@@ -336,17 +396,39 @@ a:hover { color: #C97A1E; }
 .hww-label-ico { width: 17px; height: 17px; flex: 0 0 auto; color: #8A8A85; }
 .hww-desc { font-size: 14px; color: #5A5A56; line-height: 1.55; margin: 0; }
 
-/* Card 1 — the two of us, bobbing out of phase. */
-.hww-people { width: 88%; height: 88%; }
-/* Bobs the inner group only — the outer <g> keeps the figure's position. */
-.hww-person {
-  animation: hww-bob 3.4s ease-in-out infinite;
-  animation-delay: var(--d);
+/* Card 1 — the three practices as a Venn, easing apart and back together.
+   (It used to be two cartoon figures, which said "two people" — the one
+   thing the page should not.) Plain HTML discs rather than SVG, so the drift
+   is a compositor transform; translucent fills do the overlap shading, with
+   no blend mode to pay for. */
+.hww-visual--venn { background: #EBE6DA; }
+.hww-venn { position: relative; width: 82%; aspect-ratio: 1; }
+.hww-ring {
+  position: absolute;
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: 6.5s ease-in-out infinite;
 }
-@keyframes hww-bob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-9px); }
+.hww-ring i {
+  position: absolute;
+  font-style: normal;
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+  color: #14110E;
+  white-space: nowrap;
 }
+.hww-ring--a { left: 20%; top: 1%;  background: rgba(30, 61, 52, 0.42);  animation-name: hww-meet-a; }
+.hww-ring--b { left: 1%;  top: 37%; background: rgba(228, 112, 58, 0.5); animation-name: hww-meet-b; }
+.hww-ring--c { right: 1%; top: 37%; background: rgba(37, 86, 107, 0.42); animation-name: hww-meet-c; }
+.hww-ring--a i { top: 25%; left: 50%; transform: translateX(-50%); }
+.hww-ring--b i { bottom: 27%; left: 13%; }
+.hww-ring--c i { bottom: 27%; right: 7%; }
+@keyframes hww-meet-a { 0%, 100% { transform: translateY(-6%); } 50% { transform: none; } }
+@keyframes hww-meet-b { 0%, 100% { transform: translate(-6%, 3%); } 50% { transform: none; } }
+@keyframes hww-meet-c { 0%, 100% { transform: translate(6%, 3%); } 50% { transform: none; } }
 
 /* Card 2 — a deck of briefs; the front one drops away and the stack steps up. */
 .hww-visual--requests { background: #E7E2D6; }
@@ -460,167 +542,219 @@ a:hover { color: #C97A1E; }
   50%      { transform: translateY(-8px) rotate(-3deg); }
 }
 
-/* Services — a deck of full-width cards that stack as you scroll.
-   Each panel pins at a slightly lower top offset than the one before it, so
-   as the page scrolls the next card slides up over the last and leaves a thin
-   coloured sliver of it at the top — the eight end up as a layered pile.
-   The stacking is pure CSS; script.js only adds the depth (scale + dim) on
-   cards that have been covered, so this still works with JS off. */
+/* ---- Services — a practice index ----------------------------------------
+   Eight rows on hairlines, numbered, with the colour of each practice held
+   back for a swatch and a hover fill. This replaced a scroll-stacking deck:
+   nine position:sticky cards, each with backdrop-filter over three
+   80px-blurred colour fields, plus a script measuring all nine every frame
+   to dim them. It profiled at ~10fps while scrolling on a laptop, and the
+   translucent cards let the colour field and the card beneath show through,
+   which is the "colours going here and there". Nothing here moves with the
+   scroll: a row repaints itself on hover and that is all. */
 .svc-section {
-  padding-bottom: clamp(72px, 10vw, 120px);
   border-top: 1px solid #E7E5E0;
-  padding-top: clamp(56px, 8vw, 80px);
-  /* Deliberately no overflow clipping here — it would break position:sticky. */
+  padding-top: clamp(64px, 9vw, 112px);
+  padding-bottom: clamp(72px, 10vw, 120px);
 }
-.svc-stack {
-  --stack-top: 84px;   /* where the first card pins */
-  --sliver: 14px;      /* strip of each stacked card left visible */
-  position: relative;
+.svc-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 20px 64px;
+  margin-bottom: clamp(36px, 5vw, 60px);
 }
-.svc-panel {
-  position: sticky;
-  top: calc(var(--stack-top) + var(--i) * var(--sliver));
-  margin-bottom: 22px;
-  border-radius: 28px;
-  background: var(--bg);
-  color: var(--fg);
-  overflow: hidden;
-  transform-origin: 50% 0;
-  /* Frosted glass, not a flat fill: --bg is a translucent tint (per-card alpha,
-     tuned so every card's --fg still clears WCAG AA over any card it can land
-     on) and the blur is what turns it into glass. In a deck the card beneath is
-     literally the backdrop, so the pile refracts itself as it stacks.
-     NOTE: no sheen gradient across the face. A white wash over a dark card
-     drops its light text under 4.5:1 exactly where the title sits — the glass
-     highlight is carried on the 1px edges instead, which no text overlaps. */
-  -webkit-backdrop-filter: blur(20px) saturate(165%);
-  backdrop-filter: blur(20px) saturate(165%);
-  border: 1px solid rgba(255,255,255,0.34);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.55),
-    inset 0 -1px 0 rgba(255,255,255,0.16),
-    0 34px 64px -34px rgba(20,14,8,0.58),
-    0 10px 26px -16px rgba(20,14,8,0.34);
-}
-
-/* Colour field behind the deck — the glass needs something to refract before
-   the cards start overlapping each other, or the first one reads as flat
-   translucent paint. A sibling of the panels, never an ancestor: a filter or
-   overflow on an ancestor would kill position:sticky. */
-.svc-glow {
-  position: absolute;
-  /* Horizontal inset stays at 0: -5% made this box 110% of the section, which
-     hung 10px past the viewport on each side and put a horizontal overflow on
-     every width from 768 to 1440. The blurred spans inside are positioned past
-     the edges anyway and this box clips them, so the bleed is unchanged. */
-  inset: -3% 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  border-radius: 40px;
-}
-.svc-glow span {
-  position: absolute;
-  display: block;
-  width: 62%;
-  height: 300px;
-  border-radius: 50%;
-  filter: blur(80px);
-}
-.svc-glow span:nth-child(1) { background: rgba(228,112,58,0.34); top: 6%;  left: -10%; }
-.svc-glow span:nth-child(2) { background: rgba(58,53,96,0.26);   top: 42%; right: -12%; }
-.svc-glow span:nth-child(3) { background: rgba(242,194,79,0.30); top: 76%; left: 8%; }
-/* Sticky already makes each panel a stacking context; this only lifts the
-   whole set above the glow, and source order still decides the pile. */
-.svc-panel { z-index: 1; }
-.svc-panel:last-child { margin-bottom: 0; }
-/* Dark wash that fades in as the next card covers this one (set by script.js) */
-.svc-panel-veil {
-  position: absolute;
-  inset: 0;
-  background: var(--veil);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 2;
-}
-.svc-panel-inner {
-  position: relative;
-  z-index: 1;
-  min-height: 320px;
-  padding: clamp(28px, 3.4vw, 40px) clamp(26px, 3.8vw, 48px) clamp(30px, 3.6vw, 44px);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(28px, 3.4vw, 40px);
-}
-.svc-panel-head { display: flex; align-items: center; gap: 18px; }
-.svc-panel-mark { display: flex; flex: 0 0 auto; }
-.svc-panel-title {
+.svc-h2 {
   font-family: 'Switzer', sans-serif;
   font-weight: 600;
-  font-size: clamp(26px, 3.2vw, 40px);
-  letter-spacing: -0.015em;
-  line-height: 1;
+  font-size: clamp(32px, 4.6vw, 60px);
+  line-height: 1.02;
+  letter-spacing: -0.028em;
   margin: 0;
 }
-.svc-panel-num {
-  margin-left: auto;
+.svc-lede {
+  text-wrap: pretty;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #5A5A56;
+  margin: 0;
+  max-width: 48ch;
+}
+
+/* The rows are padded so a hover fill has room around the type; pulling the
+   list out by the same amount keeps the type and the hairlines on the same
+   edges as the heading above and the bar below. */
+.svc-list {
+  --pad-x: 28px;
+  list-style: none;
+  margin: 0 calc(-1 * var(--pad-x));
+  padding: 0;
+}
+.svc-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) minmax(0, 1.08fr) 40px;
+  align-items: start;
+  gap: 14px 40px;
+  padding: 34px var(--pad-x) 36px;
+  border-radius: 22px;
+  color: #0A0A0A;
+}
+/* Hairlines are drawn inset rather than as borders, so the row can fill with
+   its colour on hover and the rules either side of it get out of the way
+   instead of cutting across the rounded fill. */
+.svc-row::before,
+.svc-row:last-child::after {
+  content: "";
+  position: absolute;
+  left: var(--pad-x);
+  right: var(--pad-x);
+  height: 1px;
+  background: #E2DFD8;
+  pointer-events: none;
+}
+.svc-row::before { top: 0; }
+.svc-row:last-child::after { bottom: 0; }
+
+.svc-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 0.55em;
   font-family: 'Switzer', sans-serif;
   font-weight: 500;
   font-size: 13px;
-  letter-spacing: 0.14em;
-  opacity: 0.5;
+  letter-spacing: 0.12em;
+  color: #8A8A85;
 }
-.svc-panel-body {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: clamp(26px, 3.6vw, 48px);
-  flex-wrap: wrap;
+.svc-num::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--c);
 }
-.svc-panel-copy { max-width: 62ch; }
-.svc-panel-desc {
-  font-size: 16px;
-  line-height: 1.65;
-  margin: 0 0 20px;
-  opacity: 0.85;
-}
-.svc-panel-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.svc-title {
   font-family: 'Switzer', sans-serif;
   font-weight: 600;
-  font-size: 14px;
-  color: inherit;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 3px;
-  min-height: 24px;
+  font-size: clamp(25px, 2.5vw, 36px);
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  margin: 0;
 }
-.svc-panel-link:hover { color: inherit; opacity: 0.7; }
-.svc-panel-arrow { transition: transform 0.3s cubic-bezier(.16,1,.3,1); }
-.svc-panel-link:hover .svc-panel-arrow { transform: translate(3px, -3px); }
-.svc-panel-tags {
+/* One link per row, stretched over the whole row so the row is the target
+   but its accessible name is just the practice. */
+.svc-link { color: inherit; }
+.svc-link:hover { color: inherit; }
+.svc-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 1; }
+.svc-link:focus-visible { outline: none; }
+.svc-link:focus-visible::after { outline: 2px solid #C97A1E; outline-offset: 2px; }
+.svc-desc {
+  text-wrap: pretty;
+  font-size: 16px;
+  line-height: 1.62;
+  margin: 0 0 18px;
+  color: #4A4A46;
+  max-width: 54ch;
+}
+.svc-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  /* Was a single right-aligned column: five pills stacked vertically made a
-     ragged edge down the middle of a 1328px card and were the thing forcing
-     the panel to 392px with a void above the copy. As a wrapped row they sit
-     opposite the description, two or three to a line, and the panel closes up
-     around its content. */
-  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: flex-start;
-  gap: 9px;
-  max-width: 44%;
+  gap: 8px;
 }
-.svc-panel-tags span {
-  font-size: 13px;
-  padding: 8px 16px;
-  border: 1px solid currentColor;
+.svc-tags li {
+  font-size: 12.5px;
+  line-height: 1;
+  padding: 7px 13px;
+  border: 1px solid rgba(10, 10, 10, 0.14);
   border-radius: 100px;
+  color: #3A3A38;
   white-space: nowrap;
-  opacity: 0.78;
+}
+.svc-arrow {
+  justify-self: end;
+  padding-top: 0.2em;
+  font-size: 22px;
+  line-height: 1;
+  color: #B5B3AD;
+}
+
+/* The fill, on real hover only — a touch screen would leave it stuck on
+   whichever row was tapped last. Colour transitions only: nothing changes
+   size or position, so a hover never moves the layout. */
+@media (hover: hover) and (pointer: fine) {
+  .svc-row,
+  .svc-row .svc-desc,
+  .svc-row .svc-num,
+  .svc-row .svc-tags li,
+  .svc-row .svc-arrow {
+    transition: background-color .38s cubic-bezier(.16,1,.3,1),
+                color .38s cubic-bezier(.16,1,.3,1),
+                border-color .38s cubic-bezier(.16,1,.3,1),
+                transform .38s cubic-bezier(.16,1,.3,1);
+  }
+  .svc-row::before,
+  .svc-row:last-child::after { transition: opacity .25s ease; }
+  .svc-row:hover { background-color: var(--c); color: var(--on); }
+  .svc-row:hover::before,
+  .svc-row:hover + .svc-row::before,
+  .svc-row:last-child:hover::after { opacity: 0; }
+  .svc-row:hover .svc-desc,
+  .svc-row:hover .svc-num,
+  .svc-row:hover .svc-tags li { color: var(--on); }
+  .svc-row:hover .svc-tags li { border-color: var(--on); }
+  .svc-row:hover .svc-num::after { background: var(--on); }
+  .svc-row:hover .svc-arrow { color: var(--on); transform: translate(3px, -3px); }
+}
+
+.svc-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: clamp(40px, 5vw, 56px);
+  padding: 30px 40px;
+  border-radius: 24px;
+  background: #F1EFEA;
+}
+.svc-cta-copy {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  color: #0A0A0A;
+}
+.svc-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .svc-head { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  /* Number and arrow share the top line; title, copy and tags run full width
+     beneath, so nothing is squeezed into a column on a phone. */
+  .svc-list { --pad-x: 0px; }
+  .svc-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 16px;
+    padding: 26px var(--pad-x) 28px;
+    border-radius: 0;
+  }
+  .svc-num { grid-column: 1; grid-row: 1; padding-top: 0; }
+  .svc-arrow { grid-column: 2; grid-row: 1; padding-top: 0; font-size: 20px; }
+  .svc-title { grid-column: 1 / -1; }
+  .svc-body { grid-column: 1 / -1; }
+  .svc-desc { font-size: 15.5px; margin-bottom: 16px; }
+  .svc-cta { padding: 24px; }
+  .svc-cta-copy { font-size: 17px; }
 }
 
 /* ---- Pitch band ----------------------------------------------------------
@@ -680,7 +814,7 @@ a:hover { color: #C97A1E; }
 /* Enough width that erasing to empty doesn't collapse the line and snap the
    surrounding words across; past that it reflows naturally, as the reference
    does — reserving the longest word's width would leave a hole on short ones. */
-/* Deliberately fluid. Reserving the widest word ("packaging", 106px) does
+/* Deliberately fluid. Reserving the widest word ("go-to-market") does
    stop the centred line sliding as it types — but it then leaves a permanent
    50px hole after a short word like "brand", which reads as a missing word.
    Centring the slot instead would un-anchor the typing itself, since text has
@@ -908,6 +1042,16 @@ a:hover { color: #C97A1E; }
   overflow: hidden;
   background: #FAFAF8;
 }
+/* The surround darkening toward the reel's black. script.js drives its
+   opacity; it sits under the stage, over the sticky's cream. */
+.reel-dim {
+  position: absolute;
+  inset: 0;
+  background: #06070A;
+  opacity: 0;
+  will-change: opacity;
+  pointer-events: none;
+}
 .reel-stage {
   position: absolute;
   inset: 0;
@@ -927,6 +1071,7 @@ a:hover { color: #C97A1E; }
 @media (prefers-reduced-motion: reduce) {
   .reel-section { height: auto; }
   .reel-sticky { position: static; height: auto; background: #06070A; }
+  .reel-dim { display: none; }
   .reel-stage { position: relative; inset: auto; clip-path: none; }
   .reel-video {
     aspect-ratio: 1;
@@ -952,16 +1097,25 @@ a:hover { color: #C97A1E; }
   background: linear-gradient(180deg, #F7F5F0 0%, #F0EDE6 100%);
   border: 1px solid #E7E5E0;
 }
+/* Soft colour fields. These were flat discs under filter: blur(74px), which
+   the compositor re-applies on every frame it draws them — they profiled as
+   the single most expensive thing on the page, enough to hold the closing
+   section at ~20fps doing nothing at all. Each is now the same falloff
+   painted once as a radial gradient (computed from the blur it replaces),
+   on a pseudo-element extended by the blur's reach. The section clips, so
+   the extension never widens the page. */
 .cta-blob {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(74px);
   pointer-events: none;
   z-index: 0;
 }
-.cta-blob-a { width: 400px; height: 400px; background: rgba(242,145,58,0.30); top: 30%; left: 16%; }
-.cta-blob-b { width: 360px; height: 360px; background: rgba(201,122,30,0.18); top: 40%; right: 2%; }
-.cta-blob-c { width: 380px; height: 380px; background: rgba(255,255,255,0.95); top: 12%; left: 46%; }
+.cta-blob::before { content: ""; position: absolute; inset: -222px; }
+.cta-blob-a { width: 400px; height: 400px; top: 30%; left: 16%; }
+.cta-blob-b { width: 360px; height: 360px; top: 40%; right: 2%; }
+.cta-blob-c { width: 380px; height: 380px; top: 12%; left: 46%; }
+.cta-blob-a::before { background: radial-gradient(closest-side, rgba(242,145,58,0.292) 0%, rgba(242,145,58,0.253) 25%, rgba(242,145,58,0.143) 45%, rgba(242,145,58,0.056) 60%, rgba(242,145,58,0.018) 72%, rgba(242,145,58,0.005) 82%, rgba(242,145,58,0.001) 91%, rgba(242,145,58,0) 100%); }
+.cta-blob-b::before { background: radial-gradient(closest-side, rgba(201,122,30,0.171) 0%, rgba(201,122,30,0.141) 25%, rgba(201,122,30,0.074) 45%, rgba(201,122,30,0.028) 60%, rgba(201,122,30,0.009) 72%, rgba(201,122,30,0.003) 82%, rgba(201,122,30,0.001) 91%, rgba(201,122,30,0) 100%); }
+.cta-blob-c::before { background: radial-gradient(closest-side, rgba(255,255,255,0.915) 0%, rgba(255,255,255,0.776) 25%, rgba(255,255,255,0.422) 45%, rgba(255,255,255,0.163) 60%, rgba(255,255,255,0.052) 72%, rgba(255,255,255,0.015) 82%, rgba(255,255,255,0.004) 91%, rgba(255,255,255,0) 100%); }
 
 .cta-head {
   position: relative;
@@ -971,6 +1125,7 @@ a:hover { color: #C97A1E; }
   margin: 0 auto clamp(30px, 4.4vw, 52px);
 }
 .cta-title {
+  text-wrap: balance;
   font-family: 'Switzer', sans-serif;
   font-weight: 600;
   font-size: clamp(28px, 4vw, 46px);
@@ -979,7 +1134,7 @@ a:hover { color: #C97A1E; }
   margin: 0 0 14px;
   color: #0A0A0A;
 }
-.cta-sub { font-size: 17px; line-height: 1.55; color: #4A4A46; margin: 0; }
+.cta-sub { font-size: 17px; line-height: 1.55; color: #4A4A46; margin: 0; text-wrap: pretty; }
 
 .cta-cards {
   position: relative;
@@ -1047,9 +1202,11 @@ a:hover { color: #C97A1E; }
   justify-content: center;
   border-radius: 24px;
   padding: clamp(24px, 2.6vw, 36px);
-  background: rgba(255, 255, 255, 0.54);
-  -webkit-backdrop-filter: blur(30px) saturate(190%);
-  backdrop-filter: blur(30px) saturate(190%);
+  /* No backdrop-filter. Everything behind this panel is a soft gradient,
+     which a blur leaves looking exactly the same — it was a full-panel
+     re-filter on every frame for no visible difference. A touch more
+     opacity carries the frosted read on its own. */
+  background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.78);
   box-shadow:
     0 24px 60px -28px rgba(24, 18, 10, 0.32),
@@ -1153,7 +1310,7 @@ a:hover { color: #C97A1E; }
   justify-content: center;
   align-items: center;
   gap: 0.4em;
-  margin: 0 auto 40px;
+  margin: 0 auto 22px;
   font-family: 'Switzer', sans-serif;
   font-weight: 500;
   font-size: clamp(17px, 2vw, 25px);
@@ -1207,16 +1364,21 @@ a:hover { color: #C97A1E; }
   background: linear-gradient(180deg, #F7F5F0 0%, #F1EFE9 100%);
   border: 1px solid #E7E5E0;
 }
+/* Same treatment as the closing section's fields: a gradient painted once
+   instead of an 80px blur re-applied every frame. With the blur, scrolling
+   past this wall ran at ~20fps; without it, a steady 60. */
 .srl-blob {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
   pointer-events: none;
   z-index: 0;
 }
-.srl-blob-a { width: 380px; height: 380px; background: rgba(242,145,58,0.24); top: 8%;  left: 6%; }
-.srl-blob-b { width: 340px; height: 340px; background: rgba(79,176,232,0.20); top: 46%; right: 4%; }
-.srl-blob-c { width: 320px; height: 320px; background: rgba(255,255,255,0.9);  top: 30%; left: 44%; }
+.srl-blob::before { content: ""; position: absolute; inset: -240px; }
+.srl-blob-a { width: 380px; height: 380px; top: 8%;  left: 6%; }
+.srl-blob-b { width: 340px; height: 340px; top: 46%; right: 4%; }
+.srl-blob-c { width: 320px; height: 320px; top: 30%; left: 44%; }
+.srl-blob-a::before { background: radial-gradient(closest-side, rgba(242,145,58,0.226) 0%, rgba(242,145,58,0.185) 25%, rgba(242,145,58,0.095) 45%, rgba(242,145,58,0.036) 60%, rgba(242,145,58,0.012) 72%, rgba(242,145,58,0.003) 82%, rgba(242,145,58,0.001) 91%, rgba(242,145,58,0) 100%); }
+.srl-blob-b::before { background: radial-gradient(closest-side, rgba(79,176,232,0.179) 0%, rgba(79,176,232,0.140) 25%, rgba(79,176,232,0.068) 45%, rgba(79,176,232,0.025) 60%, rgba(79,176,232,0.008) 72%, rgba(79,176,232,0.002) 82%, rgba(79,176,232,0.001) 91%, rgba(79,176,232,0) 100%); }
+.srl-blob-c::before { background: radial-gradient(closest-side, rgba(255,255,255,0.778) 0%, rgba(255,255,255,0.593) 25%, rgba(255,255,255,0.279) 45%, rgba(255,255,255,0.102) 60%, rgba(255,255,255,0.033) 72%, rgba(255,255,255,0.010) 82%, rgba(255,255,255,0.003) 91%, rgba(255,255,255,0) 100%); }
 
 .srl-head {
   position: relative;
@@ -1544,7 +1706,10 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   .cta-brand-logo { width: min(202px, 56%); }
   /* Stacked, the band is far taller and the blobs — positioned in % — bunch up
      directly behind the panel and stain it peach. Same field, turned down. */
-  .cta-blob { filter: blur(96px); }
+  .cta-blob::before { inset: -288px; }
+  .cta-blob-a::before { background: radial-gradient(closest-side, rgba(242,145,58,0.266) 0%, rgba(242,145,58,0.206) 25%, rgba(242,145,58,0.099) 45%, rgba(242,145,58,0.036) 60%, rgba(242,145,58,0.012) 72%, rgba(242,145,58,0.004) 82%, rgba(242,145,58,0.001) 91%, rgba(242,145,58,0) 100%); }
+  .cta-blob-b::before { background: radial-gradient(closest-side, rgba(201,122,30,0.149) 0%, rgba(201,122,30,0.111) 25%, rgba(201,122,30,0.051) 45%, rgba(201,122,30,0.018) 60%, rgba(201,122,30,0.006) 72%, rgba(201,122,30,0.002) 82%, rgba(201,122,30,0.001) 91%, rgba(201,122,30,0) 100%); }
+  .cta-blob-c::before { background: radial-gradient(closest-side, rgba(255,255,255,0.816) 0%, rgba(255,255,255,0.620) 25%, rgba(255,255,255,0.290) 45%, rgba(255,255,255,0.106) 60%, rgba(255,255,255,0.034) 72%, rgba(255,255,255,0.011) 82%, rgba(255,255,255,0.003) 91%, rgba(255,255,255,0) 100%); }
   .cta-blob-a { opacity: 0.5; }
   .cta-blob-b { opacity: 0.45; }
 
@@ -1577,42 +1742,6 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   .work-hint-pointer { display: none; }
   .work-hint-touch { display: inline; }
 
-  /* The deck stacks here too. It was switched off on the assumption a phone
-     lacks the height for it — measured, that isn't so: the cards run 364-460px
-     at this width and the last of the eight pins at 135px, so even the tallest
-     bottoms out near 595px, inside a 640px viewport. Geometry is tightened
-     from desktop's 84/14 so the pile of slivers doesn't eat the screen. */
-  /* THE DECK DOES NOT STACK ON A PHONE. It was nine position:sticky cards,
-     each running backdrop-filter: blur(20px) saturate(165%) over three
-     80px-blurred colour blobs. A phone compositor re-blurs the whole viewport
-     once per card per frame, which is the stutter, and the blobs re-rasterise
-     as they move, which is the colour block that appeared to jitter. Worse,
-     every card is translucent, so the card underneath showed THROUGH the one
-     on top — the previous panel's body copy and its "Start a project" link
-     were legible across the face of the next one. Here it is a plain list of
-     solid cards: no sticky, no backdrop-filter, no glow, and nothing for
-     script.js to measure. --solid carries each card's colour at full opacity
-     (every pairing clears WCAG AA against its own --fg, 5.65:1 at worst). */
-  .svc-panel {
-    position: static;
-    top: auto;
-    background: var(--solid, var(--bg));
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    border: 1px solid rgba(16, 12, 8, 0.07);
-    box-shadow: 0 12px 26px -18px rgba(20, 14, 8, 0.34);
-    margin-bottom: 12px;
-    border-radius: 22px;
-  }
-  .svc-panel-veil { display: none; }
-  .svc-glow { display: none; }
-  .svc-panel-inner { min-height: 0; padding: 24px 22px 26px; gap: 20px; }
-  .svc-panel-body { align-items: flex-start; }
-  /* max-width:none matters: the desktop rule caps the tag row at 44% so it
-     sits opposite the copy, but on a 340px card that is 127px against
-     pills 81-143px wide, which forces them back into a one-per-line
-     column. Here they get the full width under the description. */
-  .svc-panel-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; justify-content: flex-start; max-width: none; }
 }
 
 /* Showreel on phones. These must live AFTER the .srl rules above — the file's
@@ -1664,9 +1793,6 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
 @media (prefers-reduced-motion: reduce) {
   .site-nav { transition: none; }
   .work-rail { scroll-behavior: auto; }
-  /* Scroll-driven stacking is motion by definition — fall back to the list. */
-  .svc-panel { position: relative; top: auto; transform: none !important; }
-  .svc-panel-veil { display: none; }
   /* Pitch band settles into its finished state: no float, blink, notification
      drop or slide cycling. script.js also stops retyping the word. */
   .pit-stage,
@@ -1754,6 +1880,66 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   .about-team { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 }
 
+/* ---- Why us ----------------------------------------------------------------
+   Three commitments under one line. The icons are drawn line marks rather
+   than the type glyphs (pencil, clock, infinity) they replace, which rendered
+   differently on every platform and read as placeholders. */
+.why { padding-bottom: clamp(72px, 10vw, 120px); text-align: center; }
+.why-h2 {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 auto 18px;
+  max-width: 20ch;
+}
+.why-lede {
+  text-wrap: pretty;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #5A5A56;
+  max-width: 58ch;
+  margin: 0 auto clamp(48px, 6vw, 72px);
+}
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 48px;
+}
+.why-ico {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #F1EFEA;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 26px;
+  color: #0A0A0A;
+}
+.why-ico svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.why-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+.why-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #5A5A56;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
 /* Inline text links carry a 24px minimum target as well (WCAG 2.5.8). This
    used to force `display:inline-flex` on every link in the footer and the
    contact block, which is how those 17-19px links reached 24px. The footer is
@@ -1788,27 +1974,30 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   0%   { transform: scale(1) translate(0, 0); }
   100% { transform: scale(1.08) translate(-1.5%, -1%); }
 }
+/* The glows drift, so under filter: blur(60px) the compositor had to redo
+   the blur on every frame they moved — this section alone held the page at
+   ~30fps. The falloff is now a gradient painted once; the drift only moves
+   an already-finished texture. */
 .academy-glow {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
   pointer-events: none;
   mix-blend-mode: screen;
   animation: academy-drift 14s ease-in-out infinite alternate;
 }
+.academy-glow::before { content: ""; position: absolute; inset: -180px; }
 .academy-glow--a {
   width: 360px; height: 360px;
-  background: rgba(201,122,30,0.55);
   top: -80px; right: 8%;
   animation-duration: 16s;
 }
 .academy-glow--b {
   width: 280px; height: 280px;
-  background: rgba(255,181,102,0.4);
   bottom: -60px; left: 6%;
   animation-duration: 20s;
   animation-delay: -6s;
 }
+.academy-glow--a::before { background: radial-gradient(closest-side, rgba(201,122,30,0.544) 0%, rgba(201,122,30,0.493) 25%, rgba(201,122,30,0.301) 45%, rgba(201,122,30,0.124) 60%, rgba(201,122,30,0.040) 72%, rgba(201,122,30,0.011) 82%, rgba(201,122,30,0.003) 91%, rgba(201,122,30,0) 100%); }
+.academy-glow--b::before { background: radial-gradient(closest-side, rgba(255,181,102,0.374) 0%, rgba(255,181,102,0.304) 25%, rgba(255,181,102,0.155) 45%, rgba(255,181,102,0.058) 60%, rgba(255,181,102,0.019) 72%, rgba(255,181,102,0.006) 82%, rgba(255,181,102,0.002) 91%, rgba(255,181,102,0) 100%); }
 @keyframes academy-drift {
   0%   { transform: translate(0, 0) scale(1); opacity: 0.7; }
   50%  { transform: translate(24px, -18px) scale(1.12); opacity: 1; }
@@ -1825,46 +2014,77 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
   50%      { opacity: 1; transform: scale(1) rotate(14deg); }
 }
+/* The sweep used to animate `left`, which is a layout property: every frame
+   of it, forever, re-ran layout and repaint for the whole section on the main
+   thread. The band is now a child of a full-width track, and the track moves
+   by transform — a percentage of its own width, which is the section's — so
+   the browser just slides a finished layer across. */
 .academy-scan {
   position: absolute;
-  top: -20%; bottom: -20%;
-  width: 140px;
-  background: linear-gradient(90deg, transparent, rgba(255,205,150,0.22), transparent);
-  transform: rotate(10deg);
-  mix-blend-mode: screen;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 100%;
   pointer-events: none;
+  will-change: transform;
   animation: academy-scan-move 7s ease-in-out infinite;
 }
+.academy-scan::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 140px;
+  background: linear-gradient(90deg, rgba(255,205,150,0), rgba(255,205,150,0.22), rgba(255,205,150,0));
+  transform: rotate(10deg);
+}
 @keyframes academy-scan-move {
-  0%   { left: -15%; }
-  100% { left: 110%; }
+  0%   { transform: translateX(-15%); }
+  100% { transform: translateX(110%); }
 }
 .btn-academy { background: #C97A1E; color: #0A0A0A; }
 .btn-academy:hover { background: #FFFFFF; color: #0A0A0A; }
 
 /* "How we work" — the 4 cards travel right-to-left on a rail. The track holds
    the 4 cards plus an aria-hidden duplicate set back-to-back, so -50% lands
-   exactly on the duplicate and the loop is seamless.
+   exactly on the duplicate.
 
-   This CSS animation is the fallback. When script.js runs it removes
-   `is-auto` and drives the transform itself, so scrolling — in either
-   direction — pushes the rail further left on top of the steady drift. */
+   Pure CSS now, so it runs on the compositor and keeps a dead-steady pace
+   whatever the main thread is doing. It used to be driven from script.js,
+   which also shoved the rail forward by half of every pixel scrolled: a fast
+   flick lurched it 50px a frame, and any busy frame stalled it — both read
+   as the rail stuttering.
+
+   Spacing is a right margin on every card rather than `gap`, so one set is
+   exactly half the track. With gap there are seven gaps across eight cards,
+   -50% landed half a gap short of the duplicate, and the loop hopped 10px
+   each time it wrapped. */
+/* Full-bleed, so the rail runs off the screen edge rather than being cut
+   short in a hard line at the page gutter. */
+.hww-section {
+  overflow: hidden;
+  padding: clamp(56px, 8vw, 80px) 0 clamp(72px, 10vw, 120px) var(--gutter);
+}
 .hww-track {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
   width: max-content;
   will-change: transform;
 }
-.hww-track.is-auto { animation: hww-scroll 28s linear infinite; }
+.hww-track.is-auto { animation: hww-scroll 46s linear infinite; }
 .hww-track.is-auto:hover { animation-play-state: paused; }
-.hww-card { flex: 0 0 clamp(230px, 24vw, 300px); text-align: left; }
+.hww-card { flex: 0 0 clamp(230px, 24vw, 300px); margin-right: 20px; text-align: left; }
 @keyframes hww-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .academy-photo, .academy-glow, .academy-sparkle, .academy-scan, .hww-track { animation: none; }
+  .hww-ring { animation: none; }
+  /* .hww-track.is-auto is named in full: the bare class lost to the running
+     rule on specificity, so the rail kept travelling with motion turned off. */
+  .academy-photo, .academy-glow, .academy-sparkle, .academy-scan,
+  .hww-track, .hww-track.is-auto { animation: none; }
 }
 
 /* "Who we are" — fades up once scrolled into view, then a couple of key
@@ -1889,26 +2109,6 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
 @media (prefers-reduced-motion: reduce) {
   [data-reveal-home] { opacity: 1; transform: none; transition: none; }
   .about-hl { background-size: 100% 42%; transition: none; }
-}
-
-/* ---- Compositing hints for the soft background glows ----
-   Each of these is a large element carrying a 60–96px blur. Without its own
-   compositor layer the blur is re-rasterised whenever anything in the same
-   layer repaints, which during a scroll is constantly — and a blur that wide
-   is expensive to re-rasterise. Promoting them pins the blurred result in a
-   texture that only has to be composited afterwards.
-
-   Measured on a 390px / 4x-CPU-throttled phone profile over a full scroll of
-   the homepage: this does not move the median frame (the glows are not what
-   the typical frame is spent on) but it is what fixes the tail — p95 frame
-   133ms -> 83ms and severe frames (>50ms) 61% -> 13%. Those long frames are
-   exactly the stutter that reads as "glitching" while scrolling. */
-.svc-glow,
-.cta-blob,
-.srl-blob,
-.academy-glow {
-  will-change: transform;
-  transform: translateZ(0);
 }
 
 /* ---- Phone header disclosure ----
