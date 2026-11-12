@@ -435,6 +435,35 @@
   update();
 })();
 
+// Services deck — the stacking is plain position:sticky in style.css. The
+// one thing it needs from here is equal card heights: a covered card that is
+// taller than the card on top of it peeks out underneath it. So the tallest
+// card's height is measured and handed to all of them as a minimum.
+// Runs on load, when the web font arrives and on resize — never on scroll.
+// (The deck this replaces read all nine cards' positions on every scroll
+// frame to dim them, which is part of why it juddered.)
+(function () {
+  var stack = document.querySelector('.svc-stack');
+  if (!stack) return;
+  var panels = [].slice.call(stack.querySelectorAll('.svc-panel'));
+  if (panels.length < 2) return;
+
+  function fit() {
+    stack.style.removeProperty('--svc-h');
+    var h = 0;
+    for (var i = 0; i < panels.length; i++) h = Math.max(h, panels[i].offsetHeight);
+    if (h) stack.style.setProperty('--svc-h', h + 'px');
+  }
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  window.addEventListener('load', fit);
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(fit, 150);
+  });
+})();
+
 // "Who we are" — fades the section up (and sweeps its highlighted phrases
 // in) the first time it scrolls into view.
 (function () {

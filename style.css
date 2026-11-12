@@ -542,19 +542,36 @@ a:hover { color: #C97A1E; }
   50%      { transform: translateY(-8px) rotate(-3deg); }
 }
 
-/* ---- Services — a practice index ----------------------------------------
-   Eight rows on hairlines, numbered, with the colour of each practice held
-   back for a swatch and a hover fill. This replaced a scroll-stacking deck:
-   nine position:sticky cards, each with backdrop-filter over three
-   80px-blurred colour fields, plus a script measuring all nine every frame
-   to dim them. It profiled at ~10fps while scrolling on a laptop, and the
-   translucent cards let the colour field and the card beneath show through,
-   which is the "colours going here and there". Nothing here moves with the
-   scroll: a row repaints itself on hover and that is all. */
+/* ---- Services — the stacking deck -----------------------------------------
+   Full-width cards that pile up as you scroll: each pins a sliver lower than
+   the one before, and the next slides up over it and leaves a coloured strip
+   of it showing, so the eight end up as a layered stack.
+
+   WHY THIS VERSION DOES NOT JUDDER. The first deck juddered because of what
+   was layered onto the stacking, not the stacking itself:
+   - every card was translucent with backdrop-filter: blur(20px), so the
+     browser re-blurred the screen behind all nine cards on every frame, and
+     the card underneath showed through the one on top;
+   - three 80px-blurred colour blobs sat behind the deck, re-blurred every
+     frame as well — together with the glass, ~10fps on a laptop;
+   - a script measured all nine cards on every scroll frame to dim the covered
+     ones, so the dimming ran a frame behind the cards and visibly lagged.
+   None of that is here. The cards are opaque, there is no blur anywhere, and
+   nothing runs while you scroll: position:sticky is moved by the browser's
+   compositor, which is the same machinery that scrolls the page, so the
+   cards cannot fall behind it. Depth comes from the strip of each card left
+   showing and a soft shadow cast up onto the card beneath — both painted
+   once, never recomputed.
+
+   All the cards are the same height (script.js measures the tallest once, on
+   load and resize — never on scroll). Unequal cards were the other artefact:
+   a taller card underneath peeked out below a shorter one on top of it. */
 .svc-section {
   border-top: 1px solid #E7E5E0;
   padding-top: clamp(64px, 9vw, 112px);
   padding-bottom: clamp(72px, 10vw, 120px);
+  /* No overflow clipping on this section or any ancestor of the deck: it
+     would stop position:sticky working. */
 }
 .svc-head {
   display: grid;
@@ -580,133 +597,106 @@ a:hover { color: #C97A1E; }
   max-width: 48ch;
 }
 
-/* The rows are padded so a hover fill has room around the type; pulling the
-   list out by the same amount keeps the type and the hairlines on the same
-   edges as the heading above and the bar below. */
-.svc-list {
-  --pad-x: 28px;
-  list-style: none;
-  margin: 0 calc(-1 * var(--pad-x));
-  padding: 0;
-}
-.svc-row {
+.svc-stack {
+  --stack-top: 84px;   /* where the first card pins, clear of the header */
+  --sliver: 14px;      /* strip of each covered card left showing */
   position: relative;
-  display: grid;
-  grid-template-columns: 76px minmax(0, 1fr) minmax(0, 1.08fr) 40px;
-  align-items: start;
-  gap: 14px 40px;
-  padding: 34px var(--pad-x) 36px;
-  border-radius: 22px;
-  color: #0A0A0A;
 }
-/* Hairlines are drawn inset rather than as borders, so the row can fill with
-   its colour on hover and the rules either side of it get out of the way
-   instead of cutting across the rounded fill. */
-.svc-row::before,
-.svc-row:last-child::after {
-  content: "";
-  position: absolute;
-  left: var(--pad-x);
-  right: var(--pad-x);
-  height: 1px;
-  background: #E2DFD8;
-  pointer-events: none;
+.svc-panel {
+  position: sticky;
+  top: calc(var(--stack-top) + var(--i) * var(--sliver));
+  min-height: var(--svc-h, 0px);
+  /* A column, so the inner block stretches to the shared height and its
+     space-between puts any spare room between the title and the details
+     rather than in a dead band at the bottom of the shorter cards. */
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 22px;
+  border-radius: 28px;
+  background: var(--solid);
+  color: var(--fg);
+  /* First shadow falls UP, onto the card being covered, along this card's
+     top edge — that is what reads as one card lying on another. The second
+     is the ordinary drop shadow under the pile. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 -14px 34px -22px rgba(20, 14, 8, 0.42),
+    0 26px 48px -30px rgba(20, 14, 8, 0.45);
 }
-.svc-row::before { top: 0; }
-.svc-row:last-child::after { bottom: 0; }
-
-.svc-num {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 0.55em;
+.svc-panel:last-child { margin-bottom: 0; }
+.svc-panel-inner {
+  flex: 1 1 auto;
+  min-height: 300px;
+  padding: clamp(28px, 3.4vw, 40px) clamp(26px, 3.8vw, 48px) clamp(30px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(26px, 3.2vw, 38px);
+}
+.svc-panel-head { display: flex; align-items: center; gap: 18px; }
+.svc-panel-mark { display: flex; flex: 0 0 auto; }
+.svc-panel-title {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(26px, 3.2vw, 40px);
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+  margin: 0;
+}
+.svc-panel-num {
+  margin-left: auto;
   font-family: 'Switzer', sans-serif;
   font-weight: 500;
   font-size: 13px;
-  letter-spacing: 0.12em;
-  color: #8A8A85;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
 }
-.svc-num::after {
-  content: "";
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
-  background: var(--c);
+.svc-panel-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(26px, 3.6vw, 48px);
+  flex-wrap: wrap;
 }
-.svc-title {
-  font-family: 'Switzer', sans-serif;
-  font-weight: 600;
-  font-size: clamp(25px, 2.5vw, 36px);
-  line-height: 1.08;
-  letter-spacing: -0.022em;
-  margin: 0;
-}
-/* One link per row, stretched over the whole row so the row is the target
-   but its accessible name is just the practice. */
-.svc-link { color: inherit; }
-.svc-link:hover { color: inherit; }
-.svc-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 1; }
-.svc-link:focus-visible { outline: none; }
-.svc-link:focus-visible::after { outline: 2px solid #C97A1E; outline-offset: 2px; }
-.svc-desc {
+.svc-panel-copy { max-width: 62ch; }
+.svc-panel-desc {
   text-wrap: pretty;
   font-size: 16px;
-  line-height: 1.62;
-  margin: 0 0 18px;
-  color: #4A4A46;
-  max-width: 54ch;
+  line-height: 1.65;
+  margin: 0 0 20px;
+  opacity: 0.88;
 }
-.svc-tags {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
+.svc-panel-link {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: inherit;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 3px;
+  min-height: 24px;
 }
-.svc-tags li {
-  font-size: 12.5px;
-  line-height: 1;
-  padding: 7px 13px;
-  border: 1px solid rgba(10, 10, 10, 0.14);
+.svc-panel-link:hover { color: inherit; opacity: 0.7; }
+.svc-panel-arrow { transition: transform 0.3s cubic-bezier(.16,1,.3,1); }
+.svc-panel-link:hover .svc-panel-arrow { transform: translate(3px, -3px); }
+.svc-panel-tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 9px;
+  max-width: 44%;
+}
+.svc-panel-tags span {
+  font-size: 13px;
+  padding: 8px 16px;
+  border: 1px solid currentColor;
   border-radius: 100px;
-  color: #3A3A38;
   white-space: nowrap;
-}
-.svc-arrow {
-  justify-self: end;
-  padding-top: 0.2em;
-  font-size: 22px;
-  line-height: 1;
-  color: #B5B3AD;
-}
-
-/* The fill, on real hover only — a touch screen would leave it stuck on
-   whichever row was tapped last. Colour transitions only: nothing changes
-   size or position, so a hover never moves the layout. */
-@media (hover: hover) and (pointer: fine) {
-  .svc-row,
-  .svc-row .svc-desc,
-  .svc-row .svc-num,
-  .svc-row .svc-tags li,
-  .svc-row .svc-arrow {
-    transition: background-color .38s cubic-bezier(.16,1,.3,1),
-                color .38s cubic-bezier(.16,1,.3,1),
-                border-color .38s cubic-bezier(.16,1,.3,1),
-                transform .38s cubic-bezier(.16,1,.3,1);
-  }
-  .svc-row::before,
-  .svc-row:last-child::after { transition: opacity .25s ease; }
-  .svc-row:hover { background-color: var(--c); color: var(--on); }
-  .svc-row:hover::before,
-  .svc-row:hover + .svc-row::before,
-  .svc-row:last-child:hover::after { opacity: 0; }
-  .svc-row:hover .svc-desc,
-  .svc-row:hover .svc-num,
-  .svc-row:hover .svc-tags li { color: var(--on); }
-  .svc-row:hover .svc-tags li { border-color: var(--on); }
-  .svc-row:hover .svc-num::after { background: var(--on); }
-  .svc-row:hover .svc-arrow { color: var(--on); transform: translate(3px, -3px); }
+  opacity: 0.8;
 }
 
 .svc-cta {
@@ -737,24 +727,32 @@ a:hover { color: #C97A1E; }
   white-space: nowrap;
 }
 
+/* Phones stack too — same mechanism, tighter geometry. The header pill is
+   ~56px tall at 10px from the top, so the first card pins just under it and
+   the strips are narrower, which keeps the last of the eight pinned at 146px:
+   with cards around 370px tall the whole pile fits a 548px Safari viewport
+   (an iPhone SE with both toolbars showing) without hiding a card's text. */
 @media (max-width: 900px) {
   .svc-head { grid-template-columns: minmax(0, 1fr); align-items: start; }
-  /* Number and arrow share the top line; title, copy and tags run full width
-     beneath, so nothing is squeezed into a column on a phone. */
-  .svc-list { --pad-x: 0px; }
-  .svc-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 12px 16px;
-    padding: 26px var(--pad-x) 28px;
-    border-radius: 0;
-  }
-  .svc-num { grid-column: 1; grid-row: 1; padding-top: 0; }
-  .svc-arrow { grid-column: 2; grid-row: 1; padding-top: 0; font-size: 20px; }
-  .svc-title { grid-column: 1 / -1; }
-  .svc-body { grid-column: 1 / -1; }
-  .svc-desc { font-size: 15.5px; margin-bottom: 16px; }
+  .svc-stack { --stack-top: 76px; --sliver: 10px; }
+  .svc-panel { border-radius: 22px; margin-bottom: 14px; }
+  .svc-panel-inner { min-height: 0; padding: 22px 20px 24px; gap: 18px; }
+  .svc-panel-head { gap: 14px; }
+  .svc-panel-title { font-size: 24px; }
+  .svc-panel-body { align-items: flex-start; gap: 18px; }
+  .svc-panel-desc { font-size: 15px; line-height: 1.6; margin-bottom: 14px; }
+  /* The desktop rule caps the tags at 44% so they sit opposite the copy; on a
+     340px card that forces them into a one-per-line column. */
+  .svc-panel-tags { max-width: none; justify-content: flex-start; gap: 7px; }
+  .svc-panel-tags span { font-size: 12.5px; padding: 6px 12px; }
   .svc-cta { padding: 24px; }
   .svc-cta-copy { font-size: 17px; }
+}
+
+/* Stacking is motion driven by the scroll; with motion reduced the cards sit
+   in a plain column instead. */
+@media (prefers-reduced-motion: reduce) {
+  .svc-panel { position: relative; top: auto; }
 }
 
 /* ---- Pitch band ----------------------------------------------------------
@@ -1939,6 +1937,26 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   max-width: 300px;
   margin: 0 auto;
 }
+
+/* ---- Site footer: the legal entity -----------------------------------------
+   Small and quiet, but on every page: the registered company behind the
+   brand, with the same contact details as the closing section. */
+.site-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px 28px;
+  padding: 22px 0 34px;
+  border-top: 1px solid #E7E5E0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #66665F;
+}
+.site-foot p { margin: 0; }
+.site-foot strong { color: #0A0A0A; font-weight: 600; }
+.site-foot a { color: inherit; }
+.site-foot a:hover { color: #C97A1E; }
 
 /* Inline text links carry a 24px minimum target as well (WCAG 2.5.8). This
    used to force `display:inline-flex` on every link in the footer and the

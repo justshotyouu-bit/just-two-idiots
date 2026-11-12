@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1794397115">
+<link rel="stylesheet" href="style.css?v=1794486968">
 <!-- The ring is built by script.js, so its cards — the LCP element — do not
      exist at parse time and the preload scanner cannot find them. Card 0 faces
      front on load, so this is the image LCP waits for. Deliberately NOT
@@ -36,7 +36,7 @@
 <meta name="twitter:title" content="Just Two Idiots — Strategy, brand and growth agency">
 <meta name="twitter:description" content="A strategy-led agency in India. Go-to-market strategy, trend and consumer research, brand strategy and identity, digital products and growth marketing — led end to end by senior practice heads.">
 <meta name="twitter:image" content="https://justtwoidiots.com/assets/og/cover.jpg?v=2">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"ProfessionalService","@id":"https://justtwoidiots.com/#studio","name":"Just Two Idiots","url":"https://justtwoidiots.com/","description":"A strategy-led agency in India. Go-to-market strategy, trend and consumer research, brand strategy and identity, digital products and growth marketing — led end to end by senior practice heads.","image":"https://justtwoidiots.com/assets/og/cover.jpg?v=2","logo":"https://justtwoidiots.com/favicon.svg","telephone":"+917788990166","areaServed":"IN","address":{"@type":"PostalAddress","addressCountry":"IN"},"employee":[{"@type":"Person","name":"Krishn Yadav","jobTitle":"Head of Design"},{"@type":"Person","name":"Manish Mahalwal","jobTitle":"Head of Tech and Strategy"}],"knowsAbout":["Go-to-market strategy","Market research","Trend analysis","Consumer insight","Brand strategy","Brand identity","Web design","Web development","E-commerce","Mobile apps","Growth marketing","Performance marketing","Campaign production","Art direction","AI transformation"]},{"@type":"WebSite","@id":"https://justtwoidiots.com/#website","url":"https://justtwoidiots.com/","name":"Just Two Idiots","publisher":{"@id":"https://justtwoidiots.com/#studio"},"inLanguage":"en"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"ProfessionalService","@id":"https://justtwoidiots.com/#studio","name":"Just Two Idiots","url":"https://justtwoidiots.com/","description":"A strategy-led agency in India. Go-to-market strategy, trend and consumer research, brand strategy and identity, digital products and growth marketing — led end to end by senior practice heads.","image":"https://justtwoidiots.com/assets/og/cover.jpg?v=2","logo":"https://justtwoidiots.com/favicon.svg","telephone":"+917788990166","areaServed":"IN","address":{"@type":"PostalAddress","addressCountry":"IN"},"employee":[{"@type":"Person","name":"Krishn Yadav","jobTitle":"Head of Design"},{"@type":"Person","name":"Manish Mahalwal","jobTitle":"Head of Tech and Strategy"}],"knowsAbout":["Go-to-market strategy","Market research","Trend analysis","Consumer insight","Brand strategy","Brand identity","Web design","Web development","E-commerce","Mobile apps","Growth marketing","Performance marketing","Campaign production","Art direction","AI transformation"],"legalName":"Ordevia Labs Private Limited"},{"@type":"WebSite","@id":"https://justtwoidiots.com/#website","url":"https://justtwoidiots.com/","name":"Just Two Idiots","publisher":{"@id":"https://justtwoidiots.com/#studio"},"inLanguage":"en"}]}</script>
 </head>
 <body>
 <div class="wrap" id="top">
@@ -189,10 +189,10 @@
     <p class="srl-note"><span class="srl-hint-pointer">Scroll to drift the wall &middot; click any tile to watch it full size</span><span class="srl-hint-touch">Scroll to drift the wall &middot; tap any tile to watch it full size</span></p>
   </section>
 
-  <!-- Services — a practice index. Deliberately static: the old stacking deck
-       ran position:sticky + backdrop-filter on nine cards over three blurred
-       colour fields, and measured at ~10fps while scrolling on a laptop. A row
-       here only ever repaints itself, and only on hover. -->
+  <!-- Services — the stacking deck. Each card pins a sliver lower than the
+       last and the next one slides up over it. The stacking is plain
+       position:sticky on opaque cards; nothing here is computed while you
+       scroll (see the note in style.css on what used to make it judder). -->
   <section id="services" class="svc-section">
     <div class="svc-head">
       <div>
@@ -202,80 +202,179 @@
       <p class="svc-lede">We start with the market&nbsp;&mdash; the trends, the customer, the competition&nbsp;&mdash; and build the go-to-market, the brand, the product and the growth engine on top of it. One senior team, end to end.</p>
     </div>
 
-    <ol class="svc-list" role="list">
-      <li class="svc-row" style="--c:#1E3D34; --on:#F2EFE6">
-        <span class="svc-num" aria-hidden="true">01</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">Go-to-market strategy</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">Launch plans built on evidence, not instinct. We define who you sell to first, how you win them, what you charge and which channels earn the spend&nbsp;&mdash; then stay through launch to make it real.</p>
-          <ul class="svc-tags" aria-label="Go-to-market strategy includes"><li>Market entry</li><li>Positioning</li><li>Pricing</li><li>Channel strategy</li><li>Launch planning</li></ul>
+    <div class="svc-stack">
+      <article class="svc-panel" style="--i:0; --solid:#F0E4D0; --fg:#241F18">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1Z" fill="currentColor"/></svg></span>
+            <h3 class="svc-panel-title">Go-to-market strategy</h3>
+            <span class="svc-panel-num">01</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Launch plans built on evidence, not instinct. Who you sell to first, how you win them, what you charge and which channels earn the spend&nbsp;&mdash; and we stay through launch to make it real.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>Market entry</span>
+              <span>Positioning</span>
+              <span>Pricing</span>
+              <span>Channel strategy</span>
+              <span>Launch planning</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-      <li class="svc-row" style="--c:#3A3560; --on:#EDEAF7">
-        <span class="svc-num" aria-hidden="true">02</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">Trends &amp; insight</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">We study the market before we touch the brand. Trend analysis, consumer research and category audits that show where demand is heading&nbsp;&mdash; and where the white space is.</p>
-          <ul class="svc-tags" aria-label="Trends &amp; insight includes"><li>Trend analysis</li><li>Consumer research</li><li>Category audits</li><li>Competitor analysis</li></ul>
+      </article>
+      <article class="svc-panel" style="--i:1; --solid:#1E3D34; --fg:#F2EFE6">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M3 17.5 9 11.5l4 4L20.5 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 8h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="svc-panel-title">Trends &amp; insight</h3>
+            <span class="svc-panel-num">02</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">We study the market before we touch the brand. Trend analysis, consumer research and category audits that show where demand is heading&nbsp;&mdash; and where the white space is.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>Trend analysis</span>
+              <span>Consumer research</span>
+              <span>Category audits</span>
+              <span>Competitor analysis</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-      <li class="svc-row" style="--c:#E4703A; --on:#2A1108">
-        <span class="svc-num" aria-hidden="true">03</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">Brand strategy &amp; identity</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">Positioning, naming and identity systems that hold up from the boardroom to the billboard. The whole system, not a logo file&nbsp;&mdash; so every touchpoint downstream stays consistent.</p>
-          <ul class="svc-tags" aria-label="Brand strategy &amp; identity includes"><li>Brand positioning</li><li>Naming</li><li>Identity systems</li><li>Brand architecture</li><li>Guidelines</li></ul>
+      </article>
+      <article class="svc-panel" style="--i:2; --solid:#25566B; --fg:#E8F1F5">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>
+            <h3 class="svc-panel-title">Brand strategy &amp; identity</h3>
+            <span class="svc-panel-num">03</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Positioning, naming and identity systems that hold up from the boardroom to the billboard. The whole system, not a logo file&nbsp;&mdash; so every touchpoint stays consistent.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>Brand positioning</span>
+              <span>Naming</span>
+              <span>Identity systems</span>
+              <span>Brand architecture</span>
+              <span>Guidelines</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-      <li class="svc-row" style="--c:#25566B; --on:#E8F1F5">
-        <span class="svc-num" aria-hidden="true">04</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">Websites &amp; e-commerce</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">Where the strategy meets the customer. Sites and storefronts designed and engineered end to end&nbsp;&mdash; fast, considered, and built to convert on every screen.</p>
-          <ul class="svc-tags" aria-label="Websites &amp; e-commerce includes"><li>Website design</li><li>E-commerce</li><li>UX &amp; prototyping</li><li>Engineering</li></ul>
+      </article>
+      <article class="svc-panel" style="--i:3; --solid:#E4703A; --fg:#2A1108">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9h18" stroke="currentColor" stroke-width="2"/><circle cx="6.6" cy="6.7" r="1" fill="currentColor"/></svg></span>
+            <h3 class="svc-panel-title">Websites &amp; e&#8209;commerce</h3>
+            <span class="svc-panel-num">04</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Where the strategy meets the customer. Sites and storefronts designed and engineered end to end&nbsp;&mdash; fast, considered, and built to convert on every screen.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>Website design</span>
+              <span>E&#8209;commerce</span>
+              <span>UX &amp; prototyping</span>
+              <span>Engineering</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-      <li class="svc-row" style="--c:#22201C; --on:#F5F1E8">
-        <span class="svc-num" aria-hidden="true">05</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">Apps &amp; digital products</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">Products people come back to. Customer apps, portals and internal tools&nbsp;&mdash; designed, built and shipped by the same team that wrote the strategy.</p>
-          <ul class="svc-tags" aria-label="Apps &amp; digital products includes"><li>iOS &amp; Android</li><li>Product design</li><li>Client portals</li><li>Integrations</li></ul>
+      </article>
+      <article class="svc-panel" style="--i:4; --solid:#22201C; --fg:#F5F1E8">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="18" r="1.15" fill="currentColor"/></svg></span>
+            <h3 class="svc-panel-title">Apps &amp; digital products</h3>
+            <span class="svc-panel-num">05</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Products people come back to. Customer apps, portals and internal tools&nbsp;&mdash; designed, built and shipped by the same team that wrote the strategy.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>iOS &amp; Android</span>
+              <span>Product design</span>
+              <span>Client portals</span>
+              <span>Integrations</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-      <li class="svc-row" style="--c:#F2C24F; --on:#2A2008">
-        <span class="svc-num" aria-hidden="true">06</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">Growth marketing</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">Demand, measured. Performance media, search, CRM and social, run against the numbers that matter&nbsp;&mdash; revenue and retention, not vanity metrics.</p>
-          <ul class="svc-tags" aria-label="Growth marketing includes"><li>Performance media</li><li>SEO</li><li>CRM &amp; lifecycle</li><li>Social</li><li>Analytics</li></ul>
+      </article>
+      <article class="svc-panel" style="--i:5; --solid:#F2C24F; --fg:#2A2008">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 15V9h3.6L14 4.5v15L7.6 15H4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M17.5 9.2a4.2 4.2 0 0 1 0 5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 6.6a7.8 7.8 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <h3 class="svc-panel-title">Growth marketing</h3>
+            <span class="svc-panel-num">06</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Demand, measured. Performance media, search, CRM and social, run against the numbers that matter&nbsp;&mdash; revenue and retention, not vanity metrics.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>Performance media</span>
+              <span>SEO</span>
+              <span>CRM &amp; lifecycle</span>
+              <span>Social</span>
+              <span>Analytics</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-      <li class="svc-row" style="--c:#8C3F2B; --on:#F8EDE6">
-        <span class="svc-num" aria-hidden="true">07</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">Campaigns &amp; content</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">Ideas big enough to carry a launch. Campaign concepts, art direction, film and photography&nbsp;&mdash; produced in-house, from treatment to final cut.</p>
-          <ul class="svc-tags" aria-label="Campaigns &amp; content includes"><li>Campaign concepts</li><li>Art direction</li><li>Film</li><li>Photography</li></ul>
+      </article>
+      <article class="svc-panel" style="--i:6; --solid:#3A3560; --fg:#EDEAF7">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10.2 9.3v5.4l4.6-2.7Z" fill="currentColor"/></svg></span>
+            <h3 class="svc-panel-title">Campaigns &amp; content</h3>
+            <span class="svc-panel-num">07</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Ideas big enough to carry a launch. Campaign concepts, art direction, film and photography&nbsp;&mdash; produced in-house, from treatment to final cut.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>Campaign concepts</span>
+              <span>Art direction</span>
+              <span>Film</span>
+              <span>Photography</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-      <li class="svc-row" style="--c:#E7A8A6; --on:#2E1614">
-        <span class="svc-num" aria-hidden="true">08</span>
-        <h3 class="svc-title"><a class="svc-link" href="#contact">AI transformation</a></h3>
-        <div class="svc-body">
-          <p class="svc-desc">Where AI actually moves the business. We find the use cases worth the effort, wire them into the systems you already run, and train your teams to own them.</p>
-          <ul class="svc-tags" aria-label="AI transformation includes"><li>AI strategy</li><li>Automation</li><li>Custom assistants</li><li>Team training</li></ul>
+      </article>
+      <article class="svc-panel" style="--i:7; --solid:#E7A8A6; --fg:#2E1614">
+        <div class="svc-panel-inner">
+          <div class="svc-panel-head">
+            <span class="svc-panel-mark"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 2.5c.5 5 1.9 6.4 6.9 6.9-5 .5-6.4 1.9-6.9 6.9-.5-5-1.9-6.4-6.9-6.9 5-.5 6.4-1.9 6.9-6.9Z" fill="currentColor"/><path d="M18.2 15.1c.28 2.6 1 3.3 3.6 3.6-2.6.28-3.32 1-3.6 3.6-.28-2.6-1-3.32-3.6-3.6 2.6-.28 3.32-1 3.6-3.6Z" fill="currentColor" opacity=".72"/></svg></span>
+            <h3 class="svc-panel-title">AI transformation</h3>
+            <span class="svc-panel-num">08</span>
+          </div>
+          <div class="svc-panel-body">
+            <div class="svc-panel-copy">
+              <p class="svc-panel-desc">Where AI actually moves the business. We find the use cases worth the effort, wire them into the systems you already run, and train your teams to own them.</p>
+              <a href="#contact" class="svc-panel-link">Start a conversation <span class="svc-panel-arrow">&#8599;</span></a>
+            </div>
+            <div class="svc-panel-tags">
+              <span>AI strategy</span>
+              <span>Automation</span>
+              <span>Custom assistants</span>
+              <span>Team training</span>
+            </div>
+          </div>
         </div>
-        <span class="svc-arrow" aria-hidden="true">&#8599;</span>
-      </li>
-    </ol>
+      </article>
+    </div>
 
     <div class="svc-cta">
       <div class="svc-cta-copy">One partner, from the first insight to full scale.</div>
@@ -493,8 +592,16 @@
     </div>
   </section>
 
+  <!-- Legal entity. Just Two Idiots is the trading brand; the company behind
+       it is named here, on every page, so a bank, payment provider or client
+       can match the site to the registered business. -->
+  <footer class="site-foot">
+    <p class="site-foot-legal">Just Two Idiots is a brand of <strong>Ordevia Labs Private Limited</strong>.</p>
+    <p class="site-foot-meta">&copy; 2026 Ordevia Labs Private Limited <span aria-hidden="true">&middot;</span> <a href="mailto:hi@justtwoidiots.com">hi@justtwoidiots.com</a> <span aria-hidden="true">&middot;</span> <a href="tel:+917788990166">+91&#8239;77889&#8239;90166</a></p>
+  </footer>
+
 </div>
-<script defer src="script.js?v=1794397115"></script>
+<script defer src="script.js?v=1794486968"></script>
 <script defer src="nav.js?v=1788468067"></script>
 </body>
 </html>
