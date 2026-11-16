@@ -1938,26 +1938,6 @@ body.srl-lb-lock { overflow: hidden; padding-right: var(--srl-sbw, 0px); }
   margin: 0 auto;
 }
 
-/* ---- Site footer: the legal entity -----------------------------------------
-   Small and quiet, but on every page: the registered company behind the
-   brand, with the same contact details as the closing section. */
-.site-foot {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 6px 28px;
-  padding: 22px 0 34px;
-  border-top: 1px solid #E7E5E0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #66665F;
-}
-.site-foot p { margin: 0; }
-.site-foot strong { color: #0A0A0A; font-weight: 600; }
-.site-foot a { color: inherit; }
-.site-foot a:hover { color: #C97A1E; }
-
 /* Inline text links carry a 24px minimum target as well (WCAG 2.5.8). This
    used to force `display:inline-flex` on every link in the footer and the
    contact block, which is how those 17-19px links reached 24px. The footer is
