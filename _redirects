@@ -1,0 +1,19 @@
+# Every page is served at its address without ".html" (/who-we-are,
+# /work/denver). Asked for the .html address, Cloudflare redirects on its own,
+# but with a 307 — a temporary redirect, which tells Google to keep the .html
+# URL in its index instead of the one the site actually serves. These rules
+# make the move permanent. They run before asset matching, so they win over
+# that built-in 307.
+#
+# A new page needs a line here, and its canonical, og:url, JSON-LD url and
+# sitemap entry written without ".html" too.
+
+/index.html                    /                         301
+/who-we-are.html               /who-we-are               301
+/work/bbhhomes.html            /work/bbhhomes            301
+/work/denver.html              /work/denver              301
+/work/fig.html                 /work/fig                 301
+/work/getmyrugs.html           /work/getmyrugs           301
+/work/parmandesigns.html       /work/parmandesigns       301
+/work/prakshi.html             /work/prakshi             301
+/work/tenderheartschool.html   /work/tenderheartschool   301

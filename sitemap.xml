@@ -2,59 +2,60 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://justtwoidiots.com/</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://justtwoidiots.com/who-we-are.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/who-we-are</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://justtwoidiots.com/work/bbhhomes.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/work/bbhhomes</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://justtwoidiots.com/work/denver.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/work/denver</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- FIG LIVING — PARKED. work/fig.html is still on disk but is no longer
-       linked from anywhere; keeping it out of the sitemap stops it being
-       indexed while it is off the site.
+       linked from anywhere. Leaving it out of the sitemap does not take it
+       out of Google (it was already indexed); the noindex tag in
+       work/fig.html does that. Restore this entry when that tag comes out.
   <url>
-    <loc>https://justtwoidiots.com/work/fig.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/work/fig</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   -->
   <url>
-    <loc>https://justtwoidiots.com/work/getmyrugs.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/work/getmyrugs</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://justtwoidiots.com/work/parmandesigns.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/work/parmandesigns</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://justtwoidiots.com/work/prakshi.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/work/prakshi</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://justtwoidiots.com/work/tenderheartschool.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://justtwoidiots.com/work/tenderheartschool</loc>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
