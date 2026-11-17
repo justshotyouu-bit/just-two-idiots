@@ -5,6 +5,11 @@
   // or to assets directory".
   "name": "just-two-idiots",
   "compatibility_date": "2026-09-01",
+  // The site lives on justtwoidiots.com only. Left on, the workers.dev address
+  // serves a full second copy of it. Preview URLs stay on for testing branches;
+  // Cloudflare marks those noindex itself.
+  "workers_dev": false,
+  "preview_urls": true,
   "assets": {
     "directory": "./"
   }
