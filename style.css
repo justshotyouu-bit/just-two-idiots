@@ -284,6 +284,95 @@ a:hover { color: #C97A1E; }
   z-index: 20;
 }
 
+/* ---- Brands we work with ---------------------------------------------------
+   Six tiles under the work rail. The marks are the brands' own logos, all set
+   in the same ink so no one label shouts over the rest; each tile links out
+   to the brand. */
+.clients { margin-top: clamp(40px, 6vw, 80px); }
+.clients-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 48px;
+  margin-bottom: 22px;
+}
+.clients-h2 {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 28px);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.clients-lede {
+  font-size: 15px;
+  line-height: 1.55;
+  color: #5A5A56;
+  margin: 0;
+  max-width: 52ch;
+  text-wrap: pretty;
+}
+.clients-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.client {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 190px;
+  padding: 20px 22px 16px;
+  border-radius: 20px;
+  background: #F1EFEA;
+  color: #0A0A0A;
+  transition: background-color .3s ease;
+}
+.client:hover { background: #E9E6DE; color: #0A0A0A; }
+.client:focus-visible { outline: 2px solid #C97A1E; outline-offset: 3px; }
+.client-logo {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 14px 0 22px;
+}
+.client-logo img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  opacity: 0.86;
+  transition: opacity .3s ease;
+}
+.client:hover .client-logo img { opacity: 1; }
+.client-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px 12px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid rgba(10, 10, 10, 0.08);
+  font-size: 13px;
+  color: #5A5A56;
+}
+.client-url { color: #0A0A0A; white-space: nowrap; }
+.client:hover .client-url { color: #C97A1E; }
+@media (max-width: 900px) {
+  .clients-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .client { min-height: 150px; padding: 14px 14px 12px; border-radius: 16px; }
+  .client-logo { padding: 12px 4px 16px; }
+  .client-meta { flex-direction: column; font-size: 12px; }
+  /* Two lines reserved for the category whether it wraps or not, so the
+     rules and links line up across each row of tiles. */
+  .client-cat { line-height: 1.35; min-height: 2.7em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .client, .client-logo img { transition: none; }
+}
+
 /* Swap the hint copy: hovering doesn't exist on touch. */
 .work-hint-touch { display: none; }
 
